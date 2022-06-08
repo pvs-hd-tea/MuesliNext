@@ -1,8 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import Button from './main/Widgets/ButtonWidget'
+import Text from './main/Widgets/TextWidget'
+
+interface Props {}
+
+interface State {
+  myNumber: string
+}
+
+class App extends React.Component<Props, State> {
+  state = {
+    myNumber : "hi",
+  };
+  increment = () => {
+  	this.setState(prevState => ({
+    	myNumber: prevState.myNumber + " bla",
+    }));
+  };
+	render() {
+  	return (
+      <div>
+        <Button onClick={this.increment} text="Click me"/>
+        <Text text={this.state.myNumber}/>
+      </div>
+    );
+  }	
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -12,8 +36,3 @@ root.render(
     <App />
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();

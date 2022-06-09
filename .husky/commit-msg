@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 
 set -e # exit immediately after error
-
+echo "commit-message"
 # check if aspell is available for spell checking
-aspellInstalled=$([ "$(command -v aspell)" != "" ])
+if aspellInstalled=$([ "$(command -v aspell)" != "" ]); then
+  if aspellInstalled=$(echo "is english installed?" | aspell list --lang en); then
+    echo "Aspell is available for spell checking"
+  else
+    echo "Aspell is not available but english language is not installed"
+  fi
+else
+  echo "Aspell is not available for spell checking"
+fi
 
 # set this to your active development branch
 current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
+echo "checking branch name..."
 # regex to validate branch name
 branch_regex='^(fix|feat|chore|ci)\/.*'
 error_msg="Aborting commit. Your branch name: '$current_branch' doesn't fit the contributing-guidelines. See: https://gist.github.com/buddiman/628d55d0b08ff0672af5f4c156afeb08"
@@ -22,10 +31,11 @@ if ! grep -iqE "$branch_regex" <<< "$current_branch"; then
   exit 1
 fi
 
+echo "checking commit message..."
 # regex to validate commit msg
 commit_regex='^(fix|feat|chore|refactor|ci|docs|test):.*'
 commit_message=$(cat "$1")
-error_msg="Aborting commit. Your commit message: '$commit_message' doens't fit the contributing-guidelines. See: https://gist.github.com/buddiman/628d55d0b08ff0672af5f4c156afeb08"
+error_msg="Aborting commit. Your commit message: '$commit_message' doesn't fit the contributing-guidelines. See: https://gist.github.com/buddiman/628d55d0b08ff0672af5f4c156afeb08"
 
 if $aspellInstalled && [ "$(echo "$commit_message" | aspell list --lang en)" ]; then
   echo "please check spelling for commit message: $commit_message" >&2

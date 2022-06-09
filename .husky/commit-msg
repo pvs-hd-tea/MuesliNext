@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# set this to your active development branch
+current_branch="$(git rev-parse --abbrev-ref HEAD)"
+
+# regex to validate branch name
+branch_regex='^(fix|feat|chore|ci)\/.*'
+error_msg="Aborting commit. Your branch name: '$current_branch' doesn't fit the contributing-guidelines. See: https://gist.github.com/buddiman/628d55d0b08ff0672af5f4c156afeb08"
+
+if ! grep -iqE "$branch_regex" <<< "$current_branch"; then
+  echo "$error_msg" >&2
+  exit 1
+fi
+
+# regex to validate in commit msg
+commit_regex='^(fix|feat|chore|refactor|ci|docs|test):.*'
+error_msg="Aborting commit. Your commit message: '$1' doens't fit the contributing-guidelines. See: https://gist.github.com/buddiman/628d55d0b08ff0672af5f4c156afeb08"
+
+if ! grep -iqE "$commit_regex" "$1"; then
+  echo "$error_msg" >&2
+  exit 1
+fi

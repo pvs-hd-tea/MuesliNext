@@ -44,3 +44,17 @@ You should never but could always bypass these rules with:
 ```bash
 git commit --no-verify
 ```
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+npm test
+```
+
+To run tests with coverage, run
+
+```bash
+npm test -- --coverage --watchAll
+```

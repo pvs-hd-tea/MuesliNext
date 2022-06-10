@@ -9,6 +9,8 @@ export default {
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
+  collectCoverageFrom: ["./src/**"],
+  coveragePathIgnorePatterns: [".*.json"],
 
   // The pattern or patterns Jest uses to detect test files.
   testRegex: "(?:/__tests__/.*|(?:\\.|/)(?:test|spec))\\.(?:jsx?|tsx?)$",

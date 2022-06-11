@@ -1,5 +1,8 @@
 # MuesliNext
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/pvs-hd-tea/MuesliNext/Build?style=flat)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/pvs-hd-tea/MuesliNext/Test?label=test&style=flat)
+
 MÜSLI replacement with intutable as backend and react framework for frontend
 
 ## Installation

@@ -1,42 +1,15 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
-import Button from "./components/Widgets/ButtonWidget";
-import Page from "./components/Page";
-import Text from "./components/Widgets/TextWidget";
+import ReactDOM from "react-dom";
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props {}
+import App from "./app";
 
-interface State {
-  myNumber: string;
+const container = document.querySelector("#root");
+if (container === null) {
+  throw new Error("React container element #root could not be found.");
 }
-
-class App extends React.Component<Props, State> {
-  state = {
-    myNumber: "hi",
-  };
-  increment = () => {
-    this.setState((prevState) => ({
-      myNumber: prevState.myNumber + " bla",
-    }));
-  };
-  render() {
-    return (
-      <Page title="Demo Page">
-        <div>
-          <Button onClick={this.increment} text="Click me" />
-          <Text text={this.state.myNumber} />
-        </div>
-      </Page>
-    );
-  }
-}
-
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
+ReactDOM.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
+  container
 );

@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import Button from "./main/Widgets/ButtonWidget";
+import Page from "./main/Page";
 import Text from "./main/Widgets/TextWidget";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -21,10 +22,12 @@ class App extends React.Component<Props, State> {
   };
   render() {
     return (
-      <div>
-        <Button onClick={this.increment} text="Click me" />
-        <Text text={this.state.myNumber} />
-      </div>
+      <Page title="Demo Page">
+        <div>
+          <Button onClick={this.increment} text="Click me" />
+          <Text text={this.state.myNumber} />
+        </div>
+      </Page>
     );
   }
 }

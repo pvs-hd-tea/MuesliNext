@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import Button from "./main/Widgets/ButtonWidget";
-import Page from "./main/Page";
-import Text from "./main/Widgets/TextWidget";
+import Button from "./components/Widgets/ButtonWidget";
+import Page from "./components/Page";
+import Text from "./components/Widgets/TextWidget";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}

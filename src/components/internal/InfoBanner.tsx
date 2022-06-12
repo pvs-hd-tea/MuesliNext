@@ -6,7 +6,7 @@ interface InfoBannerProperties {
 
 const InfoBanner: React.FC<InfoBannerProperties> = ({ message }) => {
   return (
-    <div className="text-slate-100  bg-slate-800 mt-3 mb-3 p-1 pl-6 pr-6">
+    <div className="text-slate-100  bg-slate-800 mt-1 p-1 pl-6 pr-6">
       {message}
     </div>
   );

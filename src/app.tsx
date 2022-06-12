@@ -1,4 +1,5 @@
 import React from "react";
+import Layout from "./components/internal/Layout";
 import Page from "./components/Page";
 import Button from "./components/Widgets/ButtonWidget";
 import Text from "./components/Widgets/TextWidget";

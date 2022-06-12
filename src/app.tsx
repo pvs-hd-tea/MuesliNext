@@ -1,5 +1,6 @@
 import React from "react";
 import Page from "./components/Page";
+import Button from "./components/Widgets/ButtonWidget";
 import Text from "./components/Widgets/TextWidget";
 import { UserMetaData } from "./data/meta-data";
 
@@ -19,7 +20,8 @@ const App: React.FC<Props> = ({}) => {
       title="Demo Page"
       metadata={{ visible: true, userData, showDebugInformation: true }}
     >
-      <Text text="This is a demo page" />
+      <Text text="Text widget" />
+      <Button text="Button widget" onClick={() => alert("Hello World")} />
     </Page>
   );
 };

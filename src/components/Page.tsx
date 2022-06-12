@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { PageMetaData } from "../data/meta-data";
+import InfoBanner from "./Widgets/InfoBanner";
 
 interface PageProperties {
   title: string;
@@ -12,13 +13,10 @@ const Page: React.FC<PageProperties> = ({ title, children, metadata }) => {
     document.title = title;
   }, []);
   return (
-    <div className="page">
+    <div className="pb-1 pt-2">
       {children}
       {metadata.showDebugInformation && (
-        <>
-          <hr />
-          Metadata:{JSON.stringify(metadata)}
-        </>
+        <InfoBanner message={`Metadata:${JSON.stringify(metadata)}}`} />
       )}
     </div>
   );

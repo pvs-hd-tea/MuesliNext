@@ -10,6 +10,13 @@ export default class Button extends React.Component<Props> {
     const text = this.props.text;
     const onClick = this.props.onClick;
 
-    return <button onClick={onClick}>{text}</button>;
+    return (
+      <button
+        className="text-white bg-green-500 shadow- ml-3 p-1 pl-3 pr-3 rounded-lg"
+        onClick={onClick}
+      >
+        {text}
+      </button>
+    );
   }
 }

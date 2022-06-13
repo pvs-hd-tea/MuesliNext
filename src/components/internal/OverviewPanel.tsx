@@ -7,7 +7,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
-import { PageLink } from "../../data/page-link";
 import { Page } from "../../app";
 
 export enum LayoutStyle {

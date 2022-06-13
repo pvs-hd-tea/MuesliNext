@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { PageMetaData } from "../../data/meta-data";
-import InfoBanner from "./InfoBanner";
 import { createReactEditorJS } from "react-editor-js";
 import Button from "../Widgets/ButtonWidget";
 import { EDITOR_JS_TOOLS } from "./tools";
@@ -9,6 +8,7 @@ import { Page } from "../../app";
 interface Block {
   id?: string;
   type: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 }
 interface EditorData {
@@ -24,12 +24,7 @@ interface PageProperties {
   pages: Page[];
 }
 
-const PageEdit: React.FC<PageProperties> = ({
-  title,
-  metadata,
-  pages,
-  uuid,
-}) => {
+const PageEdit: React.FC<PageProperties> = ({ title, uuid }) => {
   useEffect(() => {
     document.title = title;
   }, []);
@@ -38,6 +33,7 @@ const PageEdit: React.FC<PageProperties> = ({
 
   const storagePath = `pagecontent:from:${uuid}`;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInitialize = React.useCallback((instance: any) => {
     editorCore.current = instance;
   }, []);

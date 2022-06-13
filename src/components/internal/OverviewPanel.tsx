@@ -22,7 +22,7 @@ const OverviewPanel: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-row min-h-screen">
+    <div className="flex flex-row min-h-screen fixed">
       <aside className="sidebar w-64 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
         <div className="flex flex-col justify-between h-screen bg-white border-r">
           <div className="px-4 py-6">

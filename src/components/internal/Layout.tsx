@@ -28,9 +28,9 @@ const EmptyLayout: React.FC<LayoutProperties> = ({ children }) => {
 
 const DefaultLayout: React.FC<LayoutProperties> = ({ children }) => {
   return (
-    <div className="flex">
-      <OverviewPanel />
-      <div className="grow">{children}</div>
+    <div className="grid grid-cols-6 gap-4">
+      <OverviewPanel col-span-1 />
+      <div className="grow col-start-3 col-span-3">{children}</div>
     </div>
   );
 };

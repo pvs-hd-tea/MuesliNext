@@ -25,7 +25,7 @@ const Page: React.FC<PageProperties> = ({
   return (
     <div className="bg-gray-100 font-sans leading-normal tracking-normal pb-1 pt-2">
       <Layout layout={layout}>
-        {children}
+        <div>{children}</div>
         {metadata.showDebugInformation && (
           <>
             <InfoBanner message={`Metadata:${JSON.stringify(metadata)}`} />

@@ -3,30 +3,29 @@ import {
   faBarsStaggered,
   faCog,
   faFile,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { PageLink } from "../../data/page-link";
+import { Page } from "../../app";
 
 export enum LayoutStyle {
   empty = "empty",
   default = "default",
 }
 
-const OverviewPanel: React.FC = () => {
-  // TODO: Placeholder for now
-  const pages: PageLink[] = [
-    { name: "placeholderPage1", path: "placeholderPage1" },
-    { name: "placeholderPage2", path: "placeholderPage2" },
-    { name: "placeholderPage3", path: "placeholderPage3" },
-  ];
+interface OverviewPanelProperties {
+  pages: Page[];
+}
 
+const OverviewPanel: React.FC<OverviewPanelProperties> = ({ pages }) => {
   return (
     <div className="flex flex-row min-h-screen fixed">
       <aside className="sidebar w-64 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
-        <div className="flex flex-col justify-between h-screen bg-white border-r">
+        <div className="flex flex-col justify-between min-h-screen bg-white border-r">
           <div className="px-4 py-6">
-            <h1 className="text-2xl">Overview Panel</h1>
+            <h1 className="text-2xl">Overview</h1>
 
             <nav className="flex flex-col mt-6 space-y-1">
               <a
@@ -59,10 +58,17 @@ const OverviewPanel: React.FC = () => {
 
                       <span className="ml-3 text-sm font-medium">
                         {" "}
-                        {page.name}{" "}
+                        {page.title}{" "}
                       </span>
                     </a>
                   ))}
+                  <a
+                    onClick={() => alert("new page")}
+                    className="flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                    <span className="ml-3 text-sm font-medium"> add page </span>
+                  </a>
                 </nav>
               </details>
             </nav>

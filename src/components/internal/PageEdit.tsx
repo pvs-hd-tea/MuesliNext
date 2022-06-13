@@ -5,6 +5,7 @@ import InfoBanner from "./InfoBanner";
 import { createReactEditorJS } from "react-editor-js";
 import Button from "../Widgets/ButtonWidget";
 import { EDITOR_JS_TOOLS } from "./tools";
+import { Page } from "../../app";
 
 interface Block {
   id?: string;
@@ -22,12 +23,14 @@ interface PageProperties {
   uuid: number;
   layout?: LayoutStyle;
   metadata: PageMetaData;
+  pages: Page[];
 }
 
 const PageEdit: React.FC<PageProperties> = ({
   title,
   layout,
   metadata,
+  pages,
   uuid,
 }) => {
   useEffect(() => {
@@ -174,7 +177,7 @@ const PageEdit: React.FC<PageProperties> = ({
 
   return (
     <div className="bg-gray-100 font-sans leading-normal tracking-normal pb-1 pt-2">
-      <Layout layout={layout}>
+      <Layout layout={layout} pages={pages}>
         <div>
           <ReactEditorJS
             data={data}

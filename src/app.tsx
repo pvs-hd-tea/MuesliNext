@@ -1,13 +1,9 @@
-import React, { useState } from "react";
-import Layout, { LayoutStyle } from "./components/internal/Layout";
-import Page from "./components/internal/Page";
-import Button from "./components/Widgets/ButtonWidget";
-import Text from "./components/Widgets/TextWidget";
+import React from "react";
+import { LayoutStyle } from "./components/internal/Layout";
 import { UserMetaData } from "./data/meta-data";
 
-import { createReactEditorJS } from "react-editor-js";
-import { EDITOR_JS_TOOLS } from "./components/internal/tools";
 import PageEdit from "./components/internal/PageEdit";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -21,11 +17,40 @@ const App: React.FC<Props> = ({}) => {
   };
 
   return (
-    <PageEdit
-      title="Demo Page"
-      layout={LayoutStyle.default}
-      metadata={{ visible: true, userData, showDebugInformation: false }}
-    />
+    <Router>
+      <Routes>
+        <Route
+          path="/pages/placeholderPage1"
+          element={
+            <PageEdit
+              title="Placeholder page 1"
+              uuid={1}
+              layout={LayoutStyle.default}
+              metadata={{
+                visible: true,
+                userData,
+                showDebugInformation: false,
+              }}
+            />
+          }
+        />
+        <Route
+          path="/pages/placeholderPage2"
+          element={
+            <PageEdit
+              title="Placeholder page 2"
+              uuid={2}
+              layout={LayoutStyle.default}
+              metadata={{
+                visible: true,
+                userData,
+                showDebugInformation: false,
+              }}
+            />
+          }
+        />
+      </Routes>
+    </Router>
   );
 };
 

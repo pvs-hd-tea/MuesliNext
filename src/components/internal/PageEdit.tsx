@@ -19,16 +19,24 @@ interface EditorData {
 
 interface PageProperties {
   title: string;
+  uuid: number;
   layout?: LayoutStyle;
   metadata: PageMetaData;
 }
 
-const PageEdit: React.FC<PageProperties> = ({ title, layout, metadata }) => {
+const PageEdit: React.FC<PageProperties> = ({
+  title,
+  layout,
+  metadata,
+  uuid,
+}) => {
   useEffect(() => {
     document.title = title;
   }, []);
 
   const editorCore = React.useRef<typeof ReactEditorJS>(null);
+
+  const storagePath = `pagecontent:from:${uuid}`;
 
   const handleInitialize = React.useCallback((instance: any) => {
     editorCore.current = instance;
@@ -37,7 +45,7 @@ const PageEdit: React.FC<PageProperties> = ({ title, layout, metadata }) => {
   const handleSave = React.useCallback(async () => {
     const savedData = await editorCore.current.save();
     console.log(JSON.stringify(savedData));
-    localStorage.setItem("editor-content", JSON.stringify(savedData));
+    localStorage.setItem(storagePath, JSON.stringify(savedData));
   }, []);
 
   const ReactEditorJS = createReactEditorJS();
@@ -144,20 +152,20 @@ const PageEdit: React.FC<PageProperties> = ({ title, layout, metadata }) => {
 
   const [data, setData] = useState(defaultData);
   const [loaded, setLoaded] = useState(false);
-  const dataString = localStorage.getItem("editor-content");
+  const dataString = localStorage.getItem(storagePath);
   if (dataString && !loaded) {
     setLoaded(true);
     setData(JSON.parse(dataString));
   }
 
   const loadExampleData = () => {
-    localStorage.setItem("editor-content", JSON.stringify(exampleData));
+    localStorage.setItem(storagePath, JSON.stringify(exampleData));
     setData(exampleData);
     editorCore.current.render(exampleData);
   };
 
   const clearData = () => {
-    localStorage.setItem("editor-content", JSON.stringify(defaultData));
+    localStorage.setItem(storagePath, JSON.stringify(defaultData));
     setData(defaultData);
     editorCore.current.render(defaultData);
   };

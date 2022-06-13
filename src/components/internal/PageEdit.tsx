@@ -11,7 +11,7 @@ interface Block {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 }
-interface EditorData {
+export interface EditorData {
   time: number;
   blocks: Block[];
   version: string;
@@ -21,16 +21,15 @@ interface PageProperties {
   title: string;
   uuid: number;
   metadata: PageMetaData;
-  pages: Page[];
-  onExportData: () => void;
-  onLoadData: () => void;
+  content?: EditorData;
+  onChangePage: (uuid: number, content: EditorData) => void;
 }
 
 const PageEdit: React.FC<PageProperties> = ({
   title,
   uuid,
-  onExportData,
-  onLoadData,
+  content,
+  onChangePage,
 }) => {
   useEffect(() => {
     document.title = title;
@@ -48,7 +47,7 @@ const PageEdit: React.FC<PageProperties> = ({
   const handleSave = React.useCallback(async () => {
     const savedData = await editorCore.current.save();
     console.log(JSON.stringify(savedData));
-    localStorage.setItem(storagePath, JSON.stringify(savedData));
+    onChangePage(uuid, savedData);
   }, []);
 
   const ReactEditorJS = createReactEditorJS();
@@ -153,31 +152,29 @@ const PageEdit: React.FC<PageProperties> = ({
     version: "2.11.10",
   };
 
-  const [data, setData] = useState(defaultData);
-  const [loaded, setLoaded] = useState(false);
-  const dataString = localStorage.getItem(storagePath);
-  if (dataString && !loaded) {
-    setLoaded(true);
-    setData(JSON.parse(dataString));
+  if (!content) {
+    content = defaultData;
   }
 
   const loadExampleData = () => {
     localStorage.setItem(storagePath, JSON.stringify(exampleData));
-    setData(exampleData);
+    content = exampleData;
     editorCore.current.render(exampleData);
+    onChangePage(uuid, content);
   };
 
   const clearData = () => {
     localStorage.setItem(storagePath, JSON.stringify(defaultData));
-    setData(defaultData);
+    content = defaultData;
     editorCore.current.render(defaultData);
+    onChangePage(uuid, content);
   };
 
   return (
     <div className="bg-gray-100 font-sans leading-normal tracking-normal pb-1 pt-2">
       <div>
         <ReactEditorJS
-          data={data}
+          data={content}
           tools={EDITOR_JS_TOOLS}
           onInitialize={handleInitialize}
           onChange={handleSave}
@@ -187,8 +184,6 @@ const PageEdit: React.FC<PageProperties> = ({
         <div className="float-right m-5">
           <Button text="load Example Data" onClick={loadExampleData} />
           <Button text="clear" onClick={clearData} />
-          <Button text="export data" onClick={onExportData} />
-          <Button text="load data" onClick={onLoadData} />
         </div>
       </div>
     </div>

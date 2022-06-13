@@ -56,7 +56,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
 
             <nav className="flex flex-col mt-6 space-y-1">
               <a
-                href=""
+                href="/general"
                 className="flex items-center px-4 py-2 text-gray-700 bg-gray-100 rounded-lg"
               >
                 <FontAwesomeIcon icon={faCog} />

@@ -12,7 +12,7 @@ export default class Button extends React.Component<Props> {
 
     return (
       <button
-        className="text-white bg-green-500 shadow- ml-3 p-1 pl-3 pr-3 rounded-lg"
+        className="text-white bg-green-500 shadow- ml-1 p-1 pl-3 pr-3 rounded-lg"
         onClick={onClick}
       >
         {text}

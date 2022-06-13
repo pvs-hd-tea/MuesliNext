@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { UserMetaData } from "./data/meta-data";
 
-import PageEdit from "./components/internal/PageEdit";
+import PageEdit, { EditorData } from "./components/internal/PageEdit";
 import {
   BrowserRouter as Router,
   Navigate,
@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import OverviewPanel from "./components/internal/OverviewPanel";
 import { LocalStorageService as StorageService } from "./data/localStorage";
+import General from "./components/internal/General";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -18,6 +19,7 @@ export interface Page {
   title: string;
   path: string;
   uuid: number;
+  content?: EditorData;
 }
 
 // eslint-disable-next-line no-empty-pattern
@@ -46,6 +48,19 @@ const App: React.FC<Props> = ({}) => {
     setPages([...pages, page]);
     //localStorage.setItem("pages", JSON.stringify([...pages, page]));
     storageService.set("pages", [...pages, page]);
+    location.replace(`/pages/${page.path}`);
+  };
+
+  const onChangePage = (uuid: number, content: EditorData): void => {
+    // find page by uuid and update content
+    const page = pages.find((p) => p.uuid === uuid);
+    if (page) {
+      page.content = content;
+      //localStorage.setItem("pages", JSON.stringify(pages));
+    }
+
+    setPages([...pages]);
+    storageService.set("pages", pages);
   };
 
   // const pagesString = localStorage.getItem("pages");
@@ -65,8 +80,20 @@ const App: React.FC<Props> = ({}) => {
     storageService.importFromJsonFile();
   };
 
+  const onSaveData = (raw: string): boolean => {
+    console.log("save data");
+    return !storageService.save(raw);
+  };
+
+  const onResetData = () => {
+    console.log("reset data");
+    storageService.set("pages", defaultPages);
+    // TODO: maybe not mix react and plain javascript
+    document.location.reload();
+  };
+
   return (
-    <body className="h-screen bg-gray-100">
+    <body className="min-h-screen bg-gray-100">
       <div className="grid grid-cols-6 gap-4">
         <OverviewPanel pages={pages} onAddPage={onAddPage} col-span-1 />
         <div className="grow col-start-3 col-span-3">
@@ -80,18 +107,29 @@ const App: React.FC<Props> = ({}) => {
                     <PageEdit
                       title={page.title}
                       uuid={page.uuid}
-                      pages={pages}
+                      content={page.content}
                       metadata={{
                         visible: true,
                         userData,
                         showDebugInformation: false,
                       }}
-                      onExportData={onExportData}
-                      onLoadData={onLoadData}
+                      onChangePage={onChangePage}
                     />
                   }
                 />
               ))}
+              <Route
+                path="/general"
+                element={
+                  <General
+                    configuration={storageService.getConfiguration()}
+                    onSaveData={onSaveData}
+                    onExportData={onExportData}
+                    onLoadData={onLoadData}
+                    onResetData={onResetData}
+                  />
+                }
+              />
               <Route
                 path="/"
                 element={<Navigate replace to="/pages/welcome-page" />}

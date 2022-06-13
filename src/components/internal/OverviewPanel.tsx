@@ -17,9 +17,37 @@ export enum LayoutStyle {
 
 interface OverviewPanelProperties {
   pages: Page[];
+  onAddPage: (page: Page) => void;
 }
 
-const OverviewPanel: React.FC<OverviewPanelProperties> = ({ pages }) => {
+const OverviewPanel: React.FC<OverviewPanelProperties> = ({
+  pages,
+  onAddPage,
+}) => {
+  const addPage = () => {
+    const pageName = prompt("Please enter your page name:", "my new page");
+    if (pageName == null || pageName == "") {
+      return;
+    } else {
+      if (
+        pages.find(
+          (page) =>
+            page.title.toLocaleLowerCase() === pageName.toLocaleLowerCase()
+        )
+      ) {
+        alert("Page with this name already exists.");
+        return;
+      }
+      const newPage: Page = {
+        title: pageName,
+        path: pageName.toLowerCase().replace(/ /g, "-"),
+        uuid: pages.length + 1,
+      };
+      onAddPage(newPage);
+    }
+    return;
+  };
+
   return (
     <div className="flex flex-row min-h-screen fixed">
       <aside className="sidebar w-64 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
@@ -63,7 +91,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({ pages }) => {
                     </a>
                   ))}
                   <a
-                    onClick={() => alert("new page")}
+                    onClick={addPage}
                     className="flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
                   >
                     <FontAwesomeIcon icon={faPlus} />

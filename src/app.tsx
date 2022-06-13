@@ -36,11 +36,23 @@ const App: React.FC<Props> = ({}) => {
   ];
 
   const [pages, setPages] = useState(defaultPages);
+  const [loaded, setLoaded] = useState(false);
+
+  const onAddPage = (page: Page) => {
+    setPages([...pages, page]);
+    localStorage.setItem("pages", JSON.stringify([...pages, page]));
+  };
+
+  const pagesString = localStorage.getItem("pages");
+  if (pagesString && !loaded) {
+    setLoaded(true);
+    setPages(JSON.parse(pagesString));
+  }
 
   return (
     <body className="h-screen bg-gray-100">
       <div className="grid grid-cols-6 gap-4">
-        <OverviewPanel pages={pages} col-span-1 />
+        <OverviewPanel pages={pages} onAddPage={onAddPage} col-span-1 />
         <div className="grow col-start-3 col-span-3">
           <Router>
             <Routes>

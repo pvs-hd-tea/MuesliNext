@@ -1,38 +1,26 @@
 import React, { useEffect } from "react";
 import { PageMetaData } from "../../data/meta-data";
-import Layout, { LayoutStyle } from "./Layout";
 import InfoBanner from "./InfoBanner";
 
 interface PageProperties {
   title: string;
-  layout?: LayoutStyle;
   children: React.ReactNode;
   metadata: PageMetaData;
 }
 
-const Page: React.FC<PageProperties> = ({
-  title,
-  layout,
-  children,
-  metadata,
-}) => {
+const Page: React.FC<PageProperties> = ({ title, children, metadata }) => {
   useEffect(() => {
     document.title = title;
   }, []);
 
-  layout = layout || LayoutStyle.default;
-
   return (
     <div className="bg-gray-100 font-sans leading-normal tracking-normal pb-1 pt-2">
-      <Layout layout={layout}>
-        <div>{children}</div>
-        {metadata.showDebugInformation && (
-          <>
-            <InfoBanner message={`Metadata:${JSON.stringify(metadata)}`} />
-            <InfoBanner message={`Layout:${JSON.stringify(layout)}`} />
-          </>
-        )}
-      </Layout>
+      <div>{children}</div>
+      {metadata.showDebugInformation && (
+        <>
+          <InfoBanner message={`Metadata:${JSON.stringify(metadata)}`} />
+        </>
+      )}
     </div>
   );
 };

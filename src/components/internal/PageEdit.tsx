@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { PageMetaData } from "../../data/meta-data";
-import Layout, { LayoutStyle } from "./Layout";
 import InfoBanner from "./InfoBanner";
 import { createReactEditorJS } from "react-editor-js";
 import Button from "../Widgets/ButtonWidget";
@@ -21,14 +20,12 @@ interface EditorData {
 interface PageProperties {
   title: string;
   uuid: number;
-  layout?: LayoutStyle;
   metadata: PageMetaData;
   pages: Page[];
 }
 
 const PageEdit: React.FC<PageProperties> = ({
   title,
-  layout,
   metadata,
   pages,
   uuid,
@@ -173,26 +170,22 @@ const PageEdit: React.FC<PageProperties> = ({
     editorCore.current.render(defaultData);
   };
 
-  layout = layout || LayoutStyle.default;
-
   return (
     <div className="bg-gray-100 font-sans leading-normal tracking-normal pb-1 pt-2">
-      <Layout layout={layout} pages={pages}>
-        <div>
-          <ReactEditorJS
-            data={data}
-            tools={EDITOR_JS_TOOLS}
-            onInitialize={handleInitialize}
-            onChange={handleSave}
-            placeholder="start writing here..."
-          />
-          {/* <ReactEditorJS tools={EDITOR_JS_TOOLS} /> */}
-          <div className="float-right m-5">
-            <Button text="load Example Data" onClick={loadExampleData} />
-            <Button text="clear" onClick={clearData} />
-          </div>
+      <div>
+        <ReactEditorJS
+          data={data}
+          tools={EDITOR_JS_TOOLS}
+          onInitialize={handleInitialize}
+          onChange={handleSave}
+          placeholder="start writing here..."
+        />
+        {/* <ReactEditorJS tools={EDITOR_JS_TOOLS} /> */}
+        <div className="float-right m-5">
+          <Button text="load Example Data" onClick={loadExampleData} />
+          <Button text="clear" onClick={clearData} />
         </div>
-      </Layout>
+      </div>
     </div>
   );
 };

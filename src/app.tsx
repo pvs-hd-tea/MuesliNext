@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { LayoutStyle } from "./components/internal/Layout";
 import { UserMetaData } from "./data/meta-data";
 
 import PageEdit from "./components/internal/PageEdit";
@@ -9,6 +8,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import OverviewPanel from "./components/internal/OverviewPanel";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -38,34 +38,40 @@ const App: React.FC<Props> = ({}) => {
   const [pages, setPages] = useState(defaultPages);
 
   return (
-    <Router>
-      <Routes>
-        {pages.map((page) => (
-          <Route
-            key={page.uuid}
-            path={`/pages/${page.path}`}
-            element={
-              <PageEdit
-                title={page.title}
-                uuid={page.uuid}
-                layout={LayoutStyle.default}
-                pages={pages}
-                metadata={{
-                  visible: true,
-                  userData,
-                  showDebugInformation: false,
-                }}
+    <body className="h-screen bg-gray-100">
+      <div className="grid grid-cols-6 gap-4">
+        <OverviewPanel pages={pages} col-span-1 />
+        <div className="grow col-start-3 col-span-3">
+          <Router>
+            <Routes>
+              {pages.map((page) => (
+                <Route
+                  key={page.uuid}
+                  path={`/pages/${page.path}`}
+                  element={
+                    <PageEdit
+                      title={page.title}
+                      uuid={page.uuid}
+                      pages={pages}
+                      metadata={{
+                        visible: true,
+                        userData,
+                        showDebugInformation: false,
+                      }}
+                    />
+                  }
+                />
+              ))}
+              <Route
+                path="/"
+                element={<Navigate replace to="/pages/welcome-page" />}
               />
-            }
-          />
-        ))}
-        <Route
-          path="/"
-          element={<Navigate replace to="/pages/welcome-page" />}
-        />
-        <Route path="*" element={<div>404</div>} />
-      </Routes>
-    </Router>
+              <Route path="*" element={<div>404</div>} />
+            </Routes>
+          </Router>
+        </div>
+      </div>
+    </body>
   );
 };
 

@@ -1,3 +1,5 @@
+import fileDialog from "file-dialog";
+
 const relevantKeys = ["pages"];
 
 export class LocalStorageService {
@@ -35,5 +37,21 @@ export class LocalStorageService {
     link.href = url;
     link.download = "data.json";
     link.click();
+  }
+
+  importFromJsonFile() {
+    fileDialog().then((files) => {
+      const file = files[0];
+      file.text().then((raw) => {
+        const data = JSON.parse(raw);
+        alert(`loaded: ${raw}`);
+        for (const key in data) {
+          // eslint-disable-next-line no-prototype-builtins
+          if (data.hasOwnProperty(key)) {
+            this.set(key, data[key]);
+          }
+        }
+      });
+    });
   }
 }

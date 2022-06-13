@@ -60,6 +60,11 @@ const App: React.FC<Props> = ({}) => {
     storageService.exportToJsonFile();
   };
 
+  const onLoadData = () => {
+    console.log("load data");
+    storageService.importFromJsonFile();
+  };
+
   return (
     <body className="h-screen bg-gray-100">
       <div className="grid grid-cols-6 gap-4">
@@ -82,6 +87,7 @@ const App: React.FC<Props> = ({}) => {
                         showDebugInformation: false,
                       }}
                       onExportData={onExportData}
+                      onLoadData={onLoadData}
                     />
                   }
                 />

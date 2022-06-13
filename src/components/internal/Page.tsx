@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { PageMetaData } from "../data/meta-data";
-import Layout, { LayoutStyle } from "./internal/Layout";
-import InfoBanner from "./internal/InfoBanner";
+import { PageMetaData } from "../../data/meta-data";
+import Layout, { LayoutStyle } from "./Layout";
+import InfoBanner from "./InfoBanner";
 
 interface PageProperties {
   title: string;

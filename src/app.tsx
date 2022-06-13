@@ -9,6 +9,7 @@ import {
   Routes,
 } from "react-router-dom";
 import OverviewPanel from "./components/internal/OverviewPanel";
+import { LocalStorageService as StorageService } from "./data/localStorage";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -21,6 +22,9 @@ export interface Page {
 
 // eslint-disable-next-line no-empty-pattern
 const App: React.FC<Props> = ({}) => {
+  // Services here
+  const storageService = new StorageService();
+
   // could be fetched from backend
   const userData: UserMetaData = {
     name: "John",
@@ -40,14 +44,21 @@ const App: React.FC<Props> = ({}) => {
 
   const onAddPage = (page: Page) => {
     setPages([...pages, page]);
-    localStorage.setItem("pages", JSON.stringify([...pages, page]));
+    //localStorage.setItem("pages", JSON.stringify([...pages, page]));
+    storageService.set("pages", [...pages, page]);
   };
 
-  const pagesString = localStorage.getItem("pages");
+  // const pagesString = localStorage.getItem("pages");
+  const pagesString = storageService.get("pages");
   if (pagesString && !loaded) {
     setLoaded(true);
     setPages(JSON.parse(pagesString));
   }
+
+  const onExportData = () => {
+    console.log("export data");
+    storageService.exportToJsonFile();
+  };
 
   return (
     <body className="h-screen bg-gray-100">
@@ -70,6 +81,7 @@ const App: React.FC<Props> = ({}) => {
                         userData,
                         showDebugInformation: false,
                       }}
+                      onExportData={onExportData}
                     />
                   }
                 />

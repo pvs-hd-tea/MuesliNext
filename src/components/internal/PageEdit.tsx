@@ -22,9 +22,10 @@ interface PageProperties {
   uuid: number;
   metadata: PageMetaData;
   pages: Page[];
+  onExportData: () => void;
 }
 
-const PageEdit: React.FC<PageProperties> = ({ title, uuid }) => {
+const PageEdit: React.FC<PageProperties> = ({ title, uuid, onExportData }) => {
   useEffect(() => {
     document.title = title;
   }, []);
@@ -180,6 +181,7 @@ const PageEdit: React.FC<PageProperties> = ({ title, uuid }) => {
         <div className="float-right m-5">
           <Button text="load Example Data" onClick={loadExampleData} />
           <Button text="clear" onClick={clearData} />
+          <Button text="export data" onClick={onExportData} />
         </div>
       </div>
     </div>

@@ -74,6 +74,18 @@ const App: React.FC<Props> = ({}) => {
     storageService.set("pages", pages);
   };
 
+  const onChangePath = (uuid: string, path: string): void => {
+    // find page by uuid and update content
+    const page = pages.find((p) => p.path === uuid);
+    if (page) {
+      page.path = path;
+
+      setPages([...pages]);
+      storageService.set("pages", pages);
+      location.replace(`/pages/${page.path}`);
+    }
+  };
+
   // const pagesString = localStorage.getItem("pages");
   const pagesString = storageService.get("pages");
   if (pagesString && !loaded) {
@@ -122,10 +134,12 @@ const App: React.FC<Props> = ({}) => {
                   element={
                     <PageEdit
                       title={page.title}
+                      path={page.path}
                       uuid={page.path}
                       content={page.content}
                       metadata={page.metadata}
                       onChangePage={onChangePage}
+                      onChangePath={onChangePath}
                     />
                   }
                 />
@@ -146,7 +160,17 @@ const App: React.FC<Props> = ({}) => {
                 path="/"
                 element={<Navigate replace to="/pages/welcome-page" />}
               />
-              <Route path="*" element={<div>404</div>} />
+              <Route
+                path="*"
+                element={
+                  <div className="mt-20 place-content-center">
+                    <p className="text-9xl text-center text-red-600"> 404 </p>
+                    <p className="text-2xl text-center text-red-600">
+                      Page does not exist
+                    </p>
+                  </div>
+                }
+              />
             </Routes>
           </Router>
         </div>

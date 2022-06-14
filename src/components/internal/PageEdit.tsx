@@ -4,6 +4,8 @@ import { createReactEditorJS } from "react-editor-js";
 import Button from "../Widgets/ButtonWidget";
 import { EDITOR_JS_TOOLS } from "./tools";
 import { Page } from "../../app";
+import { faChevronRight, faHome } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface Block {
   id?: string;
@@ -20,17 +22,21 @@ export interface EditorData {
 interface PageProperties {
   title: string;
   uuid: string;
+  path: string;
   metadata: PageMetaData;
   content?: EditorData;
   onChangePage: (uuid: string, content: EditorData) => void;
+  onChangePath: (uuid: string, path: string) => void;
 }
 
 const PageEdit: React.FC<PageProperties> = ({
   title,
   uuid,
+  path,
   content,
   metadata,
   onChangePage,
+  onChangePath,
 }) => {
   useEffect(() => {
     document.title = title;
@@ -171,15 +177,78 @@ const PageEdit: React.FC<PageProperties> = ({
     onChangePage(uuid, content);
   };
 
+  const changePath = () => {
+    // prompt for new path ending
+    let pathEnding = prompt("Enter new path ending", path.split("/").at(-1));
+    // cast pathEnding to valid url string
+    if (pathEnding) {
+      pathEnding = pathEnding.replace(/[^a-zA-Z0-9]/g, "-");
+      const pre = path.split("/").slice(0, -1).join("/") || "";
+      onChangePath(uuid, `${pre}/${pathEnding}`);
+    }
+  };
+
   return (
     <div className="bg-gray-100 font-sans leading-normal tracking-normal pb-1 pt-2">
       {!metadata.visible && (
-        <div className="px-1 py-1 text-white bg-red-600 rounded-full">
+        <div className="mb-5 px-1 py-1 text-white bg-red-600 rounded-full">
           <p className="text-sm font-medium text-center">
             Page will not be visible in final WebApp
           </p>
         </div>
       )}
+
+      <nav aria-label="Breadcrumb">
+        <ol
+          role="list"
+          className="flex items-center space-x-1 text-sm text-gray-500"
+        >
+          <li>
+            <a className="block transition-colors hover:text-gray-700" href="/">
+              <span className="sr-only"> Home </span>
+
+              <FontAwesomeIcon icon={faHome} />
+            </a>
+          </li>
+
+          {path
+            .split("/")
+            .slice(0, -1)
+            .map((pagePath, index) => (
+              <>
+                <li>
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </li>
+
+                <li>
+                  <a
+                    className="block transition-colors hover:text-gray-700"
+                    href={`/pages/${path
+                      .split("/")
+                      .slice(0, index + 1)
+                      .join("/")}`}
+                  >
+                    {" "}
+                    {pagePath}{" "}
+                  </a>
+                </li>
+              </>
+            ))}
+          <li>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </li>
+
+          <li>
+            <a
+              className="block transition-colors hover:text-gray-700"
+              onClick={changePath}
+            >
+              {" "}
+              {path.split("/").at(-1)}{" "}
+            </a>
+          </li>
+        </ol>
+      </nav>
 
       <div>
         <ReactEditorJS

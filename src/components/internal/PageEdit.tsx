@@ -4,7 +4,11 @@ import { createReactEditorJS } from "react-editor-js";
 import Button from "../Widgets/ButtonWidget";
 import { EDITOR_JS_TOOLS } from "./tools";
 import { Page } from "../../app";
-import { faChevronRight, faHome } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronRight,
+  faHome,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface Block {
@@ -188,6 +192,22 @@ const PageEdit: React.FC<PageProperties> = ({
     }
   };
 
+  const addPath = () => {
+    // prompt for new path ending
+    const pathEnding = path.split("/").at(-1);
+    let subPath = prompt("Enter new  sub path");
+    // cast pathEnding to valid url string
+    if (subPath && subPath !== "") {
+      subPath = subPath.replace(/[^a-zA-Z0-9]/g, "-");
+      const pre = path.split("/").slice(0, -1).join("/") || "";
+      if (pre !== "") {
+        onChangePath(uuid, `${pre}/${subPath}/${pathEnding}`);
+      } else {
+        onChangePath(uuid, `${subPath}/${pathEnding}`);
+      }
+    }
+  };
+
   return (
     <div className="bg-gray-100 font-sans leading-normal tracking-normal pb-1 pt-2">
       {!metadata.visible && (
@@ -234,6 +254,19 @@ const PageEdit: React.FC<PageProperties> = ({
                 </li>
               </>
             ))}
+          <li>
+            <FontAwesomeIcon icon={faChevronRight} />
+          </li>
+
+          <li>
+            <a
+              className="block transition-colors hover:text-gray-700"
+              onClick={addPath}
+            >
+              {" "}
+              <FontAwesomeIcon icon={faPlus} />{" "}
+            </a>
+          </li>
           <li>
             <FontAwesomeIcon icon={faChevronRight} />
           </li>

@@ -1,40 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { AppData } from "../../app";
-import { PageMetaData } from "../../data/meta-data";
+import localDataService from "../../data/services/localDataService";
+import SettingsService from "../../data/services/settingsService";
 import Button from "../Widgets/ButtonWidget";
-import InfoBanner from "./InfoBanner";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GeneralProperties {
-  configuration: string;
-  app: AppData;
-  onExportData: () => void;
-  onLoadData: () => void;
-  onSaveData: (raw: string) => boolean;
-  onResetData: () => void;
-  onSetAppName: (pageName: string) => void;
+  dataService: localDataService;
+  settingsService: SettingsService;
 }
 
 const General: React.FC<GeneralProperties> = ({
-  configuration,
-  app,
-  onExportData,
-  onLoadData,
-  onSaveData,
-  onResetData,
-  onSetAppName,
+  dataService,
+  settingsService,
 }) => {
   useEffect(() => {
-    document.title = `${app.name} - General`;
+    document.title = `${dataService.getSettings().name} - General`;
   }, []);
 
-  const [config, setConfig] = useState(configuration);
-  const [appName, setAppName] = useState(app.name);
+  const [config, setConfig] = useState(dataService.toJsonString());
+  const [appName, setAppName] = useState(dataService.getSettings().name);
   const [syntaxError, setSyntaxError] = useState(false);
-
-  const saveConfig = () => {
-    setSyntaxError(onSaveData(config));
-  };
 
   const handleConfigChange = (event: any) => {
     setConfig(event.target.value);
@@ -45,7 +30,7 @@ const General: React.FC<GeneralProperties> = ({
   };
 
   const handleNameChange = () => {
-    onSetAppName(appName);
+    settingsService.setAppName(appName);
   };
 
   return (
@@ -70,14 +55,29 @@ const General: React.FC<GeneralProperties> = ({
         className="bg-slate-900 text-slate-100 p-2 rounded-lg w-full h-96 text-xs"
         onChange={handleConfigChange}
       >
-        {config}
+        {dataService.toJsonString()}
       </textarea>
       {syntaxError && <span className="text-red-500">Syntax error</span>}
       <div className="float-right mb-5">
-        <Button text="save" onClick={saveConfig} />
-        <Button text="export" onClick={onExportData} />
-        <Button text="load" onClick={onLoadData} />
-        <Button text="reset" onClick={onResetData} />
+        <Button
+          text="save"
+          onClick={() =>
+            setSyntaxError(dataService.importFromJsonString(config))
+          }
+        />
+        <Button
+          text="export"
+          onClick={() => {
+            const success = dataService.importFromJsonString(config);
+            if (success) {
+              dataService.exportToJsonFile();
+            } else {
+              setSyntaxError(true);
+            }
+          }}
+        />
+        <Button text="load" onClick={() => dataService.importFromJsonFile()} />
+        <Button text="reset" onClick={() => dataService.resetToDefault()} />
       </div>
     </div>
   );

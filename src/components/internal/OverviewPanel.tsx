@@ -7,10 +7,13 @@ import {
   faFile,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
-import { Page } from "../../app";
-import { defaultMetadata, PageMetaData } from "../../data/meta-data";
+import React, { useEffect } from "react";
+import pjson from "../../../package.json";
+import localDataService from "../../data/services/localDataService";
+import SettingsService from "../../data/services/settingsService";
+import PageService from "../../data/services/pageService";
 
 export enum LayoutStyle {
   empty = "empty",
@@ -18,40 +21,23 @@ export enum LayoutStyle {
 }
 
 interface OverviewPanelProperties {
-  appName: string;
-  pages: Page[];
-  onAddPage: (page: Page) => void;
-  onSetMetadata: (uuid: string, metadata: PageMetaData) => void;
+  dataHash: string;
+  dataService: localDataService;
+  settingsService: SettingsService;
+  pageService: PageService;
 }
 
 const OverviewPanel: React.FC<OverviewPanelProperties> = ({
-  appName,
-  pages,
-  onAddPage,
-  onSetMetadata,
+  dataHash,
+  dataService,
+  settingsService,
+  pageService,
 }) => {
+  const pages = dataService.getPages();
+
   const addPage = () => {
     const pageName = prompt("Please enter your page name:", "my new page");
-    if (pageName == null || pageName == "") {
-      return;
-    } else {
-      if (
-        pages.find(
-          (page) =>
-            page.title.toLocaleLowerCase() === pageName.toLocaleLowerCase()
-        )
-      ) {
-        alert("Page with this name already exists.");
-        return;
-      }
-      const newPage: Page = {
-        title: pageName,
-        path: pageName.toLowerCase().replace(/ /g, "-"),
-        metadata: defaultMetadata,
-      };
-      onAddPage(newPage);
-    }
-    return;
+    pageService.createAndAddPageFromName(pageName);
   };
 
   return (
@@ -59,7 +45,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
       <aside className="sidebar w-72 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
         <div className="flex flex-col justify-between min-h-screen bg-white border-r">
           <div className="px-4 py-6">
-            <h1 className="text-2xl">{appName}</h1>
+            <h1 className="text-2xl">{dataService.getSettings().name}</h1>
 
             <nav className="flex flex-col mt-6 space-y-1">
               <a
@@ -98,7 +84,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
                       <a
                         className="px-2 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
                         onClick={() => {
-                          onSetMetadata(page.path, {
+                          pageService.setMetadataForPage(page.path, {
                             ...page.metadata,
                             visible: !page.metadata.visible,
                           });
@@ -123,9 +109,16 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
           </div>
           <div className="sticky inset-x-0 bottom-0 border-t border-gray-100">
             <div className="ml-1.5">
-              <p className="text-xs">
-                <span> WebAppGen </span>
-              </p>
+              {/* <a
+                className="text-xs"
+                href="https://github.com/pvs-hd-tea/MuesliNext"
+              >
+                <span className="text-gray-400">
+                  {" "}
+                  <FontAwesomeIcon icon={faGithub} /> WebAppGen v{pjson.version}{" "}
+                </span>
+              </a> */}
+              <div className="text-xs">{dataService.toHash()}</div>
             </div>
           </div>
         </div>

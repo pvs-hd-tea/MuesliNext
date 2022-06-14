@@ -2,12 +2,15 @@ import {
   faAngleDown,
   faBarsStaggered,
   faCog,
+  faEye,
+  faEyeSlash,
   faFile,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Page } from "../../app";
+import { defaultMetadata, PageMetaData } from "../../data/meta-data";
 
 export enum LayoutStyle {
   empty = "empty",
@@ -17,11 +20,13 @@ export enum LayoutStyle {
 interface OverviewPanelProperties {
   pages: Page[];
   onAddPage: (page: Page) => void;
+  onSetMetadata: (uuid: string, metadata: PageMetaData) => void;
 }
 
 const OverviewPanel: React.FC<OverviewPanelProperties> = ({
   pages,
   onAddPage,
+  onSetMetadata,
 }) => {
   const addPage = () => {
     const pageName = prompt("Please enter your page name:", "my new page");
@@ -40,7 +45,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
       const newPage: Page = {
         title: pageName,
         path: pageName.toLowerCase().replace(/ /g, "-"),
-        uuid: pages.length + 1,
+        metadata: defaultMetadata,
       };
       onAddPage(newPage);
     }
@@ -49,7 +54,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
 
   return (
     <div className="flex flex-row min-h-screen fixed">
-      <aside className="sidebar w-64 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
+      <aside className="sidebar w-72 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
         <div className="flex flex-col justify-between min-h-screen bg-white border-r">
           <div className="px-4 py-6">
             <h1 className="text-2xl">Overview</h1>
@@ -74,20 +79,34 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
                   </span>
                 </summary>
 
-                <nav className="mt-1.5 ml-8 flex flex-col">
+                <nav className="ml-5 flex flex-col">
                   {pages.map((page, id) => (
-                    <a
-                      key={id}
-                      href={`/pages/${page.path}`}
-                      className="flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
-                    >
-                      <FontAwesomeIcon icon={faFile} />
+                    <div key={id} className="grid grid-cols-7">
+                      <a
+                        href={`/pages/${page.path}`}
+                        className="col-span-6 items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+                      >
+                        <FontAwesomeIcon icon={faFile} />
 
-                      <span className="ml-3 text-sm font-medium">
-                        {" "}
-                        {page.title}{" "}
-                      </span>
-                    </a>
+                        <span className="w-60  ml-3 mr-3 text-sm font-medium">
+                          {" "}
+                          {page.title}{" "}
+                        </span>
+                      </a>
+                      <a
+                        className="px-2 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+                        onClick={() => {
+                          onSetMetadata(page.path, {
+                            ...page.metadata,
+                            visible: !page.metadata.visible,
+                          });
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          icon={page.metadata.visible ? faEye : faEyeSlash}
+                        />
+                      </a>
+                    </div>
                   ))}
                   <a
                     onClick={addPage}

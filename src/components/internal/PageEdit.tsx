@@ -19,16 +19,17 @@ export interface EditorData {
 
 interface PageProperties {
   title: string;
-  uuid: number;
+  uuid: string;
   metadata: PageMetaData;
   content?: EditorData;
-  onChangePage: (uuid: number, content: EditorData) => void;
+  onChangePage: (uuid: string, content: EditorData) => void;
 }
 
 const PageEdit: React.FC<PageProperties> = ({
   title,
   uuid,
   content,
+  metadata,
   onChangePage,
 }) => {
   useEffect(() => {
@@ -172,6 +173,14 @@ const PageEdit: React.FC<PageProperties> = ({
 
   return (
     <div className="bg-gray-100 font-sans leading-normal tracking-normal pb-1 pt-2">
+      {!metadata.visible && (
+        <div className="px-1 py-1 text-white bg-red-600 rounded-full">
+          <p className="text-sm font-medium text-center">
+            Page will not be visible in final WebApp
+          </p>
+        </div>
+      )}
+
       <div>
         <ReactEditorJS
           data={content}

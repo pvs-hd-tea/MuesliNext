@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UserMetaData } from "./data/meta-data";
+import { defaultMetadata, PageMetaData, UserMetaData } from "./data/meta-data";
 
 import PageEdit, { EditorData } from "./components/internal/PageEdit";
 import {
@@ -18,7 +18,7 @@ interface Props {}
 export interface Page {
   title: string;
   path: string;
-  uuid: number;
+  metadata: PageMetaData;
   content?: EditorData;
 }
 
@@ -37,7 +37,7 @@ const App: React.FC<Props> = ({}) => {
     {
       title: "Welcome",
       path: "welcome-page",
-      uuid: 1,
+      metadata: defaultMetadata,
     },
   ];
 
@@ -51,12 +51,23 @@ const App: React.FC<Props> = ({}) => {
     location.replace(`/pages/${page.path}`);
   };
 
-  const onChangePage = (uuid: number, content: EditorData): void => {
+  const onChangePage = (uuid: string, content: EditorData): void => {
     // find page by uuid and update content
-    const page = pages.find((p) => p.uuid === uuid);
+    const page = pages.find((p) => p.path === uuid);
     if (page) {
       page.content = content;
       //localStorage.setItem("pages", JSON.stringify(pages));
+    }
+
+    setPages([...pages]);
+    storageService.set("pages", pages);
+  };
+
+  const onSetMetadata = (uuid: string, metadata: PageMetaData): void => {
+    // find page by uuid and update content
+    const page = pages.find((p) => p.path === uuid);
+    if (page) {
+      page.metadata = metadata;
     }
 
     setPages([...pages]);
@@ -95,24 +106,25 @@ const App: React.FC<Props> = ({}) => {
   return (
     <body className="min-h-screen bg-gray-100">
       <div className="grid grid-cols-6 gap-4">
-        <OverviewPanel pages={pages} onAddPage={onAddPage} col-span-1 />
+        <OverviewPanel
+          pages={pages}
+          onAddPage={onAddPage}
+          onSetMetadata={onSetMetadata}
+          col-span-1
+        />
         <div className="grow col-start-3 col-span-3">
           <Router>
             <Routes>
               {pages.map((page) => (
                 <Route
-                  key={page.uuid}
+                  key={page.path}
                   path={`/pages/${page.path}`}
                   element={
                     <PageEdit
                       title={page.title}
-                      uuid={page.uuid}
+                      uuid={page.path}
                       content={page.content}
-                      metadata={{
-                        visible: true,
-                        userData,
-                        showDebugInformation: false,
-                      }}
+                      metadata={page.metadata}
                       onChangePage={onChangePage}
                     />
                   }

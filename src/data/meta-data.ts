@@ -6,6 +6,8 @@ export interface UserMetaData {
 
 export interface PageMetaData {
   visible: boolean;
-  userData: UserMetaData;
-  showDebugInformation: boolean;
 }
+
+export const defaultMetadata = {
+  visible: true,
+};

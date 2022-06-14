@@ -63,7 +63,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
 
             <nav className="flex flex-col mt-6 space-y-1">
               <a
-                href="/general"
+                href="/#/general"
                 className="flex items-center px-4 py-2 text-gray-700 bg-gray-100 rounded-lg"
               >
                 <FontAwesomeIcon icon={faCog} />
@@ -85,7 +85,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
                   {pages.map((page, id) => (
                     <div key={id} className="grid grid-cols-7">
                       <a
-                        href={`/pages/${page.path}`}
+                        href={`/#/pages/${page.path}`}
                         className="col-span-6 items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
                       >
                         <FontAwesomeIcon icon={faFile} />

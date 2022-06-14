@@ -4,6 +4,7 @@ import { defaultMetadata, PageMetaData, UserMetaData } from "./data/meta-data";
 import PageEdit, { EditorData } from "./components/internal/PageEdit";
 import {
   BrowserRouter as Router,
+  HashRouter,
   Navigate,
   Route,
   Routes,
@@ -61,7 +62,7 @@ const App: React.FC<Props> = ({}) => {
     setPages([...pages, page]);
     //localStorage.setItem("pages", JSON.stringify([...pages, page]));
     storageService.set("pages", [...pages, page]);
-    location.replace(`/pages/${page.path}`);
+    location.replace(`/#/pages/${page.path}`);
   };
 
   const onChangePage = (uuid: string, content: EditorData): void => {
@@ -95,7 +96,7 @@ const App: React.FC<Props> = ({}) => {
 
       setPages([...pages]);
       storageService.set("pages", pages);
-      location.replace(`/pages/${page.path}`);
+      location.replace(`/#/pages/${page.path}`);
     }
   };
 
@@ -153,7 +154,7 @@ const App: React.FC<Props> = ({}) => {
           col-span-1
         />
         <div className="grow col-start-3 col-span-3">
-          <Router>
+          <HashRouter>
             <Routes>
               {pages.map((page) => (
                 <Route
@@ -202,7 +203,7 @@ const App: React.FC<Props> = ({}) => {
                 }
               />
             </Routes>
-          </Router>
+          </HashRouter>
         </div>
       </div>
     </body>

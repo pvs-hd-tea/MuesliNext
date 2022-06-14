@@ -18,12 +18,14 @@ export enum LayoutStyle {
 }
 
 interface OverviewPanelProperties {
+  appName: string;
   pages: Page[];
   onAddPage: (page: Page) => void;
   onSetMetadata: (uuid: string, metadata: PageMetaData) => void;
 }
 
 const OverviewPanel: React.FC<OverviewPanelProperties> = ({
+  appName,
   pages,
   onAddPage,
   onSetMetadata,
@@ -57,7 +59,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
       <aside className="sidebar w-72 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
         <div className="flex flex-col justify-between min-h-screen bg-white border-r">
           <div className="px-4 py-6">
-            <h1 className="text-2xl">Overview</h1>
+            <h1 className="text-2xl">{appName}</h1>
 
             <nav className="flex flex-col mt-6 space-y-1">
               <a

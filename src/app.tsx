@@ -22,6 +22,10 @@ export interface Page {
   content?: EditorData;
 }
 
+export interface AppData {
+  name: string;
+}
+
 // eslint-disable-next-line no-empty-pattern
 const App: React.FC<Props> = ({}) => {
   // Services here
@@ -43,6 +47,15 @@ const App: React.FC<Props> = ({}) => {
 
   const [pages, setPages] = useState(defaultPages);
   const [loaded, setLoaded] = useState(false);
+
+  const defaultApp: AppData = {
+    name: "Web App",
+  };
+  const [app, setApp] = useState(defaultApp);
+  const appString = storageService.get("app");
+  if (appString && !loaded) {
+    setApp(JSON.parse(appString));
+  }
 
   const onAddPage = (page: Page) => {
     setPages([...pages, page]);
@@ -95,7 +108,7 @@ const App: React.FC<Props> = ({}) => {
 
   const onExportData = () => {
     console.log("export data");
-    storageService.exportToJsonFile();
+    storageService.exportToJsonFile(app.name);
   };
 
   const onLoadData = () => {
@@ -111,7 +124,21 @@ const App: React.FC<Props> = ({}) => {
   const onResetData = () => {
     console.log("reset data");
     storageService.set("pages", defaultPages);
+    const changedApp = {
+      name: "Web App",
+    };
+    storageService.set("app", changedApp);
     // TODO: maybe not mix react and plain javascript
+    document.location.reload();
+  };
+
+  const onSetAppName = (appName: string) => {
+    const changedApp = {
+      ...app,
+      name: appName,
+    };
+    setApp(changedApp);
+    storageService.set("app", changedApp);
     document.location.reload();
   };
 
@@ -119,6 +146,7 @@ const App: React.FC<Props> = ({}) => {
     <body className="min-h-screen bg-gray-100">
       <div className="grid grid-cols-6 gap-4">
         <OverviewPanel
+          appName={app.name}
           pages={pages}
           onAddPage={onAddPage}
           onSetMetadata={onSetMetadata}
@@ -133,7 +161,7 @@ const App: React.FC<Props> = ({}) => {
                   path={`/pages/${page.path}`}
                   element={
                     <PageEdit
-                      title={page.title}
+                      title={`${app.name} - ${page.title}`}
                       path={page.path}
                       uuid={page.path}
                       content={page.content}
@@ -149,10 +177,12 @@ const App: React.FC<Props> = ({}) => {
                 element={
                   <General
                     configuration={storageService.getConfiguration()}
+                    app={app}
                     onSaveData={onSaveData}
                     onExportData={onExportData}
                     onLoadData={onLoadData}
                     onResetData={onResetData}
+                    onSetAppName={onSetAppName}
                   />
                 }
               />

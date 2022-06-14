@@ -1,6 +1,6 @@
 import fileDialog from "file-dialog";
 
-const relevantKeys = ["pages"];
+const relevantKeys = ["pages", "app"];
 
 export class LocalStorageService {
   get(key: string) {
@@ -37,14 +37,14 @@ export class LocalStorageService {
     return configuration;
   }
 
-  exportToJsonFile() {
+  exportToJsonFile(name: string) {
     const json = this.getConfiguration();
     console.log(json);
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `webgenConfig.json`;
+    link.download = `${name.replace(" ", "-")}.json`;
     link.click();
   }
 

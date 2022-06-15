@@ -11,6 +11,7 @@ import { Optional } from "../types";
 // singleton
 export default class LocalDataService {
   private config: WebAppConfig = defaultConfig;
+  private hashCallback?: React.Dispatch<React.SetStateAction<string>>;
   static instance: LocalDataService;
 
   private constructor(config: WebAppConfig) {
@@ -41,10 +42,12 @@ export default class LocalDataService {
   resetToDefault(defaultConf: WebAppConfig = defaultConfig): void {
     this.config = defaultConf;
     this.saveToLocalStorage();
+    this.useHashCallback();
   }
 
   saveToLocalStorage() {
     localStorage.setItem("config", JSON.stringify(this.config));
+    this.useHashCallback();
   }
 
   getSettings(): Settings {
@@ -54,6 +57,7 @@ export default class LocalDataService {
   setSettings(settings: Settings) {
     this.config.settings = settings;
     this.saveToLocalStorage();
+    this.useHashCallback();
   }
 
   getPages(): Page[] {
@@ -67,19 +71,22 @@ export default class LocalDataService {
   setPageById(id: number, page: Page) {
     this.config.pages[id] = page;
     this.saveToLocalStorage();
+    this.useHashCallback();
   }
 
   getPageByKey(key: string): Optional<Page> {
     return new Optional(this.config.pages.find((page) => page.path === key));
   }
 
-  setPageByKey(key: string, page: Page) {
+  setPageByKey(key: string, newOrUpdatedPage: Page) {
     const index = this.config.pages.findIndex((page) => page.path === key);
     if (index === -1) {
-      this.config.pages.push(page);
+      // page is new
+      console.log(`did not find page "${key}" in:`);
+      this.config.pages.map((page) => console.log(page.path));
+      this.config.pages.push(newOrUpdatedPage);
     }
-    this.config.pages[index] = page;
-    this.saveToLocalStorage();
+    this.setPageById(index, newOrUpdatedPage);
   }
 
   getEditorSettings(): Optional<EditorSettings> {
@@ -135,6 +142,16 @@ export default class LocalDataService {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  setHashCallback(hash: React.Dispatch<React.SetStateAction<string>>) {
+    this.hashCallback = hash;
+  }
+
+  useHashCallback() {
+    if (this.hashCallback) {
+      this.hashCallback(this.toHash());
     }
   }
 }

@@ -64,14 +64,14 @@ const PageEdit: React.FC<PageProperties> = ({
     if (pathEnding) {
       pathEnding = pathEnding.replace(/[^a-zA-Z0-9]/g, "-");
       const pre = page.path.split("/").slice(0, -1).join("/") || "";
-      pageService.setPagePath(uuid, `${pre}/${pathEnding}`);
+      pageService.setPagePath(uuid, `${pre}${pre ? "/" : ""}${pathEnding}`);
     }
   };
 
   const addPath = () => {
     // prompt for new path ending
     const pathEnding = page.path.split("/").at(-1);
-    let subPath = prompt("Enter new  sub path");
+    let subPath = prompt("Enter new sub path", "sub");
     // cast pathEnding to valid url string
     if (subPath && subPath !== "") {
       subPath = subPath.replace(/[^a-zA-Z0-9]/g, "-");

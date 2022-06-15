@@ -3,7 +3,9 @@ import localDataService from "./localDataService";
 export default class SettingsService {
   private dataService: localDataService;
 
-  constructor(dataService: localDataService) {
+  constructor(
+    dataService: localDataService = localDataService.getFromLocalOrNew()
+  ) {
     this.dataService = dataService;
   }
 

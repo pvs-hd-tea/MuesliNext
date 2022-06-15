@@ -21,9 +21,13 @@ interface Props {}
 // eslint-disable-next-line no-empty-pattern
 const App: React.FC<Props> = ({}) => {
   // Services here
+
   const dataService = localDataService.getFromLocalOrNew();
-  const pageService = new PageService(dataService);
-  const settingsService = new SettingsService(dataService);
+  const pageService = new PageService();
+  const settingsService = new SettingsService();
+
+  const [settingsHash, setSettingsHash] = useState("");
+  dataService.setHashCallback(setSettingsHash);
 
   // const pagesString = localStorage.getItem("pages");
 
@@ -47,6 +51,7 @@ const App: React.FC<Props> = ({}) => {
                   element={
                     // TODO: make component not rerender: editor saving difficult tho
                     <PageEdit
+                      key={page.path}
                       uuid={page.path}
                       dataService={dataService}
                       pageService={pageService}

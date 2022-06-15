@@ -2,9 +2,17 @@ export interface Settings {
   name: string;
 }
 
+export const defaultSettings: Settings = {
+  name: "Web App",
+};
+
 export interface PageMetaData {
   visible: boolean;
 }
+
+export const defaultMetadata: PageMetaData = {
+  visible: true,
+};
 
 export interface Block {
   id?: string;
@@ -40,6 +48,13 @@ export interface Page {
   content?: EditorData;
 }
 
+export const defaultPage: Page = {
+  title: "Welcome",
+  path: "welcome-page",
+  metadata: defaultMetadata,
+  content: { blocks: defaultBlocks },
+};
+
 interface WebAppConfig {
   settings: Settings;
   pages: Page[];
@@ -50,22 +65,9 @@ export interface EditorSettings {
   lastUrl: string;
 }
 
-export const defaultMetadata: PageMetaData = {
-  visible: true,
-};
-
 export const defaultConfig: WebAppConfig = {
-  settings: {
-    name: "Web App",
-  },
-  pages: [
-    {
-      title: "Welcome",
-      path: "welcome-page",
-      metadata: defaultMetadata,
-      content: { blocks: defaultBlocks },
-    },
-  ],
+  settings: defaultSettings,
+  pages: [defaultPage],
 };
 
 export default WebAppConfig;

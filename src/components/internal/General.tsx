@@ -62,7 +62,7 @@ const General: React.FC<GeneralProperties> = ({
         <Button
           text="save"
           onClick={() =>
-            setSyntaxError(dataService.importFromJsonString(config))
+            setSyntaxError(!dataService.importFromJsonString(config))
           }
         />
         <Button

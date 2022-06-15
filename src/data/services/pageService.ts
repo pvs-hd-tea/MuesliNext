@@ -1,5 +1,7 @@
 import {
+  defaultBlocks,
   defaultMetadata,
+  defaultPage,
   EditorData,
   Page,
   PageMetaData,
@@ -10,7 +12,9 @@ import localDataService from "./localDataService";
 export default class PageService {
   private dataService: localDataService;
 
-  constructor(dataService: localDataService) {
+  constructor(
+    dataService: localDataService = localDataService.getFromLocalOrNew()
+  ) {
     this.dataService = dataService;
   }
 
@@ -31,9 +35,9 @@ export default class PageService {
         return;
       }
       const newPage: Page = {
+        ...defaultPage,
         title: pageName,
         path: pageName.toLowerCase().replace(/ /g, "-"),
-        metadata: defaultMetadata,
       };
 
       this.addPage(newPage);
@@ -66,11 +70,13 @@ export default class PageService {
   };
 
   setPagePath = (uuid: string, path: string): void => {
+    const oldUUID = uuid;
     const page = this.dataService.getPageByKey(uuid);
     if (!page.isUndefined()) {
-      const newPage = page.unwrap();
+      // We need to create a deep copy of that page
+      const newPage = { ...page.unwrap() };
       newPage.path = path;
-      this.dataService.setPageByKey(uuid, newPage);
+      this.dataService.setPageByKey(oldUUID, newPage);
       // TODO: move this
       location.replace(`/#/pages/${newPage.path}`);
     }

@@ -109,7 +109,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
           </div>
           <div className="sticky inset-x-0 bottom-0 border-t border-gray-100">
             <div className="ml-1.5">
-              {/* <a
+              <a
                 className="text-xs"
                 href="https://github.com/pvs-hd-tea/MuesliNext"
               >
@@ -117,8 +117,8 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
                   {" "}
                   <FontAwesomeIcon icon={faGithub} /> WebAppGen v{pjson.version}{" "}
                 </span>
-              </a> */}
-              <div className="text-xs">{dataService.toHash()}</div>
+              </a>
+              {/* <div className="text-xs">{dataService.toHash()}</div> */}
             </div>
           </div>
         </div>

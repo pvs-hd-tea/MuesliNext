@@ -1,12 +1,8 @@
 import fileDialog from "file-dialog";
 import { Md5 } from "ts-md5";
-import WebAppConfig, {
-  defaultConfig,
-  EditorSettings,
-  Page,
-  Settings,
-} from "../configuration";
+import { WebAppConfig, defaultConfig, Page, Settings } from "../configuration";
 import { Optional } from "../types";
+import ParseService from "./parseService";
 
 // singleton
 export default class LocalDataService {
@@ -88,8 +84,6 @@ export default class LocalDataService {
     const index = this.config.pages.findIndex((page) => page.path === key);
     if (index === -1) {
       // page is new
-      console.log(`did not find page "${key}" in:`);
-      this.config.pages.map((page) => console.log(page.path));
       this.config.pages.push(newOrUpdatedPage);
     }
     this.setPageById(index, newOrUpdatedPage);
@@ -102,22 +96,12 @@ export default class LocalDataService {
     }
   }
 
-  getEditorSettings(): Optional<EditorSettings> {
-    return new Optional(this.config.editorSettings);
-  }
-
-  setEditorSettings(settings: EditorSettings) {
-    this.config.editorSettings = settings;
-    this.saveToLocalStorage();
-  }
-
   toJsonString(): string {
-    return JSON.stringify(this.config, null, 2);
+    return ParseService.getInstance().parseConfigToString(this.config);
   }
 
   exportToJsonFile() {
     const json = this.toJsonString();
-    console.log(json);
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -144,17 +128,19 @@ export default class LocalDataService {
       this.saveToLocalStorage();
       return true;
     } else {
+      // TODO: move somewhere else
+      alert("Invalid Configuration");
       return false;
     }
   }
 
-  // TODO: parse with e.g. Zod
   parse(json: string): boolean {
-    try {
-      this.config = JSON.parse(json);
-      return true;
-    } catch (e) {
+    const configOpt = ParseService.getInstance().parseConfigFromString(json);
+    if (configOpt.isUndefined()) {
       return false;
+    } else {
+      this.config = configOpt.unwrap();
+      return true;
     }
   }
 

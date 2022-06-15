@@ -49,7 +49,7 @@ const PageEdit: React.FC<PageProperties> = ({
 
   const handleSave = React.useCallback(async () => {
     const savedData = await editorCore.current.save();
-    pageService.setPage(uuid, savedData);
+    pageService.setPageContent(uuid, savedData);
   }, []);
 
   const ReactEditorJS = createReactEditorJS();

@@ -74,6 +74,12 @@ export default class LocalDataService {
     this.useHashCallback();
   }
 
+  deletePageById(id: number) {
+    this.config.pages.splice(id, 1);
+    this.saveToLocalStorage();
+    this.useHashCallback();
+  }
+
   getPageByKey(key: string): Optional<Page> {
     return new Optional(this.config.pages.find((page) => page.path === key));
   }
@@ -87,6 +93,13 @@ export default class LocalDataService {
       this.config.pages.push(newOrUpdatedPage);
     }
     this.setPageById(index, newOrUpdatedPage);
+  }
+
+  deletePageByKey(key: string) {
+    const index = this.config.pages.findIndex((page) => page.path === key);
+    if (index !== -1) {
+      this.deletePageById(index);
+    }
   }
 
   getEditorSettings(): Optional<EditorSettings> {

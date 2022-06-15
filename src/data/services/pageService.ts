@@ -11,6 +11,7 @@ import localDataService from "./localDataService";
 
 export default class PageService {
   private dataService: localDataService;
+  private activeUuid = "";
 
   constructor(
     dataService: localDataService = localDataService.getFromLocalOrNew()
@@ -50,7 +51,24 @@ export default class PageService {
     location.replace(`/#/pages/${page.path}`);
   };
 
-  setPage = (uuid: string, content: EditorData): void => {
+  deletePage = (uuid: string) => {
+    this.dataService.deletePageByKey(uuid);
+  };
+
+  setPageTitle = (uuid: string, title?: string) => {
+    if (title == null || title == "") {
+      alert("Please provide a title.");
+      return;
+    }
+    const page = this.dataService.getPageByKey(uuid);
+    if (page) {
+      const newPage = page.unwrap();
+      newPage.title = title;
+      this.dataService.setPageByKey(uuid, newPage);
+    }
+  };
+
+  setPageContent = (uuid: string, content: EditorData): void => {
     const page = this.dataService.getPageByKey(uuid);
     if (!page.isUndefined()) {
       const newPage = page.unwrap();
@@ -80,5 +98,13 @@ export default class PageService {
       // TODO: move this
       location.replace(`/#/pages/${newPage.path}`);
     }
+  };
+
+  getActiveUuid = (): string => {
+    return this.activeUuid;
+  };
+
+  setActiveUuid = (uuid: string): void => {
+    this.activeUuid = uuid;
   };
 }

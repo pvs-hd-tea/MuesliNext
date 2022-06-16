@@ -7,7 +7,9 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import localDataService from "../../data/services/localDataService";
+import localDataService, {
+  PageMode,
+} from "../../data/services/localDataService";
 import PageService from "../../data/services/pageService";
 
 interface Block {
@@ -16,12 +18,6 @@ interface Block {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any;
 }
-export interface EditorData {
-  time: number;
-  blocks: Block[];
-  version: string;
-}
-
 interface PageProperties {
   uuid: string;
   dataService: localDataService;
@@ -93,7 +89,7 @@ const PageEdit: React.FC<PageProperties> = ({
         </div>
       )}
 
-      <nav aria-label="Breadcrumb">
+      <nav aria-label="Breadcrumb" className="flex flex-row">
         <ol
           role="list"
           className="flex items-center space-x-1 text-sm text-gray-500"
@@ -156,12 +152,33 @@ const PageEdit: React.FC<PageProperties> = ({
             </a>
           </li>
         </ol>
+        <div className="grow"></div>
+        {pageService.getGlobalPageMode() === PageMode.Edit && (
+          <a
+            className="text-sm text-gray-500"
+            onClick={() => pageService.setGlobalPageMode(PageMode.Preview)}
+          >
+            {" "}
+            EDIT MODE{" "}
+          </a>
+        )}
+        {pageService.getGlobalPageMode() === PageMode.Preview && (
+          <a
+            className="text-sm text-gray-500"
+            onClick={() => pageService.setGlobalPageMode(PageMode.Edit)}
+          >
+            {" "}
+            PREVIEW MODE{" "}
+          </a>
+        )}
       </nav>
 
       <div>
         <ReactEditorJS
+          key={pageService.getGlobalPageMode()}
           data={page.content}
           tools={EDITOR_JS_TOOLS}
+          readOnly={pageService.getGlobalPageMode() !== PageMode.Edit}
           onInitialize={handleInitialize}
           onChange={handleSave}
           placeholder="start writing here..."

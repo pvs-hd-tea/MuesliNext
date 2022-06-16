@@ -4,11 +4,23 @@ import { WebAppConfig, defaultConfig, Page, Settings } from "../configuration";
 import { Optional } from "../types";
 import ParseService from "./parseService";
 
+export enum PageMode {
+  Edit,
+  Preview,
+}
+export interface LocalState {
+  pageMode: PageMode;
+}
+
 // singleton
 export default class LocalDataService {
   private config: WebAppConfig = defaultConfig;
   private hashCallback?: React.Dispatch<React.SetStateAction<string>>;
   static instance: LocalDataService;
+
+  private local: LocalState = {
+    pageMode: PageMode.Edit,
+  };
 
   private constructor(config: WebAppConfig) {
     this.config = config;
@@ -25,7 +37,7 @@ export default class LocalDataService {
   }
 
   toHash(): string {
-    return Md5.hashStr(JSON.stringify(this.config));
+    return Md5.hashStr(JSON.stringify([this.config, this.local]));
   }
 
   loadFromLocalStorage(): void {
@@ -153,4 +165,13 @@ export default class LocalDataService {
       this.hashCallback(this.toHash());
     }
   }
+
+  setLocalState = (state: LocalState): void => {
+    this.local = state;
+    this.useHashCallback();
+  };
+
+  getLocalState = () => {
+    return this.local;
+  };
 }

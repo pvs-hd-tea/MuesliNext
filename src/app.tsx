@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import PageEdit from "./components/internal/PageEdit";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import OverviewPanel from "./components/internal/OverviewPanel";
-import localDataService from "./data/services/localDataService";
+import localDataService, { PageMode } from "./data/services/localDataService";
 import General from "./components/internal/General";
 import PageService from "./data/services/pageService";
 import SettingsService from "./data/services/settingsService";
@@ -26,15 +26,20 @@ const App: React.FC<Props> = ({}) => {
 
   return (
     <body className="min-h-screen bg-gray-100">
-      <div className="grid grid-cols-6 gap-4">
-        <OverviewPanel
-          dataHash={dataService.toHash()}
-          dataService={dataService}
-          settingsService={settingsService}
-          pageService={pageService}
-          col-span-1
-        />
-        <div className="grow col-start-2 col-span-5 ml-32 mr-16">
+      <div className="flex flex-row">
+        {pageService.getGlobalPageMode() === PageMode.Edit && (
+          <div className="basis-1/4 mr-14">
+            <OverviewPanel
+              dataHash={dataService.toHash()}
+              dataService={dataService}
+              settingsService={settingsService}
+              pageService={pageService}
+              col-span-1
+            />
+          </div>
+        )}
+
+        <div className="grow mx-10">
           <HashRouter>
             <Routes>
               {dataService.getPages().map((page) => (

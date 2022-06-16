@@ -7,7 +7,7 @@ import {
   PageMetaData,
 } from "../configuration";
 import { Optional } from "../types";
-import localDataService from "./localDataService";
+import localDataService, { PageMode } from "./localDataService";
 
 export default class PageService {
   private dataService: localDataService;
@@ -106,5 +106,18 @@ export default class PageService {
 
   setActiveUuid = (uuid: string): void => {
     this.activeUuid = uuid;
+  };
+
+  setGlobalPageMode = (mode: PageMode): void => {
+    const localState = this.dataService.getLocalState();
+    this.dataService.setLocalState({
+      ...localState,
+      pageMode: mode,
+    });
+  };
+
+  getGlobalPageMode = (): PageMode => {
+    const localState = this.dataService.getLocalState();
+    return localState.pageMode;
   };
 }

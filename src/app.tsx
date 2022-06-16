@@ -1,17 +1,10 @@
 import React, { useState } from "react";
 
-import PageEdit, { EditorData } from "./components/internal/PageEdit";
-import {
-  BrowserRouter as Router,
-  HashRouter,
-  Navigate,
-  Route,
-  Routes,
-} from "react-router-dom";
+import PageEdit from "./components/internal/PageEdit";
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import OverviewPanel from "./components/internal/OverviewPanel";
 import localDataService from "./data/services/localDataService";
 import General from "./components/internal/General";
-import { Page, PageMetaData } from "./data/configuration";
 import PageService from "./data/services/pageService";
 import SettingsService from "./data/services/settingsService";
 
@@ -26,7 +19,7 @@ const App: React.FC<Props> = ({}) => {
   const pageService = new PageService();
   const settingsService = new SettingsService();
 
-  const [settingsHash, setSettingsHash] = useState("");
+  const [, setSettingsHash] = useState("");
   dataService.setHashCallback(setSettingsHash);
 
   // const pagesString = localStorage.getItem("pages");
@@ -41,7 +34,7 @@ const App: React.FC<Props> = ({}) => {
           pageService={pageService}
           col-span-1
         />
-        <div className="grow col-start-3 col-span-3">
+        <div className="grow col-start-2 col-span-5 ml-32 mr-16">
           <HashRouter>
             <Routes>
               {dataService.getPages().map((page) => (

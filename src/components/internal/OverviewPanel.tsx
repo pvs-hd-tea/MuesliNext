@@ -1,14 +1,11 @@
 import {
   faAngleDown,
-  faBan,
   faBars,
-  faBarsStaggered,
   faCheck,
   faCog,
   faEye,
   faEyeSlash,
   faFile,
-  faFloppyDisk,
   faPen,
   faPlus,
   faTrash,
@@ -35,7 +32,7 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
   const [pageName, setPageName] = useState(page.title);
   const [edit, setEdit] = useState(false);
 
-  const onInputChange = (event: any) => {
+  const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPageName(event.target.value);
     setStopEditButton(
       event.target.value !== page.title && event.target.value !== ""
@@ -70,6 +67,7 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
 
   const escFunction = useCallback((event: any) => {
     if (event.key === "Escape") {
+      event.preventDefault();
       onNameCancel();
     }
   }, []);
@@ -86,7 +84,7 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
     <div className="grid grid-cols-7 hover:scale-105">
       <a
         href={`/#/pages/${page.path}`}
-        className="col-span-6 items-center px-4 py-2 text-gray-500 rounded-lg  hover:text-gray-900"
+        className="col-span-6 items-center px-4 py-2 text-gray-500  hover:text-gray-900"
       >
         <div>
           {!edit && (

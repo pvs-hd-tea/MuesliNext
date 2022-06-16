@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { createReactEditorJS } from "react-editor-js";
-import Button from "../Widgets/ButtonWidget";
 import { EDITOR_JS_TOOLS } from "./tools";
 import {
   faChevronRight,

@@ -22,13 +22,54 @@ const App: React.FC<Props> = ({}) => {
   const [, setSettingsHash] = useState("");
   dataService.setHashCallback(setSettingsHash);
 
-  // const pagesString = localStorage.getItem("pages");
-
   return (
     <body className="min-h-screen bg-gray-100">
+      {pageService.getGlobalPageMode() !== PageMode.Edit && (
+        <div className="bg-gray-900 flex items-center h-14 w-screen gap-8 px-4">
+          <a
+            className="text-2xl bold text-white transition hover:text-white/75"
+            href="/"
+          >
+            {dataService.getSettings().name}
+          </a>
+
+          <div className="flex items-center justify-end flex-1 md:justify-between">
+            <nav
+              className="hidden md:block"
+              aria-labelledby="header-navigation"
+            >
+              <h2 className="sr-only" id="header-navigation">
+                Header navigation
+              </h2>
+
+              <ul className="flex items-center gap-6 text-sm">
+                {dataService.getPages().map((page, id) => (
+                  <li key={id}>
+                    <a
+                      className="text-white transition hover:text-white/75"
+                      href={`/#/pages/${page.path}`}
+                    >
+                      {page.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </div>
+          <div className="grow"></div>
+          <a
+            className="cursor-pointer text-sm text-white transition hover:text-white/75 animate-pulse"
+            onClick={() => pageService.setGlobalPageMode(PageMode.Edit)}
+          >
+            {" "}
+            PREVIEW MODE{" "}
+          </a>
+        </div>
+      )}
       <div className="flex flex-row">
         {pageService.getGlobalPageMode() === PageMode.Edit && (
-          <div className="basis-1/4 mr-14">
+          // TODO: make more responsive (not hardcode width)
+          <div className="sm:w-[0rem] md:w-[54rem] lg:w-[36rem] xl:w-[29rem] 2xl:w-[20rem]">
             <OverviewPanel
               dataHash={dataService.toHash()}
               dataService={dataService}
@@ -69,7 +110,12 @@ const App: React.FC<Props> = ({}) => {
               />
               <Route
                 path="/"
-                element={<Navigate replace to="/pages/welcome-page" />}
+                element={
+                  <Navigate
+                    replace
+                    to={`/pages/${dataService.getSettings().homePath}`}
+                  />
+                }
               />
               <Route
                 path="*"

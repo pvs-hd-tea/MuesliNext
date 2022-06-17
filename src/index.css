@@ -26,6 +26,10 @@ h6 {
   @apply underline text-blue-600 hover:text-blue-800 visited:text-purple-600;
 } */
 
+/* .codex-editor {
+  background-color: #FF0;
+} */
+
 .ce-block__content,
 .ce-toolbar__content {
   max-width: 100% !important;

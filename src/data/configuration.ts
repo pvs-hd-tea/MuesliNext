@@ -2,12 +2,14 @@ import { z } from "zod";
 
 export const SettingsSchema = z.object({
   name: z.string(),
+  homePath: z.string(),
 });
 
 export type Settings = z.infer<typeof SettingsSchema>;
 
 export const defaultSettings: Settings = {
   name: "Web App",
+  homePath: "home",
 };
 
 export const PageMetaDataSchema = z.object({
@@ -62,7 +64,7 @@ export type Page = z.infer<typeof PageSchema>;
 
 export const defaultPage: Page = {
   title: "Welcome",
-  path: "welcome-page",
+  path: defaultSettings.homePath,
   metadata: defaultMetadata,
   content: { blocks: defaultBlocks },
 };

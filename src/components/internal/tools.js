@@ -6,6 +6,7 @@
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import Alert from "editorjs-alert";
+import Table from "@editorjs/table";
 
 export const EDITOR_JS_TOOLS = {
   // NOTE: Paragraph is default tool. Declare only when you want to change paragraph option.
@@ -21,4 +22,5 @@ export const EDITOR_JS_TOOLS = {
       messagePlaceholder: "Enter something",
     },
   },
+  table: { class: Table, inlineToolbar: true, shortcut: "CMD+SHIFT+T" },
 };

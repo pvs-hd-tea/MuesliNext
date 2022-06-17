@@ -1,13 +1,15 @@
 import {
   faAngleDown,
-  faBars,
   faCheck,
   faCog,
   faEye,
   faEyeSlash,
   faFile,
+  faFilePen,
+  faLayerGroup,
   faPen,
   faPlus,
+  faRocket,
   faTrash,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -15,7 +17,9 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useCallback, useEffect, useState } from "react";
 import pjson from "../../../package.json";
-import localDataService from "../../data/services/localDataService";
+import localDataService, {
+  PageMode,
+} from "../../data/services/localDataService";
 import SettingsService from "../../data/services/settingsService";
 import PageService from "../../data/services/pageService";
 import { Page } from "../../data/configuration";
@@ -23,11 +27,15 @@ import { Page } from "../../data/configuration";
 interface PageItemProperties {
   pageService: PageService;
   page: Page;
-  active: string;
 }
 
 const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
-  const [fileIcon, setFileIcon] = useState(faFile);
+  const pageIsActive = pageService.getActivePageUuid() === page.path;
+  const defaultPageIcon = pageIsActive ? faFilePen : faFile;
+  const animation = pageIsActive ? "animate-bounce" : "";
+  const shadow = pageIsActive ? " shadow-lg" : "";
+
+  const [fileIcon, setFileIcon] = useState(defaultPageIcon);
   const [stopEditButton, setStopEditButton] = useState(faXmark);
   const [pageName, setPageName] = useState(page.title);
   const [edit, setEdit] = useState(false);
@@ -48,13 +56,13 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
       setPageName(page.title);
     }
     setEdit(false);
-    setFileIcon(faFile);
+    setFileIcon(defaultPageIcon);
   };
 
   const onNameCancel = () => {
     setPageName(page.title);
     setEdit(false);
-    setFileIcon(faFile);
+    setFileIcon(defaultPageIcon);
   };
 
   const onDelete = () => {
@@ -72,6 +80,14 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
     }
   }, []);
 
+  const handleOnClick = () => {
+    if (!edit && pageIsActive) {
+      setEdit(true);
+      setFileIcon(faXmark);
+    }
+    pageService.setActivePageUuid(page.path);
+  };
+
   useEffect(() => {
     document.addEventListener("keydown", escFunction, false);
 
@@ -81,17 +97,21 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
   }, []);
 
   return (
-    <div className="grid grid-cols-7 hover:scale-105">
+    <div
+      className={"grid grid-cols-7 hover:scale-105 hover:shadow-lg" + shadow}
+    >
       <a
         href={`/#/pages/${page.path}`}
+        onClick={handleOnClick}
         className="col-span-6 items-center px-4 py-2 text-gray-500  hover:text-gray-900"
       >
         <div>
           {!edit && (
             <>
               <FontAwesomeIcon
+                className={animation}
                 onMouseEnter={() => setFileIcon(faPen)}
-                onMouseLeave={() => setFileIcon(faFile)}
+                onMouseLeave={() => setFileIcon(defaultPageIcon)}
                 icon={fileIcon}
                 onClick={() => {
                   setEdit(true), setStopEditButton(faXmark);
@@ -99,7 +119,7 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
               />
               <span className="w-60  ml-3 mr-3 text-sm font-medium">
                 {" "}
-                {page.title}{" "}
+                {page.title} {}
               </span>
             </>
           )}
@@ -166,7 +186,10 @@ const PageList: React.FC<PageListProperties> = ({
     <>
       <details className="group">
         <summary className="flex items-center px-4 py-2 text-gray-500 rounded-lg cursor-pointer hover:text-gray-900">
-          <FontAwesomeIcon icon={faBars} />
+          <FontAwesomeIcon
+            className="transition duration-300 shrink-0 group-hover:scale-y-150"
+            icon={faLayerGroup}
+          />
 
           <span className="ml-3 text-sm font-medium"> Pages </span>
 
@@ -175,18 +198,16 @@ const PageList: React.FC<PageListProperties> = ({
           </span>
         </summary>
 
-        <nav className="ml-5 flex flex-col">
+        <nav
+          key={pageService.getActivePageUuid()}
+          className="ml-5 flex flex-col"
+        >
           {pages.map((page, id) => (
-            <PageItem
-              key={id}
-              pageService={pageService}
-              page={page}
-              active={pageService.getActiveUuid()}
-            />
+            <PageItem key={id} pageService={pageService} page={page} />
           ))}
           <a
             onClick={addPage}
-            className="flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
+            className="cursor-pointer flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"
           >
             <FontAwesomeIcon icon={faPlus} />
             <span className="ml-3 text-sm font-medium"> add page </span>
@@ -213,14 +234,26 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
       <aside className="sidebar w-72 shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
         <div className="flex flex-col justify-between min-h-screen bg-white border-r">
           <div className="px-4 py-6">
-            <h1 className="text-2xl">{dataService.getSettings().name}</h1>
-
+            <div className="flex flex-row">
+              <a
+                className="flex flex-row group text-3xl hover:bg-gray-900 hover:text-gray-100 hover:animate-pulse rounded-tl-lg rounded-br-lg transition duration-300 shrink-0 p-1"
+                onClick={() => pageService.setGlobalPageMode(PageMode.Preview)}
+                href={`/#/`}
+              >
+                {dataService.getSettings().name}
+                <FontAwesomeIcon className="text-white ml-2" icon={faRocket} />
+              </a>
+            </div>
             <nav className="flex flex-col mt-6 space-y-1">
               <a
+                onClick={() => pageService.setActivePageUuid("")}
                 href="/#/general"
-                className="flex items-center px-4 py-2 text-gray-700 bg-gray-100 rounded-lg"
+                className="group flex items-center px-4 py-2 text-gray-700 rounded-lg"
               >
-                <FontAwesomeIcon icon={faCog} />
+                <FontAwesomeIcon
+                  className="transition duration-300 shrink-0 group-hover:-rotate-180 group-hover:scale-125"
+                  icon={faCog}
+                />
                 <span className="ml-3 text-sm font-medium"> General </span>
               </a>
 

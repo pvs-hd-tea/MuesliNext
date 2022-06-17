@@ -11,7 +11,6 @@ import localDataService, { PageMode } from "./localDataService";
 
 export default class PageService {
   private dataService: localDataService;
-  private activeUuid = "";
 
   constructor(
     dataService: localDataService = localDataService.getFromLocalOrNew()
@@ -100,12 +99,17 @@ export default class PageService {
     }
   };
 
-  getActiveUuid = (): string => {
-    return this.activeUuid;
+  getActivePageUuid = (): string => {
+    const localState = this.dataService.getLocalState();
+    return localState.activePageUuid ?? "unknown";
   };
 
-  setActiveUuid = (uuid: string): void => {
-    this.activeUuid = uuid;
+  setActivePageUuid = (uuid: string): void => {
+    const localState = this.dataService.getLocalState();
+    this.dataService.setLocalState({
+      ...localState,
+      activePageUuid: uuid,
+    });
   };
 
   setGlobalPageMode = (mode: PageMode): void => {

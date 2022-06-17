@@ -16,4 +16,12 @@ export default class SettingsService {
     };
     this.dataService.setSettings(changedSettings);
   }
+
+  setAppHomePath(path: string) {
+    const changedSettings = {
+      ...this.dataService.getSettings(),
+      homePath: path,
+    };
+    this.dataService.setSettings(changedSettings);
+  }
 }

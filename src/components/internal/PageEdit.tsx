@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { createReactEditorJS } from "react-editor-js";
 import { EDITOR_JS_TOOLS } from "./tools";
 import {
+  faArrowRightLong,
   faChevronRight,
   faHome,
   faPlus,
@@ -89,89 +90,88 @@ const PageEdit: React.FC<PageProperties> = ({
         </div>
       )}
 
-      <nav aria-label="Breadcrumb" className="flex flex-row">
-        <ol
-          role="list"
-          className="flex items-center space-x-1 text-sm text-gray-500"
-        >
-          <li>
-            <a className="block transition-colors hover:text-gray-700" href="/">
-              <span className="sr-only"> Home </span>
+      {pageService.getGlobalPageMode() === PageMode.Edit && (
+        <nav aria-label="Breadcrumb" className="flex flex-row">
+          <ol
+            role="list"
+            className="flex items-center space-x-1 text-sm text-gray-500"
+          >
+            <li>
+              <a
+                className="block transition-colors hover:text-gray-700"
+                href="/"
+              >
+                <span className="sr-only"> Home </span>
 
-              <FontAwesomeIcon icon={faHome} />
-            </a>
-          </li>
+                <FontAwesomeIcon icon={faHome} />
+              </a>
+            </li>
 
-          {page.path
-            .split("/")
-            .slice(0, -1)
-            .map((pagePath, index) => (
-              <>
-                <li>
-                  <FontAwesomeIcon icon={faChevronRight} />
-                </li>
+            {page.path
+              .split("/")
+              .slice(0, -1)
+              .map((pagePath, index) => (
+                <>
+                  <li>
+                    <FontAwesomeIcon icon={faChevronRight} />
+                  </li>
 
-                <li>
-                  <a
-                    className="block transition-colors hover:text-gray-700"
-                    href={`/pages/${page.path
-                      .split("/")
-                      .slice(0, index + 1)
-                      .join("/")}`}
-                  >
-                    {" "}
-                    {pagePath}{" "}
-                  </a>
-                </li>
-              </>
-            ))}
-          <li>
-            <FontAwesomeIcon icon={faChevronRight} />
-          </li>
+                  <li>
+                    <a
+                      className="cursor-pointer block transition-colors hover:text-gray-700"
+                      href={`/pages/${page.path
+                        .split("/")
+                        .slice(0, index + 1)
+                        .join("/")}`}
+                    >
+                      {" "}
+                      {pagePath}{" "}
+                    </a>
+                  </li>
+                </>
+              ))}
+            <li>
+              <FontAwesomeIcon icon={faChevronRight} />
+            </li>
 
-          <li>
+            <li>
+              <a
+                className="cursor-pointer block transition-colors hover:text-gray-700"
+                onClick={addPath}
+              >
+                {" "}
+                <FontAwesomeIcon icon={faPlus} />{" "}
+              </a>
+            </li>
+            <li>
+              <FontAwesomeIcon icon={faChevronRight} />
+            </li>
+
+            <li>
+              <a
+                className="cursor-pointer block transition-colors hover:text-gray-700"
+                onClick={changePath}
+              >
+                {" "}
+                {page.path.split("/").at(-1)}{" "}
+              </a>
+            </li>
+            <li>
+              <FontAwesomeIcon icon={faArrowRightLong} /> {page.title}
+            </li>
+          </ol>
+          <div className="grow"></div>
+          {pageService.getGlobalPageMode() === PageMode.Edit && (
             <a
-              className="block transition-colors hover:text-gray-700"
-              onClick={addPath}
+              className="cursor-pointer text-sm text-gray-500 animate-pulse"
+              onClick={() => pageService.setGlobalPageMode(PageMode.Preview)}
             >
               {" "}
-              <FontAwesomeIcon icon={faPlus} />{" "}
+              EDIT MODE{" "}
             </a>
-          </li>
-          <li>
-            <FontAwesomeIcon icon={faChevronRight} />
-          </li>
-
-          <li>
-            <a
-              className="block transition-colors hover:text-gray-700"
-              onClick={changePath}
-            >
-              {" "}
-              {page.path.split("/").at(-1)}{" "}
-            </a>
-          </li>
-        </ol>
-        <div className="grow"></div>
-        {pageService.getGlobalPageMode() === PageMode.Edit && (
-          <a
-            className="text-sm text-gray-500"
-            onClick={() => pageService.setGlobalPageMode(PageMode.Preview)}
-          >
-            {" "}
-            EDIT MODE{" "}
-          </a>
-        )}
-        {pageService.getGlobalPageMode() === PageMode.Preview && (
-          <a
-            className="text-sm text-gray-500"
-            onClick={() => pageService.setGlobalPageMode(PageMode.Edit)}
-          >
-            {" "}
-            PREVIEW MODE{" "}
-          </a>
-        )}
-      </nav>
+          )}
+        </nav>
+      )}
 
       <div>
         <ReactEditorJS

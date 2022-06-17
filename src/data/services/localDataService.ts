@@ -10,6 +10,7 @@ export enum PageMode {
 }
 export interface LocalState {
   pageMode: PageMode;
+  activePageUuid?: string;
 }
 
 // singleton
@@ -24,6 +25,7 @@ export default class LocalDataService {
 
   private constructor(config: WebAppConfig) {
     this.config = config;
+    this.local.activePageUuid = this.getSettings().homePath;
   }
 
   static getFromLocalOrNew(

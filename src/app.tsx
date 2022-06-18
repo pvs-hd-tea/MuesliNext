@@ -7,6 +7,7 @@ import localDataService, { PageMode } from "./data/services/localDataService";
 import General from "./components/internal/General";
 import PageService from "./data/services/pageService";
 import SettingsService from "./data/services/settingsService";
+import NavBar from "./components/Widgets/NavBar";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -25,50 +26,10 @@ const App: React.FC<Props> = ({}) => {
   return (
     <body className="min-h-screen bg-gray-100">
       {pageService.getGlobalPageMode() !== PageMode.Edit && (
-        <div className="bg-gray-900 flex items-center h-14 w-screen gap-8 px-4">
-          <a
-            className="text-2xl bold text-white transition hover:text-white/75"
-            href="/"
-          >
-            {dataService.getSettings().name}
-          </a>
-
-          <div className="flex items-center justify-end flex-1 md:justify-between">
-            <nav
-              className="hidden md:block"
-              aria-labelledby="header-navigation"
-            >
-              <h2 className="sr-only" id="header-navigation">
-                Header navigation
-              </h2>
-
-              <ul className="flex items-center gap-6 text-sm">
-                {dataService.getPages().map((page, id) => (
-                  <li key={id}>
-                    <a
-                      className="text-white transition hover:text-white/75"
-                      href={`/#/pages/${page.path}`}
-                    >
-                      {page.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-          </div>
-          <div className="grow"></div>
-          <a
-            className="cursor-pointer text-sm text-white transition hover:text-white/75 animate-pulse"
-            onClick={() => pageService.setGlobalPageMode(PageMode.Edit)}
-          >
-            {" "}
-            PREVIEW MODE{" "}
-          </a>
-        </div>
+        <NavBar dataService={dataService} pageService={pageService} />
       )}
       <div className="flex flex-row">
         {pageService.getGlobalPageMode() === PageMode.Edit && (
-          // TODO: make more responsive (not hardcode width)
           <>
             <div className="sm:z-10 flex-none md:z-0 md:block md:w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in"></div>
             <div className="sm:z-10 flex-none md:z-0 md:fixed md:w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
@@ -77,7 +38,6 @@ const App: React.FC<Props> = ({}) => {
                 dataService={dataService}
                 settingsService={settingsService}
                 pageService={pageService}
-                col-span-1
               />
             </div>
           </>
@@ -90,6 +50,7 @@ const App: React.FC<Props> = ({}) => {
           }
         >
           <HashRouter>
+            {/* TODO: move to own file */}
             <Routes>
               {dataService.getPages().map((page) => (
                 <Route

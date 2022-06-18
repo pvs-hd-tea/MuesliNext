@@ -1,4 +1,4 @@
-import { WebAppConfig, WebAppConfigSchema } from "../configuration";
+import { WebAppConfig, WebAppConfigSchema } from "../definitions";
 import { Optional } from "../types";
 
 export default class ParseService {

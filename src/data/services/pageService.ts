@@ -1,12 +1,4 @@
-import {
-  defaultBlocks,
-  defaultMetadata,
-  defaultPage,
-  EditorData,
-  Page,
-  PageMetaData,
-} from "../configuration";
-import { Optional } from "../types";
+import { defaultPage, EditorData, Page, PageMetaData } from "../definitions";
 import localDataService, { PageMode } from "./localDataService";
 
 export default class PageService {

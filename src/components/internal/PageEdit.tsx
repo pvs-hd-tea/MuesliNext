@@ -13,12 +13,6 @@ import localDataService, {
 } from "../../data/services/localDataService";
 import PageService from "../../data/services/pageService";
 
-interface Block {
-  id?: string;
-  type: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
-}
 interface PageProperties {
   uuid: string;
   dataService: localDataService;

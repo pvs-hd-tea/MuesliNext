@@ -1,6 +1,6 @@
 import fileDialog from "file-dialog";
 import { Md5 } from "ts-md5";
-import { WebAppConfig, defaultConfig, Page, Settings } from "../configuration";
+import { WebAppConfig, defaultConfig, Page, Settings } from "../definitions";
 import { Optional } from "../types";
 import ParseService from "./parseService";
 

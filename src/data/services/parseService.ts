@@ -11,7 +11,7 @@ export default class ParseService {
       try {
         return new Optional(String(value));
       } catch {
-        return new Optional<any>(undefined);
+        return new Optional<string>(undefined);
       }
     }
   }

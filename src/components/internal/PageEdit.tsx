@@ -38,6 +38,7 @@ const PageEdit: React.FC<PageProperties> = ({
   }, []);
 
   const handleReady = () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const editor = editorCore.current._editorJS;
   };
 

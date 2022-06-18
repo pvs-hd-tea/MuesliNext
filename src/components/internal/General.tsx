@@ -21,11 +21,15 @@ const General: React.FC<GeneralProperties> = ({
   const [appName, setAppName] = useState(dataService.getSettings().name);
   const [syntaxError, setSyntaxError] = useState(false);
 
-  const handleConfigChange = (event: any) => {
+  const handleConfigChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     setConfig(event.target.value);
   };
 
-  const handleNameInputChange = (event: any) => {
+  const handleNameInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setAppName(event.target.value);
   };
 

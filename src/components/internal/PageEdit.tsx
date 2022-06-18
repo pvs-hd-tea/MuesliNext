@@ -43,6 +43,10 @@ const PageEdit: React.FC<PageProperties> = ({
     editorCore.current = instance;
   }, []);
 
+  const handleReady = () => {
+    const editor = editorCore.current._editorJS;
+  };
+
   const handleSave = React.useCallback(async () => {
     const savedData = await editorCore.current.save();
     pageService.setPageContent(uuid, savedData);
@@ -180,6 +184,7 @@ const PageEdit: React.FC<PageProperties> = ({
           tools={EDITOR_JS_TOOLS}
           readOnly={pageService.getGlobalPageMode() !== PageMode.Edit}
           onInitialize={handleInitialize}
+          onReady={handleReady}
           onChange={handleSave}
           placeholder="start writing here..."
         />

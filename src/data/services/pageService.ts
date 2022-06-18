@@ -48,6 +48,7 @@ export default class PageService {
     this.dataService.setPageByKey(page.path, page);
     // TODO: move this
     location.replace(`/#/pages/${page.path}`);
+    this.setActivePageUuid(page.path);
   };
 
   deletePage = (uuid: string) => {

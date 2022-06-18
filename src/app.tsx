@@ -69,18 +69,26 @@ const App: React.FC<Props> = ({}) => {
       <div className="flex flex-row">
         {pageService.getGlobalPageMode() === PageMode.Edit && (
           // TODO: make more responsive (not hardcode width)
-          <div className="sm:w-[0rem] md:w-[54rem] lg:w-[36rem] xl:w-[29rem] 2xl:w-[20rem]">
-            <OverviewPanel
-              dataHash={dataService.toHash()}
-              dataService={dataService}
-              settingsService={settingsService}
-              pageService={pageService}
-              col-span-1
-            />
-          </div>
+          <>
+            <div className="sm:z-10 flex-none md:z-0 md:block md:w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in"></div>
+            <div className="sm:z-10 flex-none md:z-0 md:fixed md:w-72 transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
+              <OverviewPanel
+                dataHash={dataService.toHash()}
+                dataService={dataService}
+                settingsService={settingsService}
+                pageService={pageService}
+                col-span-1
+              />
+            </div>
+          </>
         )}
 
-        <div className="grow mx-10">
+        <div
+          className={
+            "grow px-10" +
+            (pageService.getGlobalPageMode() === PageMode.Edit ? " ml-6" : "")
+          }
+        >
           <HashRouter>
             <Routes>
               {dataService.getPages().map((page) => (
@@ -89,6 +97,7 @@ const App: React.FC<Props> = ({}) => {
                   path={`/pages/${page.path}`}
                   element={
                     // TODO: make component not rerender: editor saving difficult tho
+
                     <PageEdit
                       key={page.path}
                       uuid={page.path}

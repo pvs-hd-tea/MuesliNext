@@ -19,7 +19,8 @@
     "eject": "react-scripts eject",
     "lint": "eslint src && prettier --check .",
     "format": "eslint src --fix && prettier --write .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "doc": "npx typedoc src/index.tsx && xdg-open docs/index.html"
   },
   "eslintConfig": {
     "extends": [

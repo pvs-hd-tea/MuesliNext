@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+h1 {
+  @apply text-5xl;
+}
+h2 {
+  @apply text-4xl;
+}
+h3 {
+  @apply text-3xl;
+}
+h4 {
+  @apply text-2xl;
+}
+h5 {
+  @apply text-xl;
+}
+h6 {
+  @apply text-lg;
+}
+
+/* if we want to restore default link style */
+/* a {
+  @apply underline text-blue-600 hover:text-blue-800 visited:text-purple-600;
+} */
+
+/* .codex-editor {
+  background-color: #FF0;
+} */
+
+.ce-block__content,
+.ce-toolbar__content {
+  max-width: 100% !important;
+}
+.cdx-block {
+  max-width: 100% !important;
+}

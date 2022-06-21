@@ -1,5 +1,4 @@
 import React from "react";
-import { unmountComponentAtNode } from "react-dom";
 import { createRoot, Root } from "react-dom/client";
 import { act } from "@testing-library/react";
 

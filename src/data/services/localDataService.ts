@@ -3,6 +3,8 @@ import { Md5 } from "ts-md5";
 import { WebAppConfig, defaultConfig, Page, Settings } from "../definitions";
 import { Optional } from "../types";
 import ParseService from "./parseService";
+import axios from "axios";
+import { Table, TableSchema } from "../definitions/Tables";
 
 export enum PageMode {
   Edit,
@@ -110,6 +112,46 @@ export default class LocalDataService {
     }
   }
 
+  getTables() {
+    return this.config.tables;
+  }
+
+  getTableById(id: number): Optional<Table> {
+    return new Optional(this.config.tables[id]);
+  }
+
+  setTableById(id: number, table: Table) {
+    this.config.tables[id] = table;
+    this.saveToLocalStorage();
+    this.useHashCallback();
+  }
+
+  deleteTableById(id: number) {
+    this.config.tables.splice(id, 1);
+    this.saveToLocalStorage();
+    this.useHashCallback();
+  }
+
+  getTableByKey(key: string): Optional<Table> {
+    return new Optional(this.config.tables.find((table) => table.key === key));
+  }
+
+  setTableByKey(key: string, newOrUpdatedTable: Table) {
+    const index = this.config.tables.findIndex((table) => table.key === key);
+    if (index === -1) {
+      // page is new
+      this.config.tables.push(newOrUpdatedTable);
+    }
+    this.setTableById(index, newOrUpdatedTable);
+  }
+
+  deleteTableByKey(key: string) {
+    const index = this.config.tables.findIndex((table) => table.key === key);
+    if (index !== -1) {
+      this.deleteTableById(index);
+    }
+  }
+
   toJsonString(): string {
     return ParseService.getInstance().parseConfigToString(this.config);
   }
@@ -176,4 +218,35 @@ export default class LocalDataService {
   getLocalState = () => {
     return this.local;
   };
+
+  /*------------------------------------------------- Backend functions ---*/
+
+  async fetchTables(): Promise<string[]> {
+    console.log("getTables");
+    const headersList = {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+
+    const bodyContent = JSON.stringify({
+      table: "tables",
+    });
+
+    const reqOptions = {
+      url: `${this.config.settings.backendUrl}/request/database/select`,
+      method: "POST",
+      headers: headersList,
+      data: bodyContent,
+    };
+
+    const request = await axios.request(reqOptions);
+    return request.data;
+  }
+
+  // TODO: make more efficient
+  async isConnected(): Promise<boolean> {
+    const tables = await this.fetchTables();
+    const parsed = TableSchema.safeParse(tables[0]);
+    return parsed.success;
+  }
 }

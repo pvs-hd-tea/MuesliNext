@@ -1,9 +1,15 @@
-import { PluginLoader } from "@intutable/core";
+import { CoreRequest, CoreResponse, PluginLoader } from "@intutable/core";
+import { ColumnOption, ColumnType } from "@intutable/database/dist/column";
 
 import { select } from "@intutable/database/dist/requests";
+import {
+  createProject,
+  createTableInProject,
+} from "@intutable/project-management/dist/requests";
 import initializeData from "./initializeData";
 
 let core: PluginLoader;
+const CHANNEL = "web-app-gen";
 
 /**
  * Entry point for the plugin
@@ -13,11 +19,47 @@ let core: PluginLoader;
 export async function init(plugins: PluginLoader) {
   core = plugins;
 
+  core
+    .listenForRequests(CHANNEL)
+    .on("getStatus", getStatus)
+    .on("createWebAppProject", createWebAppProject);
+
   const exampleTable = await getTableId("example");
   if (!exampleTable) {
-    console.log(`table "example" not found => assuming first start.`);
     initializeData(core);
+    console.log(`table "example" not found => assuming first start.`);
+    await createWebAppProject({
+      sessionId: "1",
+      userId: 1,
+      name: "example project",
+      channel: CHANNEL,
+      method: "",
+    });
   }
+}
+
+async function getStatus(): Promise<CoreResponse> {
+  return Promise.resolve({ message: `online` });
+}
+
+async function createWebAppProject({
+  sessionId,
+  userId,
+  name,
+}: CoreRequest): Promise<CoreResponse> {
+  // Create project
+  const projectId = await core.events.request(
+    createProject(sessionId, userId, name)
+  );
+
+  // Create tables
+  await core.events.request(
+    createTableInProject(sessionId, userId, projectId, "settings", [
+      { name: "name", type: ColumnType.string },
+      { name: "homePath", type: ColumnType.string },
+    ])
+  );
+  return { message: `created web app project with id ${projectId}` };
 }
 
 /**

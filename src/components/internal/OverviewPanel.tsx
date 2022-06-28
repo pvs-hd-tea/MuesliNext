@@ -1,6 +1,6 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import pjson from "../../../package.json";
 import localDataService, {
   PageMode,
@@ -9,18 +9,30 @@ import SettingsService from "../../data/services/settingsService";
 import PageService from "../../data/services/pageService";
 import PageList from "./PageList";
 import { faCog, faRocket } from "@fortawesome/free-solid-svg-icons";
+import DataList from "./DataList";
+import TableService from "../../data/services/tableService";
 
 interface OverviewPanelProperties {
   dataHash: string;
   dataService: localDataService;
   settingsService: SettingsService;
   pageService: PageService;
+  tableService: TableService;
 }
 
 const OverviewPanel: React.FC<OverviewPanelProperties> = ({
   dataService,
   pageService,
+  tableService,
 }) => {
+  const [connected, setConnected] = useState(false);
+
+  useEffect(() => {
+    dataService.isConnected().then((isConnected) => {
+      setConnected(isConnected);
+    });
+  });
+
   return (
     <div className="flex flex-row min-h-screen fixed">
       <aside className="sidebar w-72 shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">
@@ -50,18 +62,26 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
               </a>
 
               <PageList dataService={dataService} pageService={pageService} />
+              <DataList dataService={dataService} tableService={tableService} />
             </nav>
           </div>
-          <div className="sticky inset-x-0 bottom-0 border-t border-gray-100">
-            <div className="ml-1.5">
-              <a
-                className="text-xs"
-                href="https://github.com/pvs-hd-tea/MuesliNext"
-              >
+          <div className="sticky inset-x-0 bottom-0 border-t border-gray-100  w-full">
+            <div className="ml-1.5 my-1 text-xs">
+              <a href="https://github.com/pvs-hd-tea/MuesliNext">
                 <span className="text-gray-400">
                   {" "}
                   <FontAwesomeIcon icon={faGithub} /> WebAppGen v{pjson.version}{" "}
                 </span>
+              </a>
+              <a
+                className="float-right mx-1"
+                href={dataService.getSettings().backendUrl}
+              >
+                {connected ? (
+                  <span className="text-green-400">connected</span>
+                ) : (
+                  <span className="float-right">offline</span>
+                )}
               </a>
             </div>
           </div>

@@ -8,6 +8,7 @@
     "@intutable/database": "^1.3.0",
     "@intutable/http": "^0.1.5",
     "@intutable/http-cors": "^0.1.0",
+    "@intutable/lazy-views": "^2.0.1",
     "@intutable/project-management": "^1.0.0"
   }
 }

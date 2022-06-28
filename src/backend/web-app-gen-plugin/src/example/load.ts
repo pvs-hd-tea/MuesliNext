@@ -22,18 +22,18 @@ import {
   TableSpec,
   JoinSpec,
   Table,
-  PERSONEN,
-  PERSONEN_DATA,
-  ORGANE,
-  ORGANE_DATA,
-  ROLLEN,
-  ROLLEN_DATA,
+  METADATA,
+  METADATA_DATA,
+  PAGES,
+  PAGES_DATA,
+  SETTINGS,
+  SETTINGS_DATA,
 } from "./schema";
 
-let personen: Table;
-let organe: Table;
+let metadata: Table;
+let pages: Table;
+let settings: Table;
 let simpleTables: Table[];
-let rollen: Table;
 
 const SESSION_ID = "session";
 
@@ -42,12 +42,12 @@ export async function createExampleSchema(
   adminId: number
 ): Promise<void> {
   const project: ProjectDescriptor = (await core.events.request(
-    createProject(SESSION_ID, adminId, "Fakultät MathInf")
+    createProject(SESSION_ID, adminId, "example WebApp")
   )) as ProjectDescriptor;
-  personen = await createTable(core, adminId, project.id, PERSONEN);
-  organe = await createTable(core, adminId, project.id, ORGANE);
-  simpleTables = [personen, organe];
-  rollen = await createTable(core, adminId, project.id, ROLLEN);
+  metadata = await createTable(core, adminId, project.id, METADATA);
+  simpleTables = [metadata];
+  pages = await createTable(core, adminId, project.id, PAGES);
+  settings = await createTable(core, adminId, project.id, SETTINGS);
 }
 async function createTable(
   core: PluginLoader,
@@ -68,9 +68,9 @@ async function createTable(
     getTableInfo(SESSION_ID, baseTable.id)
   )) as TableInfo;
   const viewColumns: v_types.ColumnSpecifier[] = table.columns.map((c) => {
-    const baseColumn = tableInfo.columns.find(
-      (parent) => parent.name === c.baseColumn.name
-    )!;
+    const baseColumn =
+      tableInfo.columns.find((parent) => parent.name === c.baseColumn.name) ??
+      undefined;
     return {
       parentColumnId: baseColumn.id,
       attributes: c.attributes,
@@ -120,15 +120,15 @@ async function addJoin(
       join.fkColumn.type
     )
   )) as ColumnDescriptor;
-  const foreignTable = simpleTables.find(
-    (t) => t.tableView.name === join.table
-  )!;
+  const foreignTable =
+    simpleTables.find((t) => t.tableView.name === join.table) ?? undefined;
   const info = (await core.events.request(
     v_req.getViewInfo(foreignTable.tableView.id)
   )) as TableInfo;
-  const pk = info.columns.find((c) => c.name === join.pkColumn)!;
+  const pk = info.columns.find((c) => c.name === join.pkColumn) ?? undefined;
   const foreignColumns = join.linkColumns.map((l) => {
-    const parentColumn = info.columns.find((c) => c.name === l.name)!;
+    const parentColumn =
+      info.columns.find((c) => c.name === l.name) ?? undefined;
     return {
       parentColumnId: parentColumn.id,
       attributes: l.attributes,
@@ -145,14 +145,16 @@ async function addJoin(
 
 export async function insertExampleData(core: PluginLoader): Promise<void> {
   await Promise.all(
-    PERSONEN_DATA.map((r) =>
-      core.events.request(insert(personen.baseTable.key, r))
+    METADATA_DATA.map((r) =>
+      core.events.request(insert(metadata.baseTable.key, r))
     )
   );
   await Promise.all(
-    ORGANE_DATA.map((r) => core.events.request(insert(organe.baseTable.key, r)))
+    PAGES_DATA.map((r) => core.events.request(insert(pages.baseTable.key, r)))
   );
   await Promise.all(
-    ROLLEN_DATA.map((r) => core.events.request(insert(rollen.baseTable.key, r)))
+    SETTINGS_DATA.map((r) =>
+      core.events.request(insert(settings.baseTable.key, r))
+    )
   );
 }

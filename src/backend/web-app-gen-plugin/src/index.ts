@@ -1,20 +1,20 @@
 /**
- * This dummy plugin allows us to run initialization (config, example data)
- * on starting up the core.
+ * This plugin is intended be used as a configurable backend for a web app generator
+ * It can be used to:
+ * Done:
+ * Todo:
+ * - create new project
+ * - create pages
+ * - create tables
  */
 import { PluginLoader } from "@intutable/core";
-import {
-  Column,
-  ColumnType,
-  ColumnOption,
-} from "@intutable/database/dist/column";
+
 import { insert, select } from "@intutable/database/dist/requests";
-import { requests as v_req } from "@intutable/lazy-views/";
 
 import { createExampleSchema, insertExampleData } from "./example/load";
 
 let core: PluginLoader;
-const ADMIN_NAME = "admin@dekanat.de";
+const ADMIN_NAME = "admin@admin.com";
 let adminId: number;
 
 export async function init(plugins: PluginLoader) {
@@ -67,39 +67,5 @@ async function createAdmin(): Promise<number> {
         "$argon2i$v=19$m=4096,t=3,p=1$vzOdnV+KUtQG3va/nlOOxg$vzo1JP16rQKYmXzQgYT9VjUXUXPA6cWHHAvXutrRHtM",
     })
   );
-  return getAdminId().then((definitelyNumber) => definitelyNumber!);
-}
-
-/** Create the custom attributes for views' columns we need. */
-async function configureColumnAttributes(): Promise<void> {
-  const customColumns: Column[] = [
-    {
-      name: "displayName",
-      type: ColumnType.text,
-      options: [ColumnOption.nullable],
-    },
-    {
-      name: "userPrimary",
-      type: ColumnType.integer,
-      options: [ColumnOption.notNullable],
-    },
-    {
-      name: "editable",
-      type: ColumnType.integer,
-      options: [ColumnOption.notNullable],
-    },
-    {
-      name: "editor",
-      type: ColumnType.text,
-      options: [ColumnOption.nullable],
-    },
-    {
-      name: "formatter",
-      type: ColumnType.text,
-      options: [ColumnOption.nullable],
-    },
-  ];
-  await Promise.all(
-    customColumns.map((c) => core.events.request(v_req.addColumnAttribute(c)))
-  );
+  return getAdminId().then((definitelyNumber) => definitelyNumber ?? -1);
 }

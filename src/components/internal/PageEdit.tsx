@@ -182,6 +182,7 @@ const PageEdit: React.FC<PageProperties> = ({
           onReady={handleReady}
           onChange={handleSave}
           placeholder="start writing here..."
+          defaultBlock="paragraph"
         />
         {/* <ReactEditorJS tools={EDITOR_JS_TOOLS} /> */}
         <div className="float-right m-5">

@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
+import { Table } from "../../data/definitions/Tables";
 import localDataService from "../../data/services/localDataService";
 import TableService from "../../data/services/tableService";
 import TableItem from "./TableItem";
@@ -18,7 +19,19 @@ const DataList: React.FC<PageListProperties> = ({
   dataService,
   tableService,
 }) => {
-  const tables = dataService.getTables();
+  const defaultTables: Table[] = [];
+  const [tables, setTables] = useState(defaultTables);
+
+  const getTables = async () => {
+    const tables = await dataService.fetchTables();
+    setTables(tables);
+  };
+
+  useEffect(() => {
+    if (tables.length === 0) {
+      getTables();
+    }
+  });
 
   const addTable = () => {
     const tableName = prompt("Please enter your table name:", "my table");

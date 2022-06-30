@@ -3,6 +3,7 @@ import { z } from "zod";
 export const TableSchema = z.object({
   key: z.string(),
   name: z.string(),
+  id: z.number().optional(),
   // ownerId: "1", //<- TODO: for user-authentication plugin
   // TODO: much more
 });

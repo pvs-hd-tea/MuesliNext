@@ -13,6 +13,7 @@ import tableService from "../../data/services/tableService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Table } from "../../data/definitions/Tables";
 import TableService from "../../data/services/tableService";
+import LocalDataService from "../../data/services/localDataService";
 
 interface tableItemProperties {
   tableService: TableService;
@@ -29,6 +30,8 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
   const [stopEditButton, setStopEditButton] = useState(faXmark);
   const [tableName, setTableName] = useState(table.name);
   const [edit, setEdit] = useState(false);
+
+  const dataService = LocalDataService.getFromLocalOrNew();
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTableName(event.target.value);
@@ -77,6 +80,16 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
       setFileIcon(faXmark);
     }
     tableService.setActivePageUuid(table.key);
+    // TODO: placeholder only
+    dataService.fetchTableByName(table.name).then((data) => {
+      alert(
+        `PLACEHOLDER UNTIL WE CAN DISPLAY TABLES\n\n ${JSON.stringify(
+          data,
+          null,
+          2
+        )}`
+      );
+    });
   };
 
   useEffect(() => {

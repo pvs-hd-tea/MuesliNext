@@ -6,6 +6,8 @@ import ParseService from "./parseService";
 import axios from "axios";
 import { Table, TableSchema } from "../definitions/Tables";
 
+import { Column } from "../../../node_modules/@intutable/database/dist/column";
+
 export enum PageMode {
   Edit,
   Preview,
@@ -221,26 +223,99 @@ export default class LocalDataService {
 
   /*------------------------------------------------- Backend functions ---*/
 
-  async fetchTables(): Promise<string[]> {
-    console.log("getTables");
+  async request<T>(url: string, data: any): Promise<T> {
     const headersList = {
       "Content-Type": "application/json",
       Accept: "application/json",
     };
 
-    const bodyContent = JSON.stringify({
-      table: "tables",
-    });
+    const bodyContent = JSON.stringify(data);
 
     const reqOptions = {
-      url: `${this.config.settings.backendUrl}/request/database/select`,
+      url: `${this.config.settings.backendUrl}/request/${url}`,
       method: "POST",
       headers: headersList,
       data: bodyContent,
     };
 
     const request = await axios.request(reqOptions);
+    // TODO: parsing
     return request.data;
+  }
+
+  async fetchTables(): Promise<Table[]> {
+    const bodyContent = {
+      sessionID: "Session",
+      id: 1,
+    };
+    const tables = await this.request<Table[]>(
+      "project-management/getTablesFromProject",
+      bodyContent
+    );
+    return tables;
+  }
+
+  async fetchTableById(id: number): Promise<{
+    table: Table;
+    columns: Column[];
+    rows: Record<string, string>;
+  }> {
+    const bodyContent = {
+      sessionID: "Session",
+      id: id,
+    };
+    const table = await this.request<{
+      table: Table;
+      columns: Column[];
+      rows: Record<string, any>;
+    }>("project-management/getTableData", bodyContent);
+    return table;
+  }
+
+  async fetchTableByName(name: string): Promise<{
+    table: Table;
+    columns: Column[];
+    rows: Record<string, any>;
+  }> {
+    const tables = await this.fetchTables();
+    const tableID = tables.findIndex((table) => table.name === name);
+    if (tableID === -1) {
+      throw new Error("Table not found");
+    }
+    console.log("Table ID: " + tableID);
+    return await this.fetchTableById(tableID + 1);
+  }
+
+  async fetchTableTableItemByName(
+    name: string,
+    column: string,
+    key: string
+  ): Promise<string> {
+    // "rows": [
+    //   {
+    //     "_id": 1,
+    //     "number": 1,
+    //     "string": "foo",
+    //     "boolean": true
+    //   },
+    //   {
+    //     "_id": 2,
+    //     "number": 42,
+    //     "string": "bar",
+    //     "boolean": false
+    //   }
+    // ]
+    const table = await this.fetchTableByName(name);
+    console.log(table);
+    console.log(`key is ${key}`);
+    const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
+    console.log(row);
+    if (!row) {
+      return "row not found";
+    }
+    const item = row[column];
+    console.log(item);
+    return item;
   }
 
   // TODO: make more efficient

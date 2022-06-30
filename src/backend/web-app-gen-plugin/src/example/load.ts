@@ -28,11 +28,14 @@ import {
   PAGES_DATA,
   SETTINGS,
   SETTINGS_DATA,
+  EXAMPLE,
+  EXAMPLE_DATA,
 } from "./schema";
 
 let metadata: Table;
 let pages: Table;
 let settings: Table;
+let example: Table;
 let simpleTables: Table[];
 
 const SESSION_ID = "session";
@@ -48,6 +51,7 @@ export async function createExampleSchema(
   simpleTables = [metadata];
   pages = await createTable(core, adminId, project.id, PAGES);
   settings = await createTable(core, adminId, project.id, SETTINGS);
+  example = await createTable(core, adminId, project.id, EXAMPLE);
 }
 async function createTable(
   core: PluginLoader,
@@ -71,6 +75,7 @@ async function createTable(
     const baseColumn =
       tableInfo.columns.find((parent) => parent.name === c.baseColumn.name) ??
       undefined;
+    if (!baseColumn) throw new Error("Base column not found");
     return {
       parentColumnId: baseColumn.id,
       attributes: c.attributes,
@@ -122,18 +127,22 @@ async function addJoin(
   )) as ColumnDescriptor;
   const foreignTable =
     simpleTables.find((t) => t.tableView.name === join.table) ?? undefined;
+  if (!foreignTable) throw new Error("Foreign table not found");
   const info = (await core.events.request(
     v_req.getViewInfo(foreignTable.tableView.id)
   )) as TableInfo;
   const pk = info.columns.find((c) => c.name === join.pkColumn) ?? undefined;
+  if (!pk) throw new Error("PK column not found");
   const foreignColumns = join.linkColumns.map((l) => {
     const parentColumn =
       info.columns.find((c) => c.name === l.name) ?? undefined;
+    if (!parentColumn) throw new Error("Parent column not found");
     return {
       parentColumnId: parentColumn.id,
       attributes: l.attributes,
     };
   });
+  if (!foreignColumns) throw new Error("Foreign columns not found");
   await core.events.request(
     v_req.addJoinToView(tableView.id, {
       foreignSource: viewId(foreignTable.tableView.id),
@@ -155,6 +164,11 @@ export async function insertExampleData(core: PluginLoader): Promise<void> {
   await Promise.all(
     SETTINGS_DATA.map((r) =>
       core.events.request(insert(settings.baseTable.key, r))
+    )
+  );
+  await Promise.all(
+    EXAMPLE_DATA.map((r) =>
+      core.events.request(insert(example.baseTable.key, r))
     )
   );
 }

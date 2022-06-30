@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import PageEdit from "./components/internal/PageEdit";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -21,6 +21,14 @@ const App: React.FC<Props> = ({}) => {
   const pageService = new PageService();
   const tableService = new TableService();
   const settingsService = new SettingsService();
+
+  // const fff = async () => {
+  //   return await dataService.fetchTableTableItemByName("example", "string", "1");
+  // };
+
+  // useEffect(() => {
+  //   fff();
+  // });
 
   const [, setSettingsHash] = useState("");
   dataService.setHashCallback(setSettingsHash);

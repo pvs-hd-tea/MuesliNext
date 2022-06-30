@@ -1,6 +1,7 @@
 import "./DynamicValueWidget.css";
 import React from "react";
 import ReactDOM from "react-dom";
+import LocalDataService from "../../data/services/localDataService";
 
 export default class DynamicValueWidget {
   data: DynamicValueWidgetData;
@@ -78,6 +79,7 @@ interface DynamicValueWidgetData {
   tableName: string;
   columnName: string;
   entryKey: string;
+  value?: string;
 }
 
 interface Props {
@@ -90,21 +92,44 @@ class DynamicValueComponent extends React.Component<
   Props,
   DynamicValueWidgetData
 > {
-  state = this.props.initData;
+  state = { ...this.props.initData };
 
-  fetchDynamicValue() {
-    return `${this.state.tableName} ${this.state.columnName} ${this.state.entryKey}`;
+  dataService = LocalDataService.getFromLocalOrNew();
+
+  async fetchDynamicValue() {
+    let newVal: string = await this.dataService.fetchTableTableItemByName(
+      this.state.tableName,
+      this.state.columnName,
+      this.state.entryKey
+    );
+    if (newVal === undefined) {
+      newVal = "not found";
+    }
+    this.setState({ ...this.state, value: newVal });
+    // this.state.value = await this.dataService.fetchTableTableItemByName(
+    //   "example",
+    //   "string",
+    //   "2"
+    // );
+  }
+
+  componentDidMount() {
+    this.fetchDynamicValue();
   }
 
   render() {
     if (this.props.readOnly) {
-      const text = this.fetchDynamicValue();
-      return <div className="dynamic-value-component-display">{text}</div>;
-    } else if (this.state.displayState) {
-      const text = this.fetchDynamicValue();
+      //this.fetchDynamicValue();
       return (
         <div className="dynamic-value-component-display">
-          {text}
+          {this.state.value}
+        </div>
+      );
+    } else if (this.state.displayState) {
+      //this.fetchDynamicValue();
+      return (
+        <div className="dynamic-value-component-display">
+          {this.state.value}
           <input
             type="checkbox"
             className="toggle-switch-checkbox"
@@ -175,6 +200,7 @@ class DynamicValueComponent extends React.Component<
                   displayState: event.target.checked,
                 })
               );
+              this.fetchDynamicValue();
               this.props.onDataChange(this.state);
             }}
           />

@@ -214,3 +214,65 @@ export const SETTINGS_DATA = [
     backendUrl: "http://localhost:8080",
   },
 ];
+
+export const EXAMPLE: TableSpec = {
+  name: "example",
+  columns: [
+    {
+      baseColumn: {
+        name: "_id",
+        type: ColumnType.increments,
+        options: [ColumnOption.primary],
+      },
+      attributes: {
+        displayName: "ID",
+        _cellContentType: "number",
+      },
+    },
+    {
+      baseColumn: {
+        name: "number",
+        type: ColumnType.integer,
+      },
+      attributes: {
+        displayName: "Number",
+        userPrimary: 1,
+        _cellContentType: "number",
+      },
+    },
+    {
+      baseColumn: {
+        name: "string",
+        type: ColumnType.string,
+      },
+      attributes: {
+        displayName: "String",
+        _cellContentType: "string",
+      },
+    },
+    {
+      baseColumn: {
+        name: "boolean",
+        type: ColumnType.boolean,
+      },
+      attributes: {
+        displayName: "Boolean",
+        _cellContentType: "boolean",
+      },
+    },
+  ],
+  joins: [],
+};
+
+export const EXAMPLE_DATA = [
+  {
+    number: 1,
+    string: "foo",
+    boolean: true,
+  },
+  {
+    number: 42,
+    string: "bar",
+    boolean: false,
+  },
+];

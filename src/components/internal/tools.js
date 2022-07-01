@@ -8,6 +8,7 @@ import List from "@editorjs/list";
 import Alert from "editorjs-alert";
 import Table from "@editorjs/table";
 import Paragraph from "../Widgets/CustomParagraph";
+import Button from "../Widgets/Button";
 
 import DynamicValueWidget from "../Widgets/DynamicValueWidget";
 import InlineDynamicValueWidget from "../Widgets/InlineDynamicValueWiget";
@@ -29,4 +30,5 @@ export const EDITOR_JS_TOOLS = {
   table: { class: Table, inlineToolbar: true, shortcut: "CMD+SHIFT+T" },
   dynamicValue: DynamicValueWidget,
   dynamicValueInline: InlineDynamicValueWidget,
+  button: Button,
 };

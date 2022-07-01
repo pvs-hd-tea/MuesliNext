@@ -1,11 +1,22 @@
 import "./Button.css";
-import React, { useEffect, useState } from "react";
-import LocalDataService from "../../data/services/localDataService";
+import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+
+enum buttonType {
+  LINK = "link",
+  ALERT = "alert",
+  SCRIPT = "script",
+}
 
 interface ButtonData {
   text: string;
-  type: string; // TODO: make enum
+  type: buttonType;
+
+  link: string; // for link button
+  message: string; // for alert button
+  script: string; // for script button
 }
 
 export default class Button {
@@ -28,9 +39,10 @@ export default class Button {
     this.readOnly = readOnly;
     this.data = {
       text: data.text !== undefined ? data.text : "",
-      type: Button.buttonTypes.includes(data.type)
-        ? data.type
-        : Button.defaultType,
+      type: data.type ? data.type : Button.defaultType,
+      link: data.link !== undefined ? data.link : "",
+      message: data.message !== undefined ? data.message : "",
+      script: data.script !== undefined ? data.script : "",
     };
 
     this.api = api;
@@ -52,11 +64,11 @@ export default class Button {
   }
 
   static get defaultType() {
-    return "link";
+    return buttonType.LINK;
   }
 
   static get buttonTypes() {
-    return ["link", "alert"];
+    return buttonType;
   }
 
   render() {
@@ -102,7 +114,7 @@ export default class Button {
   renderSettings() {
     const settingsContainer = this._make("div");
 
-    Button.buttonTypes.forEach((type) => {
+    Object.values(Button.buttonTypes).forEach((type) => {
       const settingsButton = this._make(
         "div",
         [
@@ -170,11 +182,34 @@ export default class Button {
   save(blockContent: any) {
     if (!this.readOnly) {
       const textInput = blockContent.querySelector("#textInput");
+      const text = textInput ? textInput.value : "";
 
-      return {
-        text: textInput.value,
-        type: this.data.type,
-      };
+      if (this.data.type === "link") {
+        const linkInput = blockContent.querySelector("#linkInput");
+        const link = linkInput ? linkInput.value : "";
+        return {
+          text,
+          type: this.data.type,
+          link,
+        };
+      } else if (this.data.type === "alert") {
+        const messageInput = blockContent.querySelector("#messageInput");
+        const message = messageInput ? messageInput.value : "";
+        console.log("save alert stuff");
+        return {
+          text,
+          type: this.data.type,
+          message,
+        };
+      } else if (this.data.type === "script") {
+        const scriptInput = blockContent.querySelector("#scriptInput");
+        const script = scriptInput ? scriptInput.value : "";
+        return {
+          text,
+          type: this.data.type,
+          script,
+        };
+      }
     }
     return this.data;
   }
@@ -192,19 +227,82 @@ const ButtonComponent: React.FC<Props> = ({
   readOnly,
 }) => {
   const [data, setData] = useState(initData);
+  const [syntaxError, setSyntaxError] = useState(false);
+  const [syntaxErrorMessage, setSyntaxErrorMessage] = useState("");
 
   let btnColor = "";
-  if (initData.type === "link") {
+  let specificFields;
+  let onClickListener;
+  if (initData.type === buttonType.LINK || !initData.type) {
     btnColor = "bg-blue-500 hover:bg-blue-400";
-  } else if (data.type === "alert") {
+    specificFields = (
+      <input
+        id="linkInput"
+        className="text-input"
+        type="text"
+        value={data.link ?? ""}
+        onChange={(event) => {
+          setData({ ...data, link: event.target.value });
+        }}
+        placeholder="Enter link"
+      />
+    );
+    onClickListener = () => {
+      window.location.assign(data.link.replace(/^www/, "http://www"));
+    };
+  } else if (data.type === buttonType.ALERT) {
     btnColor = "bg-red-500 hover:bg-red-400";
+    specificFields = (
+      <input
+        id="messageInput"
+        className="text-input"
+        type="text"
+        value={data.message ?? ""}
+        onChange={(event) => {
+          setData({ ...data, message: event.target.value });
+        }}
+        placeholder="Enter message"
+      />
+    );
+    onClickListener = () => {
+      alert(data.message);
+    };
+  } else if (data.type === buttonType.SCRIPT) {
+    btnColor = "bg-black hover:bg-black-900";
+    specificFields = (
+      <input
+        id="scriptInput"
+        className="text-input"
+        type="text"
+        value={data.script ?? ""}
+        onChange={(event) => {
+          setData({ ...data, script: event.target.value });
+        }}
+        placeholder="Enter script"
+      />
+    );
+    onClickListener = () => {
+      // TODO: investigate security of using eval here
+      // eval is okay here because it is only the frontend (we allow the user to inject scripts into his browser only)
+      // or is it not??
+      try {
+        setSyntaxError(false);
+        eval(data.script);
+      } catch (e) {
+        if (e instanceof SyntaxError) {
+          setSyntaxError(true);
+          setSyntaxErrorMessage(e.message);
+        }
+      }
+    };
   }
 
   if (readOnly) {
     return (
       <div className="dynamic-value-component-display">
         <button
-          className={`text-white ${btnColor} shadow-sm hover:shadow-md ml-1 p-1 pl-3 pr-3 rounded-lg`}
+          className={`text-white ${btnColor} shadow-sm hover:shadow-md m-1 p-1 pl-3 pr-3 rounded-lg`}
+          onClick={onClickListener}
         >
           {data.text == "" ? "Button" : data.text}
         </button>
@@ -223,11 +321,29 @@ const ButtonComponent: React.FC<Props> = ({
           }}
           placeholder="Enter text name..."
         />
+        {specificFields}
+        <FontAwesomeIcon className="mx-1" icon={faArrowRight} />
         <button
-          className={`text-white ${btnColor} shadow-sm hover:shadow-md ml-1 p-1 pl-3 pr-3 rounded-lg`}
+          className={`text-white ${btnColor} shadow-sm hover:shadow-md m-1 p-1 pl-3 pr-3 rounded-lg`}
+          onClick={onClickListener}
         >
           {data.text == "" ? "Button" : data.text}
         </button>
+        {syntaxError && (
+          <div className="text-red-500">
+            <p>{syntaxErrorMessage}</p>
+
+            <p>
+              <a
+                href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn more about eval
+              </a>
+            </p>
+          </div>
+        )}
       </div>
     );
   }

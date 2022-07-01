@@ -5,26 +5,6 @@
   margin-bottom: 10px;
 }
 
-.cdx-alert__message {
-  outline: none;
-}
-
-.cdx-alert [contentEditable="true"][data-placeholder]::before {
-  position: absolute;
-  content: attr(data-placeholder);
-  color: #707684;
-  font-weight: normal;
-  opacity: 0;
-}
-
-.cdx-alert [contentEditable="true"][data-placeholder]:empty::before {
-  opacity: 1;
-}
-
-.cdx-alert [contentEditable="true"][data-placeholder]:empty:focus::before {
-  opacity: 0;
-}
-
 .cdx-button-link {
   background-color: #3b82f6;
   color: #fff;
@@ -32,6 +12,11 @@
 
 .cdx-button-alert {
   background-color: #ef4444;
+  color: #fff;
+}
+
+.cdx-button-script {
+  background-color: #000;
   color: #fff;
 }
 

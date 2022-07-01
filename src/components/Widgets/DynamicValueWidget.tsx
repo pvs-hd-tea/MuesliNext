@@ -117,7 +117,6 @@ class DynamicValueComponent extends React.Component<
 
   render() {
     if (this.props.readOnly) {
-      const text = this.fetchDynamicValue();
       return (
         <div className="dynamic-value-component-display">
           {this.state.value}

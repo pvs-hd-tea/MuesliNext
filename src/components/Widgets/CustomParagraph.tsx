@@ -1,4 +1,7 @@
+// TODO: port to react.
+// Until then it will be difficult to use state from react.
 import { API, HTMLPasteEvent } from "@editorjs/editorjs";
+import localDataService from "../../data/services/localDataService";
 import "./CustomParagraph.css";
 
 /**
@@ -148,8 +151,22 @@ export default class Paragraph {
     }
     return text;
   }
-  fetchDynamicValue(tableName: string, columnName: string, entryKey: string) {
-    return `${tableName} ${columnName} ${entryKey}`;
+
+  fetchDynamicValue(
+    tableName: string,
+    columnName: string,
+    entryKey: string
+  ): string {
+    const dataService = localDataService.getFromLocalOrNew();
+    let newVal: string = dataService.fetchTableItemByNameCached(
+      tableName,
+      columnName,
+      entryKey
+    );
+    if (newVal === undefined) {
+      newVal = "not found";
+    }
+    return newVal;
   }
 
   /**
@@ -162,7 +179,7 @@ export default class Paragraph {
     if (this.readOnly) {
       const startStringOfCommand = "//dynamicValue:";
       const endStringOfCommand = ":dynamicValue//";
-      while (finalElement.innerHTML.search(startStringOfCommand) > 0) {
+      while (finalElement.innerHTML.search(startStringOfCommand) >= 0) {
         const text = finalElement.innerHTML;
         const commandStart = text.search(startStringOfCommand);
         const textWithoutStart = text.substring(

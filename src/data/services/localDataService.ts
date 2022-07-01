@@ -15,6 +15,13 @@ export enum PageMode {
 export interface LocalState {
   pageMode: PageMode;
   activePageUuid?: string;
+  cachedTables: {
+    [name: string]: {
+      table: Table;
+      columns: Column[];
+      rows: Record<string, any>;
+    };
+  };
 }
 
 // singleton
@@ -25,6 +32,7 @@ export default class LocalDataService {
 
   private local: LocalState = {
     pageMode: PageMode.Edit,
+    cachedTables: {},
   };
 
   private constructor(config: WebAppConfig) {
@@ -282,8 +290,13 @@ export default class LocalDataService {
     if (tableID === -1) {
       throw new Error("Table not found");
     }
-    console.log("Table ID: " + tableID);
-    return await this.fetchTableById(tableID + 1);
+    //console.log("Table ID: " + tableID);
+    const table = await this.fetchTableById(tableID + 1);
+    const cachedTables = this.getLocalState().cachedTables;
+    cachedTables[name] = table;
+    console.log("cached table");
+    this.setLocalState({ ...this.getLocalState(), cachedTables: cachedTables });
+    return table;
   }
 
   async fetchTableTableItemByName(
@@ -306,16 +319,37 @@ export default class LocalDataService {
     //   }
     // ]
     const table = await this.fetchTableByName(name);
-    console.log(table);
-    console.log(`key is ${key}`);
+    //console.log(table);
+    //console.log(`key is ${key}`);
     const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
-    console.log(row);
+    //console.log(row);
     if (!row) {
       return "row not found";
     }
     const item = row[column];
-    console.log(item);
+    //console.log(item);
     return item;
+  }
+
+  // TODO: replace by SWR
+  fetchTableItemByNameCached(name: string, column: string, key: string) {
+    // timout is to repreduce not updated on loaded bug
+    //setTimeout(() => {
+    this.fetchTableTableItemByName(name, column, key); // stage next fetch
+    //}, 1000);
+    const cachedTables = this.getLocalState().cachedTables;
+    if (cachedTables[name]) {
+      const table = cachedTables[name];
+      const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
+      if (!row) {
+        return "row not found";
+      }
+      const item = row[column];
+      return item;
+    } else {
+      console.log("fetching table");
+      return "fetching table";
+    }
   }
 
   // TODO: make more efficient

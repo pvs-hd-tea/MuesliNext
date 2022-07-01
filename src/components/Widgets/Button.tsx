@@ -1,5 +1,5 @@
 import "./Button.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LocalDataService from "../../data/services/localDataService";
 import { createRoot } from "react-dom/client";
 
@@ -87,7 +87,7 @@ export default class Button {
       settingsButton: this.api.styles.settingsButton,
       settingsButtonActive: this.api.styles.settingsButtonActive,
       wrapper: "cdx-alert",
-      wrapperForType: (type: string) => `cdx-alert-${type}`,
+      wrapperForType: (type: string) => `cdx-button-${type}`,
       message: "cdx-alert__message",
     };
   }
@@ -120,7 +120,7 @@ export default class Button {
 
       // Set up click handler
       settingsButton.addEventListener("click", () => {
-        this._changeAlertType(type);
+        this.data.type = type;
 
         // Un-highlight previous type button
         settingsContainer
@@ -137,29 +137,6 @@ export default class Button {
     });
 
     return settingsContainer;
-  }
-
-  /**
-   * Helper for changing style of Alert block with the selected Alert type
-   *
-   * @param {string} newType - new Alert type to be applied to the block
-   * @private
-   */
-  _changeAlertType(newType: string) {
-    // Save new type
-    this.data.type = newType;
-
-    Button.buttonTypes.forEach((type) => {
-      const alertClass = this.CSS.wrapperForType(type);
-
-      // Remove the old Alert type class
-      this.wrapper!.classList.remove(alertClass);
-
-      if (newType === type) {
-        // Add an Alert class for the selected Alert type
-        this.wrapper!.classList.add(alertClass);
-      }
-    });
   }
 
   /**

@@ -1,7 +1,7 @@
 import "./Button.css";
 import React, { useEffect, useState } from "react";
 import LocalDataService from "../../data/services/localDataService";
-import { createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 
 interface ButtonData {
   text: string;
@@ -10,7 +10,8 @@ interface ButtonData {
 
 export default class Button {
   data: ButtonData;
-  wrapper?: HTMLElement;
+  wrapper: HTMLElement;
+  root: Root;
   readOnly: boolean;
   api: EditorJS.API;
   container?: HTMLElement;
@@ -31,9 +32,12 @@ export default class Button {
         ? data.type
         : Button.defaultType,
     };
-    this.wrapper = undefined;
+
     this.api = api;
     this.container = undefined;
+
+    this.wrapper = document.createElement("div");
+    this.root = createRoot(this.wrapper);
   }
 
   static get toolbox() {
@@ -56,15 +60,13 @@ export default class Button {
   }
 
   render() {
-    this.wrapper = document.createElement("div");
-
     const onDataChange = (newData: ButtonData) => {
       this.data = {
         ...newData,
       };
     };
-    const root = createRoot(this.wrapper);
-    root.render(
+
+    this.root.render(
       <React.StrictMode>
         <ButtonComponent
           onDataChange={onDataChange}
@@ -121,7 +123,7 @@ export default class Button {
       // Set up click handler
       settingsButton.addEventListener("click", () => {
         this.data.type = type;
-
+        this.render();
         // Un-highlight previous type button
         settingsContainer
           .querySelectorAll(`.${this.CSS.settingsButton}`)
@@ -192,7 +194,7 @@ const ButtonComponent: React.FC<Props> = ({
   const [data, setData] = useState(initData);
 
   let btnColor = "";
-  if (data.type === "link") {
+  if (initData.type === "link") {
     btnColor = "bg-blue-500 hover:bg-blue-400";
   } else if (data.type === "alert") {
     btnColor = "bg-red-500 hover:bg-red-400";

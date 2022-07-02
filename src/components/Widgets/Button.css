@@ -14,6 +14,10 @@
   font-size: 14px;
 }
 
+.button-component-configure .text-input:invalid {
+  border: 1px solid #ef4444;
+}
+
 .cdx-button [contentEditable="true"][data-placeholder]:empty::before {
   opacity: 1;
 }
@@ -37,6 +41,12 @@
 .cdx-button-script,
 .cdx-button-script:hover {
   background-color: #000;
+  color: #fff;
+}
+
+.cdx-button-submit,
+.cdx-button-submit:hover {
+  background-color: #22c55e;
   color: #fff;
 }
 

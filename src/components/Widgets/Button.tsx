@@ -143,6 +143,7 @@ export default class Button {
         // Un-highlight previous type button
         settingsContainer
           .querySelectorAll(`.${this.CSS.settingsButton}`)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           .forEach((button: any) =>
             button.classList.remove(this.CSS.settingsButtonActive)
           );
@@ -166,6 +167,7 @@ export default class Button {
    * @returns {Element}
    * @private
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   _make(tagName: any, classNames: any = undefined, attributes: any = {}) {
     const el = document.createElement(tagName);
 
@@ -270,6 +272,7 @@ interface Props {
 }
 
 const ButtonComponent: React.FC<Props> = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onDataChange,
   initData,
   readOnly,

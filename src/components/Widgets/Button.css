@@ -1,38 +1,58 @@
-.cdx-alert {
+.cdx-button {
   position: relative;
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 10px;
 }
 
-.cdx-button-link {
+.button-component-configure .text-input {
+  width: 30%;
+  padding: 10px;
+  border: 1px solid #e4e4e4;
+  border-radius: 3px;
+  outline: none;
+  font-size: 14px;
+}
+
+.cdx-button [contentEditable="true"][data-placeholder]:empty::before {
+  opacity: 1;
+}
+
+.cdx-button [contentEditable="true"][data-placeholder]:empty:focus::before {
+  opacity: 0;
+}
+
+.cdx-button-link,
+.cdx-button-link:hover {
   background-color: #3b82f6;
   color: #fff;
 }
 
-.cdx-button-alert {
+.cdx-button-alert,
+.cdx-button-alert:hover {
   background-color: #ef4444;
   color: #fff;
 }
 
-.cdx-button-script {
+.cdx-button-script,
+.cdx-button-script:hover {
   background-color: #000;
   color: #fff;
 }
 
-.cdx-alert.cdx-settings-button {
+.cdx-button.cdx-settings-button {
   margin: 3px;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   opacity: 0.5;
 }
 
-.cdx-alert.cdx-settings-button:hover {
+.cdx-button.cdx-settings-button:hover {
   opacity: 1;
 }
 
-.cdx-alert.cdx-settings-button--active,
-.cdx-alert.ce-settings__button--focused {
+.cdx-button.cdx-settings-button--active,
+.cdx-button.ce-settings__button--focused {
   font-weight: bold;
   opacity: 0.9;
 }

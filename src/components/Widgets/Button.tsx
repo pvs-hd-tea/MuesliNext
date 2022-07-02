@@ -92,7 +92,7 @@ export default class Button {
   }
 
   /**
-   * Alert Tool`s styles
+   * button Tool`s styles
    *
    * @returns {Object}
    */
@@ -100,9 +100,8 @@ export default class Button {
     return {
       settingsButton: this.api.styles.settingsButton,
       settingsButtonActive: this.api.styles.settingsButtonActive,
-      wrapper: "cdx-alert",
+      wrapper: "cdx-button",
       wrapperForType: (type: string) => `cdx-button-${type}`,
-      message: "cdx-alert__message",
     };
   }
 
@@ -195,7 +194,6 @@ export default class Button {
       } else if (this.data.type === "alert") {
         const messageInput = blockContent.querySelector("#messageInput");
         const message = messageInput ? messageInput.value : "";
-        console.log("save alert stuff");
         return {
           text,
           type: this.data.type,
@@ -299,9 +297,9 @@ const ButtonComponent: React.FC<Props> = ({
 
   if (readOnly) {
     return (
-      <div className="dynamic-value-component-display">
+      <div className="button-component-display">
         <button
-          className={`text-white ${btnColor} shadow-sm hover:shadow-md m-1 p-1 pl-3 pr-3 rounded-lg`}
+          className={`text-white ${btnColor} shadow-sm hover:shadow-md m-1 p-2 pl-3 pr-3 rounded-lg`}
           onClick={onClickListener}
         >
           {data.text == "" ? "Button" : data.text}
@@ -310,7 +308,7 @@ const ButtonComponent: React.FC<Props> = ({
     );
   } else {
     return (
-      <div className="dynamic-value-component-configure">
+      <div className="my-3 button-component-configure">
         <input
           id="textInput"
           className="text-input"
@@ -324,7 +322,7 @@ const ButtonComponent: React.FC<Props> = ({
         {specificFields}
         <FontAwesomeIcon className="mx-1" icon={faArrowRight} />
         <button
-          className={`text-white ${btnColor} shadow-sm hover:shadow-md m-1 p-1 pl-3 pr-3 rounded-lg`}
+          className={`text-white ${btnColor} shadow-sm hover:shadow-md mx-1 p-2 pl-3 pr-3 rounded-lg`}
           onClick={onClickListener}
         >
           {data.text == "" ? "Button" : data.text}

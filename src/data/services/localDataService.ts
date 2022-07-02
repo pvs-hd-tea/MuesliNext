@@ -22,6 +22,7 @@ export interface LocalState {
       rows: Record<string, any>;
     };
   };
+  updateCounter: number;
 }
 
 // singleton
@@ -33,11 +34,17 @@ export default class LocalDataService {
   private local: LocalState = {
     pageMode: PageMode.Edit,
     cachedTables: {},
+    updateCounter: 0,
   };
 
   private constructor(config: WebAppConfig) {
     this.config = config;
     this.local.activePageUuid = this.getSettings().homePath;
+  }
+
+  private forceUpdate() {
+    this.local.updateCounter++;
+    this.useHashCallback();
   }
 
   static getFromLocalOrNew(
@@ -329,6 +336,24 @@ export default class LocalDataService {
     const item = row[column];
     //console.log(item);
     return item;
+  }
+
+  pushTableItemByName(
+    name: string,
+    column: string,
+    key: string,
+    value: string
+  ) {
+    const bodyContent = {
+      table: "p1_" + name,
+      condition: ["_id", key],
+      update: {
+        [column]: value,
+      },
+    };
+    this.request<Table[]>("database/update", bodyContent).then((response) => {
+      this.forceUpdate();
+    });
   }
 
   // TODO: replace by SWR

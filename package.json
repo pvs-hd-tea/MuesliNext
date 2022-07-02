@@ -19,6 +19,7 @@
     "@types/react-dom": "^18.0.5",
     "axios": "^0.27.2",
     "editorjs-alert": "^1.0.3",
+    "editorjs-text-alignment-blocktune": "^1.0.3",
     "file-dialog": "^0.0.8",
     "object-hash": "^3.0.0",
     "react": "^18.1.0",

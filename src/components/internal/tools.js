@@ -8,14 +8,20 @@ import List from "@editorjs/list";
 import Alert from "editorjs-alert";
 import Table from "@editorjs/table";
 import Paragraph from "../Widgets/CustomParagraph";
+import Button from "../Widgets/Button";
+import AlignmentTuneTool from "editorjs-text-alignment-blocktune";
 
 import DynamicValueWidget from "../Widgets/DynamicValueWidget";
 import InlineDynamicValueWidget from "../Widgets/InlineDynamicValueWiget";
 
 export const EDITOR_JS_TOOLS = {
   // NOTE: Paragraph is default tool. Declare only when you want to change paragraph option.
-  paragraph: { class: Paragraph, inlineToolbar: true },
-  header: { class: Header, shortcut: "CMD+SHIFT+H" },
+  paragraph: {
+    class: Paragraph,
+    inlineToolbar: true,
+    tunes: ["alignmentTune"],
+  },
+  header: { class: Header, shortcut: "CMD+SHIFT+H", tunes: ["alignmentTune"] },
   list: { class: List, shortcut: "CMD+SHIFT+L" },
   alert: {
     class: Alert,
@@ -25,8 +31,17 @@ export const EDITOR_JS_TOOLS = {
       defaultType: "primary",
       messagePlaceholder: "Enter something",
     },
+    tunes: ["alignmentTune"],
   },
   table: { class: Table, inlineToolbar: true, shortcut: "CMD+SHIFT+T" },
   dynamicValue: DynamicValueWidget,
   dynamicValueInline: InlineDynamicValueWidget,
+  button: { class: Button, tunes: ["alignmentTune"], shortcut: "CMD+SHIFT+B" },
+
+  alignmentTune: {
+    class: AlignmentTuneTool,
+    config: {
+      default: "left",
+    },
+  },
 };

@@ -1,14 +1,7 @@
 import "./DynamicValueWidget.css";
 import React from "react";
 import ReactDOM from "react-dom";
-import fs from "fs";
-import { Table } from "./DynamicTable-new";
-import DynamicTable from "./DynamicTable";
-
-//import data from "../../data/table-data.json";
-//const data = JSON.parse(
-//    fs.readFileSync("./../data/table-data.json", "utf-8")
-//  );
+import { Table } from "./DynamicTable";
 
 export default class DynamicTableWidget {
   data: DynamicTableWidgetData;
@@ -19,11 +12,7 @@ export default class DynamicTableWidget {
   constructor({ data, readOnly }: any) {
     this.readOnly = readOnly;
     this.data = {
-      //displayState: data.displayState !== undefined ? data.displayState : false,
       tableName: data.tableName !== undefined ? data.tableName : "",
-      //content: data && data.content ? data.content : [],
-      //columnName: data.columnName !== undefined ? data.columnName : "",
-      //entryKey: data.entryKey !== undefined ? data.entryKey : "",
     };
     this.wrapper = undefined;
     this.stateSetting = {
@@ -35,7 +24,7 @@ export default class DynamicTableWidget {
   static get toolbox() {
     return {
       title: "DynamicTable",
-      icon: '<svg width="17" height="15" viewBox="0 0 336 276" xmlns="http://www.w3.org/2000/svg"><path d="M291 150V79c0-19-15-34-34-34H79c-19 0-34 15-34 34v42l67-44 81 72 56-29 42 30zm0 52l-43-30-56 30-81-67-66 39v23c0 19 15 34 34 34h178c17 0 31-13 34-29zM79 0h178c44 0 79 35 79 79v118c0 44-35 79-79 79H79c-44 0-79-35-79-79V79C0 35 35 0 79 0z"/></svg>',
+      icon: '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-table-import" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4 13.5v-7.5a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-6m-8 -10h16m-10 -6v11.5m-8 3.5h7m-3 -3l3 3l-3 3" /> </svg>',
     };
   }
 
@@ -84,37 +73,73 @@ interface Props {
 }
 
 interface DynamicTableWidgetData {
-  //displayState: boolean;
   tableName: string;
-  //columnName: string;
-  //entryKey: string;
 }
 
-interface DataEntry {
-  heads: string;
-  rows: string;
-}
-
-const heads = [
+const entry_data = [
   {
-    id: "firstname" as const,
-    label: "Firstname",
+    table_name: "Table-Classes",
+    heads: [
+      {
+        id: "id1" as const,
+        label: "Class",
+      },
+      {
+        id: "id2" as const,
+        label: "Professor",
+      },
+      {
+        id: "id3" as const,
+        label: "Room",
+      },
+    ],
+    rows: [
+      {
+        id1: "IPI",
+        id2: "Prof. X",
+        id3: "SR A",
+      },
+      {
+        id1: "LA",
+        id2: "Prof. Y",
+        id3: "SR B",
+      },
+    ],
   },
-];
-
-const rows = [
   {
-    firstname: "John",
-  },
-  {
-    firstname: "Paul",
+    table_name: "Table-Students",
+    heads: [
+      {
+        id: "id1" as const,
+        label: "Student name",
+      },
+      {
+        id: "id2" as const,
+        label: "Subject",
+      },
+      {
+        id: "id3" as const,
+        label: "",
+      },
+    ],
+    rows: [
+      {
+        id1: "John",
+        id2: "Informatik",
+        id3: "",
+      },
+      {
+        id1: "Paul",
+        id2: "Mathematik",
+        id3: "",
+      },
+    ],
   },
 ];
 
 class DynamicTableComponent extends React.Component<
   Props,
   DynamicTableWidgetData
-  // DataEntry
 > {
   state = this.props.initData;
 
@@ -123,8 +148,11 @@ class DynamicTableComponent extends React.Component<
   }
 
   renderElement() {
-    if (this.state.tableName == "news")
-      return <Table heads={heads} rows={rows} />;
+    const message = this.state.tableName;
+    const table = entry_data.find((table_obj) => {
+      return table_obj.table_name === message;
+    });
+    if (table) return <Table heads={table.heads} rows={table.rows} />;
     return null;
   }
 
@@ -132,7 +160,10 @@ class DynamicTableComponent extends React.Component<
     if (this.props.readOnly) {
       const text = this.fetchDynamicValue();
       return (
-        <div className="dynamic-table-value-component-display">{text}</div>
+        <div className="dynamic-table-value-component-display">
+          {text}
+          <table>{this.renderElement()}</table>
+        </div>
       );
     } else {
       return (

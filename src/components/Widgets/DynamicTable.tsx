@@ -1,42 +1,34 @@
 import React from "react";
 
-const TableData = [
-  { id: 1, fullName: "Noor Khan", age: 25, city: "Patna" },
-  { id: 2, fullName: "Rapsan Jani", age: 26, city: "Noida" },
-  { id: 3, fullName: "Monika Singh", age: 18, city: "New Delhi" },
-  { id: 4, fullName: "Sunil Kumar", age: 22, city: "Jaipur" },
-  { id: 5, fullName: "Kajol Kumari", age: 21, city: "Chennai" },
-];
+type HeadCell<DataType> = {
+  id: Extract<keyof DataType, string>;
+  label: string;
+};
 
-function DynamicTable() {
-  // get table column
+type TableProps<DataType> = {
+  heads: HeadCell<DataType>[];
+  rows: Array<DataType>;
+};
 
-  const column = Object.keys(TableData[1]);
-  // get table heading data
-  const ThData = () => {
-    return column.map((data) => {
-      return <th key={data}>{data}</th>;
-    });
-  };
-  // get table row data
-  const tdData = () => {
-    return TableData.map((data: any) => {
-      return (
-        <tr key={data.id}>
-          {column.map((v) => {
-            return <td key={v}>{data[v]}</td>;
-          })}
-        </tr>
-      );
-    });
-  };
+export function Table<T>({ heads, rows }: TableProps<T>) {
+  const ColumnsKeys = heads.map((item: HeadCell<T>) => item.id);
+
   return (
-    <table className="table">
-      <thead>
-        <tr>{ThData()}</tr>
-      </thead>
-      <tbody>{tdData()}</tbody>
+    <table>
+      <tr>
+        {heads.map((head, headKey) => {
+          return <th key={headKey}>{head.label}</th>;
+        })}
+      </tr>
+      {rows.map((row: any, rowKey) => {
+        return (
+          <tr key={rowKey}>
+            {ColumnsKeys.map((column: keyof T, columnKey) => {
+              return <td key={columnKey}>{row[column]}</td>;
+            })}
+          </tr>
+        );
+      })}
     </table>
   );
 }
-export default DynamicTable;

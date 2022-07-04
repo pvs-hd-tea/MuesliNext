@@ -1,7 +1,21 @@
 import "./DynamicValueWidget.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Table } from "./DynamicTable";
+import { TableWidget } from "./DynamicTable";
+import LocalDataService from "../../data/services/localDataService";
+
+import { Table } from "../../data/definitions/Tables";
+
+import { Column } from "../../../node_modules/@intutable/database/dist/column";
+
+interface DynamicTableWidgetData {
+  tableName: string;
+  tableData?: {
+    table: Table;
+    columns: Column[];
+    rows: Record<string, any>;
+  };
+}
 
 export default class DynamicTableWidget {
   data: DynamicTableWidgetData;
@@ -72,91 +86,75 @@ interface Props {
   readOnly: boolean;
 }
 
-interface DynamicTableWidgetData {
-  tableName: string;
-}
+const DynamicTableComponent: React.FC<Props> = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onDataChange,
+  initData,
+  readOnly,
+}) => {
+  const [data, setData] = useState(initData);
+  const dataService = LocalDataService.getFromLocalOrNew();
+  const [fetched, setFetched] = useState(false);
 
-const entry_data = [
-  {
-    table: {
-      name: "Table-Students",
-    },
-    columns: [
-      {
-        id: "id1" as const,
-        name: "Student name",
-      },
-      {
-        id: "id2" as const,
-        name: "Subject",
-      },
-      {
-        id: "id3" as const,
-        name: "something",
-      },
-    ],
-    rows: [
-      {
-        "Student name": "John",
-        Subject: "Informatik",
-        something: "sdf",
-      },
-      {
-        "Student name": "Paul",
-        Subject: "Mathematik",
-        something: "sdf",
-      },
-    ],
-  },
-];
-
-class DynamicTableComponent extends React.Component<
-  Props,
-  DynamicTableWidgetData
-> {
-  state = this.props.initData;
-
-  fetchDynamicValue() {
-    return `${this.state.tableName}`;
-  }
-
-  renderElement() {
-    const message = this.state.tableName;
-    const table = entry_data.find((table_obj) => {
-      return table_obj.table.name === message;
-    });
-    if (table) return <Table heads={table.columns} rows={table.rows} />;
-    return null;
-  }
-
-  render() {
-    if (this.props.readOnly) {
-      const text = this.fetchDynamicValue();
-      return (
-        <div className="dynamic-table-value-component-display">
-          {text}
-          <table>{this.renderElement()}</table>
-        </div>
-      );
-    } else {
-      return (
-        <div className="dynamic-table-value-component-configure">
-          <input
-            id="tableNameInput"
-            className="text-input"
-            type="text"
-            value={this.state.tableName}
-            onChange={(event) => {
-              this.setState(
-                Object.assign(this.state, { tableName: event.target.value })
-              );
-              this.props.onDataChange(this.state);
-            }}
-            placeholder="Enter Table Column..."
-          />
-          <table>{this.renderElement()}</table>
-        </div>
-      );
+  useEffect(() => {
+    if (!fetched) {
+      // TODO: can we do better?
+      fetchTableByName(initData.tableName);
+      setFetched(true);
     }
+  });
+
+  async function fetchTableByName(tableName: string) {
+    let tableData = undefined;
+    try {
+      tableData = await dataService.fetchTableByName(tableName);
+    } catch (error) {
+      tableData = undefined;
+    }
+    setData({
+      ...data,
+      tableName,
+      tableData,
+    });
+    //return `${this.state.tableName}`;
   }
-}
+
+  if (readOnly) {
+    return (
+      <div className="dynamic-table-value-component-display">
+        {data.tableData && (
+          <table>
+            <TableWidget
+              heads={data.tableData.columns}
+              rows={data.tableData.rows}
+            />
+          </table>
+        )}
+      </div>
+    );
+  } else {
+    return (
+      <div className="dynamic-table-value-component-configure">
+        <input
+          id="tableNameInput"
+          className="text-input"
+          type="text"
+          value={data.tableName}
+          onChange={(event) => {
+            setData({ ...data, tableName: event.target.value });
+            fetchTableByName(event.target.value);
+          }}
+          placeholder="Enter Table Column..."
+        />
+        {data.tableData && (
+          <table>
+            <TableWidget
+              heads={data.tableData.columns}
+              rows={data.tableData.rows}
+            />
+          </table>
+        )}
+      </div>
+    );
+  }
+};

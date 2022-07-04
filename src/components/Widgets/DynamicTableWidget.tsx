@@ -1,4 +1,4 @@
-import "./DynamicValueWidget.css";
+import "./DynamicTableWidget.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { TableWidget } from "./DynamicTable";
@@ -7,6 +7,8 @@ import LocalDataService from "../../data/services/localDataService";
 import { Table } from "../../data/definitions/Tables";
 
 import { Column } from "../../../node_modules/@intutable/database/dist/column";
+import { faArrowDown, faTurnDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface DynamicTableWidgetData {
   tableName: string;
@@ -121,7 +123,7 @@ const DynamicTableComponent: React.FC<Props> = ({
 
   if (readOnly) {
     return (
-      <div className="dynamic-table-value-component-display">
+      <div className="dynamic-table-component-display">
         {data.tableData && (
           <table>
             <TableWidget
@@ -134,12 +136,13 @@ const DynamicTableComponent: React.FC<Props> = ({
     );
   } else {
     return (
-      <div className="dynamic-table-value-component-configure">
+      <div className="dynamic-table-component-configure">
         <input
           id="tableNameInput"
           className="text-input"
           type="text"
           value={data.tableName}
+          pattern={data.tableData ? ".*" : ""}
           onChange={(event) => {
             setData({ ...data, tableName: event.target.value });
             fetchTableByName(event.target.value);
@@ -147,12 +150,18 @@ const DynamicTableComponent: React.FC<Props> = ({
           placeholder="Enter Table Column..."
         />
         {data.tableData && (
-          <table>
-            <TableWidget
-              heads={data.tableData.columns}
-              rows={data.tableData.rows}
-            />
-          </table>
+          <>
+            <FontAwesomeIcon icon={faTurnDown} className="ml-3" />
+            <table>
+              <TableWidget
+                heads={data.tableData.columns}
+                rows={data.tableData.rows}
+              />
+            </table>
+          </>
+        )}
+        {!data.tableData && (
+          <p className="text-red-500">table does not exist</p>
         )}
       </div>
     );

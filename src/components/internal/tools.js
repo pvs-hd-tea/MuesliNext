@@ -10,8 +10,8 @@ import Table from "@editorjs/table";
 import Paragraph from "../Widgets/CustomParagraph";
 import Button from "../Widgets/Button";
 import AlignmentTuneTool from "editorjs-text-alignment-blocktune";
-
 import DynamicValueWidget from "../Widgets/DynamicValueWidget";
+import DynamicTableWidget from "../Widgets/DynamicTableWidget";
 import InlineDynamicValueWidget from "../Widgets/InlineDynamicValueWiget";
 
 export const EDITOR_JS_TOOLS = {
@@ -36,6 +36,7 @@ export const EDITOR_JS_TOOLS = {
   table: { class: Table, inlineToolbar: true, shortcut: "CMD+SHIFT+T" },
   dynamicValue: DynamicValueWidget,
   dynamicValueInline: InlineDynamicValueWidget,
+  dynamicTable: DynamicTableWidget,
   button: { class: Button, tunes: ["alignmentTune"], shortcut: "CMD+SHIFT+B" },
 
   alignmentTune: {

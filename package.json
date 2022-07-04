@@ -21,12 +21,14 @@
     "editorjs-alert": "^1.0.3",
     "editorjs-text-alignment-blocktune": "^1.0.3",
     "file-dialog": "^0.0.8",
+    "jotai": "^1.7.3",
     "object-hash": "^3.0.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-editor-js": "^2.0.6",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-table": "^7.8.0",
     "tailwindcss-scoped-groups": "^2.0.0",
     "ts-md5": "^1.2.11",
     "typescript": "^4.7.2",
@@ -69,6 +71,15 @@
       "last 1 safari version"
     ]
   },
+  "browser": {
+    "crypto": false,
+    "fs": false,
+    "path": false,
+    "os": false,
+    "net": false,
+    "stream": false,
+    "tls": false
+  },
   "devDependencies": {
     "@editorjs/header": "^2.6.2",
     "@editorjs/list": "^1.7.0",
@@ -79,6 +90,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.0",
     "@types/jest": "^28.1.1",
+    "@types/react-table": "^7.7.12",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
     "autoprefixer": "^10.4.7",

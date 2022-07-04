@@ -12,7 +12,6 @@ type TableProps<DataType> = {
 
 export function Table<T>({ heads, rows }: TableProps<T>) {
   const ColumnsKeys = heads.map((item: HeadCell<T>) => item.id);
-
   return (
     <table>
       <tr>

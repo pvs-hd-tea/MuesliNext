@@ -12,7 +12,6 @@ type TableProps<DataType> = {
 
 export function Table<T>({ heads, rows }: TableProps<T>) {
   const ColumnsKeys = heads.map((item: HeadCell<T>) => item.id);
-
   return (
     <table>
       <tr>
@@ -20,15 +19,18 @@ export function Table<T>({ heads, rows }: TableProps<T>) {
           return <th key={headKey}>{head.label}</th>;
         })}
       </tr>
-      {rows.map((row: any, rowKey) => {
-        return (
-          <tr key={rowKey}>
-            {ColumnsKeys.map((column: keyof T, columnKey) => {
-              return <td key={columnKey}>{row[column]}</td>;
-            })}
-          </tr>
-        );
-      })}
+      {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        rows.map((row: any, rowKey) => {
+          return (
+            <tr key={rowKey}>
+              {ColumnsKeys.map((column: keyof T, columnKey) => {
+                return <td key={columnKey}>{row[column]}</td>;
+              })}
+            </tr>
+          );
+        })
+      }
     </table>
   );
 }

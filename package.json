@@ -12,6 +12,7 @@
     "@types/react": "^18.0.10",
     "@types/react-dom": "^18.0.5",
     "editorjs-alert": "^1.0.3",
+    "editorjs-text-alignment-blocktune": "^1.0.3",
     "file-dialog": "^0.0.8",
     "jotai": "^1.7.3",
     "object-hash": "^3.0.0",

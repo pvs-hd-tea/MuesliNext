@@ -137,6 +137,7 @@ class DynamicValueComponent extends React.Component<
               this.props.onDataChange(this.state);
             }}
             placeholder="Enter Table Name..."
+            aria-label="table-name-input"
           />
           <input
             id="columnNameInput"
@@ -150,6 +151,7 @@ class DynamicValueComponent extends React.Component<
               this.props.onDataChange(this.state);
             }}
             placeholder="Enter Column Name..."
+            aria-label="column-name-input"
           />
           <input
             id="entryKeyInput"
@@ -163,9 +165,13 @@ class DynamicValueComponent extends React.Component<
               this.props.onDataChange(this.state);
             }}
             placeholder="Enter Key Of Table Entry..."
+            aria-label="entry-key-input"
           />
         </div>
       );
     }
   }
 }
+
+export { DynamicValueWidget, DynamicValueComponent };
+export type { DynamicValueWidgetData };

@@ -18,7 +18,7 @@ current_branch="$(git rev-parse --abbrev-ref HEAD)"
 
 echo "checking branch name..."
 # regex to validate branch name
-branch_regex='^(fix|feat|chore|ci)\/.*'
+branch_regex='^(fix|feat|chore|refactor|ci|docs|test)\/.*'
 error_msg="Aborting commit. Your branch name: '$current_branch' doesn't fit the contributing-guidelines. See: https://gist.github.com/buddiman/628d55d0b08ff0672af5f4c156afeb08"
 
 if $aspellInstalled && [ "$(echo "$current_branch" | aspell list --lang en)" ]; then

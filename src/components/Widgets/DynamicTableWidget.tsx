@@ -78,60 +78,33 @@ interface DynamicTableWidgetData {
 
 const entry_data = [
   {
-    table_name: "Table-Classes",
-    heads: [
+    table: {
+      name: "Table-Students",
+    },
+    columns: [
       {
         id: "id1" as const,
-        label: "Class",
+        name: "Student name",
       },
       {
         id: "id2" as const,
-        label: "Professor",
+        name: "Subject",
       },
       {
         id: "id3" as const,
-        label: "Room",
+        name: "something",
       },
     ],
     rows: [
       {
-        id1: "IPI",
-        id2: "Prof. X",
-        id3: "SR A",
+        "Student name": "John",
+        Subject: "Informatik",
+        something: "sdf",
       },
       {
-        id1: "LA",
-        id2: "Prof. Y",
-        id3: "SR B",
-      },
-    ],
-  },
-  {
-    table_name: "Table-Students",
-    heads: [
-      {
-        id: "id1" as const,
-        label: "Student name",
-      },
-      {
-        id: "id2" as const,
-        label: "Subject",
-      },
-      {
-        id: "id3" as const,
-        label: "",
-      },
-    ],
-    rows: [
-      {
-        id1: "John",
-        id2: "Informatik",
-        id3: "",
-      },
-      {
-        id1: "Paul",
-        id2: "Mathematik",
-        id3: "",
+        "Student name": "Paul",
+        Subject: "Mathematik",
+        something: "sdf",
       },
     ],
   },
@@ -150,9 +123,9 @@ class DynamicTableComponent extends React.Component<
   renderElement() {
     const message = this.state.tableName;
     const table = entry_data.find((table_obj) => {
-      return table_obj.table_name === message;
+      return table_obj.table.name === message;
     });
-    if (table) return <Table heads={table.heads} rows={table.rows} />;
+    if (table) return <Table heads={table.columns} rows={table.rows} />;
     return null;
   }
 

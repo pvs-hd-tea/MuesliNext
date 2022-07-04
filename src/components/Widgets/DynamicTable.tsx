@@ -1,8 +1,8 @@
 import React from "react";
 
 type HeadCell<DataType> = {
-  id: Extract<keyof DataType, string>;
-  label: string;
+  id: string;
+  name: string;
 };
 
 type TableProps<DataType> = {
@@ -11,19 +11,19 @@ type TableProps<DataType> = {
 };
 
 export function Table<T>({ heads, rows }: TableProps<T>) {
-  const ColumnsKeys = heads.map((item: HeadCell<T>) => item.id);
+  const ColumnsKeys = heads.map((item: HeadCell<T>) => item.name);
 
   return (
-    <table>
+    <table className="">
       <tr>
         {heads.map((head, headKey) => {
-          return <th key={headKey}>{head.label}</th>;
+          return <th key={headKey}>{head.name}</th>;
         })}
       </tr>
       {rows.map((row: any, rowKey) => {
         return (
           <tr key={rowKey}>
-            {ColumnsKeys.map((column: keyof T, columnKey) => {
+            {ColumnsKeys.map((column: string, columnKey) => {
               return <td key={columnKey}>{row[column]}</td>;
             })}
           </tr>

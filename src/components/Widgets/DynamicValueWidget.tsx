@@ -95,15 +95,22 @@ class DynamicValueComponent extends React.Component<
   dataService = LocalDataService.getFromLocalOrNew();
 
   async fetchDynamicValue() {
-    let newVal: string = await this.dataService.fetchTableTableItemByName(
-      this.state.tableName,
-      this.state.columnName,
-      this.state.entryKey
-    );
-    if (newVal === undefined) {
-      newVal = "not found";
-    }
-    this.setState({ ...this.state, value: newVal });
+    this.dataService
+      .fetchTableTableItemByName(
+        this.state.tableName,
+        this.state.columnName,
+        this.state.entryKey
+      )
+      .then((newVal) => {
+        if (newVal === undefined) {
+          newVal = "not found";
+        }
+        this.setState({ ...this.state, value: newVal });
+      })
+      .catch(() => {
+        this.setState({ ...this.state, value: "error fetching data" });
+        console.log("error fetching data");
+      });
     // this.state.value = await this.dataService.fetchTableTableItemByName(
     //   "example",
     //   "string",

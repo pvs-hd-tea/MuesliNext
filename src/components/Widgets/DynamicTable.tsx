@@ -11,7 +11,7 @@ type TableProps<DataType> = {
 
 export function TableWidget<T>({ heads, rows }: TableProps<T>) {
   const ColumnsKeys = heads.map((item: HeadCell<T>) => item.name);
-  
+
   return (
     <table className="border-collapse border-t-2 border-l-2 border-gray-200 p-1">
       <tr>

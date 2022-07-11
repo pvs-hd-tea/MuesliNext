@@ -7,6 +7,7 @@ import {
   DynamicValueComponent,
   DynamicValueWidgetData,
 } from "./DynamicValueWidget";
+import LocalDataService from "../../data/services/localDataService";
 
 let container: HTMLDivElement;
 let root: Root;
@@ -25,7 +26,12 @@ afterEach(() => {
   });
 });
 
-it("fetches data", () => {
+it("fetches data", async () => {
+  jest
+    .spyOn(LocalDataService.prototype, "fetchTableTableItemByName")
+    .mockImplementation((name, column, key) =>
+      Promise.resolve(`${name} ${column} ${key}`)
+    );
   act(() => {
     const widget = new DynamicValueWidget({
       data: { tableName: "a", columnName: "b", entryKey: "c" },
@@ -33,10 +39,14 @@ it("fetches data", () => {
     });
     container.appendChild(widget.render());
   });
+  await new Promise((resolve) => setTimeout(resolve, 100));
   expect(container.textContent).toBe("a b c");
 });
 
 it("saves data", async () => {
+  jest
+    .spyOn(LocalDataService.prototype, "fetchTableTableItemByName")
+    .mockImplementation((name, column, key) => Promise.resolve("fetchedValue"));
   let data = { tableName: "a", columnName: "b", entryKey: "c" };
   const onDataChange = (newData: DynamicValueWidgetData) => {
     data = {
@@ -50,13 +60,17 @@ it("saves data", async () => {
       readOnly={false}
     />
   );
+
+  await new Promise((resolve) => setTimeout(resolve, 100));
   const tableNameInput = await screen.findByLabelText("table-name-input");
-  console.log(tableNameInput);
   fireEvent.change(tableNameInput, { target: { value: "d" } });
+
+  await new Promise((resolve) => setTimeout(resolve, 100));
 
   expect(data).toStrictEqual({
     tableName: "d",
     columnName: "b",
     entryKey: "c",
+    value: "fetchedValue",
   });
 });

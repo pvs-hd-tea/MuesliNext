@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
+import { useListTables } from "../../api/useListTables";
 import { Table } from "../../data/definitions/Tables";
 import localDataService from "../../data/services/localDataService";
 import TableService from "../../data/services/tableService";
@@ -20,24 +21,28 @@ const DataList: React.FC<PageListProperties> = ({
   tableService,
 }) => {
   const defaultTables: Table[] = [];
-  const [tables, setTables] = useState(defaultTables);
+  // const [tables, setTables] = useState(defaultTables);
 
-  const getTables = async () => {
-    const tables = await dataService.fetchTables();
-    setTables(tables);
-  };
+  // const getTables = async () => {
+  //   const tables = await dataService.fetchTables();
+  //   setTables(tables);
+  // };
 
-  useEffect(() => {
-    if (tables.length === 0) {
-      getTables();
-    }
-  });
+  // useEffect(() => {
+  //   if (tables.length === 0) {
+  //     getTables();
+  //   }
+  // });
+
+  const { tables, isLoading, isError } = useListTables();
 
   const addTable = () => {
     const tableName = prompt("Please enter your table name:", "my table");
     tableService.createAndAddTableFromName(tableName);
   };
-
+  if (isLoading) return <></>;
+  if (isError) return <></>;
+  //return <div>{JSON.stringify(tables)}</div>;
   return (
     <>
       <details className="group">
@@ -56,8 +61,8 @@ const DataList: React.FC<PageListProperties> = ({
 
         <nav className="ml-5 flex flex-col">
           {tables
-            .filter((table) => !table.name.startsWith("internal#"))
-            .map((table, id) => (
+            .filter((table: any) => !table.name.startsWith("internal#"))
+            .map((table: any, id: any) => (
               <TableItem key={id} tableService={tableService} table={table} />
             ))}
           <a

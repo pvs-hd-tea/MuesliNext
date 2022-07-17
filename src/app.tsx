@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import PageEdit from "./components/internal/PageEdit";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -9,6 +9,8 @@ import PageService from "./data/services/pageService";
 import SettingsService from "./data/services/settingsService";
 import NavBar from "./components/Widgets/NavBar";
 import TableService from "./data/services/tableService";
+import { Table } from "./data/definitions/Tables";
+import { TableWidget } from "./components/Widgets/DynamicTable";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -22,12 +24,18 @@ const App: React.FC<Props> = ({}) => {
   const tableService = new TableService();
   const settingsService = new SettingsService();
 
-  // const fff = async () => {
-  //   return await dataService.fetchTableTableItemByName("example", "string", "1");
+  const defaultTables: Table[] = [];
+  const [tables, setTables] = useState(defaultTables);
+
+  // const getTables = async () => {
+  //   const tables = await dataService.fetchTables();
+  //   setTables(tables);
   // };
 
   // useEffect(() => {
-  //   fff();
+  //   if (tables.length === 0) {
+  //     getTables();
+  //   }
   // });
 
   const [, setSettingsHash] = useState("");
@@ -79,6 +87,31 @@ const App: React.FC<Props> = ({}) => {
                   }
                 />
               ))}
+              {/* {tables
+                .filter((table) => !table.name.startsWith("internal#"))
+                .map((table) => (
+                  <Route
+                    key={table.name}
+                    path={`/tables/${table.name.replace(/^p.*_/, "")}`}
+                    element={
+                      <div className="mt-20 place-content-center">
+                        <p className="text-9xl text-center text-blue-600">
+                          {" "}
+                          Table{" "}
+                        </p>
+                        <p className="text-2xl text-center text-blue-600">
+                          {table.name.replace(/^p.*_/, "")}
+                        </p>
+                        <table>
+                          <TableWidget
+                            heads={tableData.tableData.columns}
+                            rows={tableData.tableData.rows}
+                          />
+                        </table>
+                      </div>
+                    }
+                  />
+                ))} */}
               <Route
                 path="/general"
                 element={

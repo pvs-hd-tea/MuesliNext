@@ -1,7 +1,8 @@
 import "./DynamicValueWidget.css";
-import React from "react";
+import React, { useState } from "react";
 import LocalDataService from "../../data/services/localDataService";
 import { createRoot } from "react-dom/client";
+import { getTableItemByName } from "../../api/useGetTable";
 
 export default class DynamicValueWidget {
   data: DynamicValueWidgetData;
@@ -86,99 +87,67 @@ interface Props {
   readOnly: boolean;
 }
 
-class DynamicValueComponent extends React.Component<
-  Props,
-  DynamicValueWidgetData
-> {
-  state = { ...this.props.initData };
+const DynamicValueComponent: React.FC<Props> = ({
+  onDataChange,
+  initData,
+  readOnly,
+}: Props) => {
+  const [data, setData] = useState(initData);
+  const { item, isLoading, isError } = getTableItemByName(
+    data.tableName,
+    data.columnName,
+    data.entryKey
+  );
 
-  dataService = LocalDataService.getFromLocalOrNew();
+  if (readOnly) {
+    return <div className="dynamic-value-component-display">{item}</div>;
+  } else {
+    return (
+      <div className="dynamic-value-component-configure">
+        <input
+          id="tableNameInput"
+          className="text-input"
+          type="text"
+          value={data.tableName}
+          onChange={(event) => {
+            setData({ ...data, tableName: event.target.value });
 
-  async fetchDynamicValue() {
-    this.dataService
-      .fetchTableTableItemByName(
-        this.state.tableName,
-        this.state.columnName,
-        this.state.entryKey
-      )
-      .then((newVal) => {
-        if (newVal === undefined) {
-          newVal = "not found";
-        }
-        this.setState({ ...this.state, value: newVal });
-      })
-      .catch(() => {
-        this.setState({ ...this.state, value: "error fetching data" });
-        console.log("error fetching data");
-      });
-    // this.state.value = await this.dataService.fetchTableTableItemByName(
-    //   "example",
-    //   "string",
-    //   "2"
-    // );
+            onDataChange(data);
+          }}
+          placeholder="Enter Table Name..."
+          aria-label="table-name-input"
+        />
+        <input
+          id="columnNameInput"
+          className="text-input"
+          type="text"
+          value={data.columnName}
+          onChange={(event) => {
+            setData({ ...data, columnName: event.target.value });
+            onDataChange(data);
+          }}
+          placeholder="Enter Column Name..."
+          aria-label="column-name-input"
+        />
+        <input
+          id="entryKeyInput"
+          className="text-input"
+          type="text"
+          value={data.entryKey}
+          onChange={(event) => {
+            setData({ ...data, entryKey: event.target.value });
+            onDataChange(data);
+          }}
+          placeholder="Enter Key Of Table Entry..."
+          aria-label="entry-key-input"
+        />
+        {isLoading && <div>Loading...</div>}
+        {isError && <div>Error...</div>}
+        {item && <div>{item}</div>}
+      </div>
+    );
   }
-
-  componentDidMount() {
-    this.fetchDynamicValue();
-  }
-
-  render() {
-    if (this.props.readOnly) {
-      return (
-        <div className="dynamic-value-component-display">
-          {this.state.value}
-        </div>
-      );
-    } else {
-      return (
-        <div className="dynamic-value-component-configure">
-          <input
-            id="tableNameInput"
-            className="text-input"
-            type="text"
-            value={this.state.tableName}
-            onChange={(event) => {
-              this.setState(
-                Object.assign(this.state, { tableName: event.target.value })
-              );
-              this.props.onDataChange(this.state);
-            }}
-            placeholder="Enter Table Name..."
-            aria-label="table-name-input"
-          />
-          <input
-            id="columnNameInput"
-            className="text-input"
-            type="text"
-            value={this.state.columnName}
-            onChange={(event) => {
-              this.setState(
-                Object.assign(this.state, { columnName: event.target.value })
-              );
-              this.props.onDataChange(this.state);
-            }}
-            placeholder="Enter Column Name..."
-            aria-label="column-name-input"
-          />
-          <input
-            id="entryKeyInput"
-            className="text-input"
-            type="text"
-            value={this.state.entryKey}
-            onChange={(event) => {
-              this.setState(
-                Object.assign(this.state, { entryKey: event.target.value })
-              );
-              this.props.onDataChange(this.state);
-            }}
-            placeholder="Enter Key Of Table Entry..."
-            aria-label="entry-key-input"
-          />
-        </div>
-      );
-    }
-  }
-}
+};
 
 export { DynamicValueWidget, DynamicValueComponent };
 export type { DynamicValueWidgetData };

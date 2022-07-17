@@ -9,6 +9,7 @@ import { Table } from "../../data/definitions/Tables";
 import { Column } from "../../../node_modules/@intutable/database/dist/column";
 import { faTurnDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useGetTableByName } from "../../api/useGetTable";
 
 interface DynamicTableWidgetData {
   tableName: string;
@@ -95,41 +96,18 @@ const DynamicTableComponent: React.FC<Props> = ({
   readOnly,
 }) => {
   const [data, setData] = useState(initData);
-  const dataService = LocalDataService.getFromLocalOrNew();
-  const [fetched, setFetched] = useState(false);
+  const { table, isLoading, isError } = useGetTableByName(data.tableName);
 
-  useEffect(() => {
-    if (!fetched) {
-      // TODO: can we do better?
-      fetchTableByName(initData.tableName);
-      setFetched(true);
-    }
-  });
-
-  async function fetchTableByName(tableName: string) {
-    let tableData = undefined;
-    try {
-      tableData = await dataService.fetchTableByName(tableName);
-    } catch (error) {
-      tableData = undefined;
-    }
-    setData({
-      ...data,
-      tableName,
-      tableData,
-    });
-    //return `${this.state.tableName}`;
-  }
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setData({ ...data, tableName: event.target.value });
+  };
 
   if (readOnly) {
     return (
       <div className="dynamic-table-component-display">
-        {data.tableData && (
+        {!isError && !isLoading && (
           <table>
-            <TableWidget
-              heads={data.tableData.columns}
-              rows={data.tableData.rows}
-            />
+            <TableWidget heads={table.columns} rows={table.rows} />
           </table>
         )}
       </div>
@@ -142,27 +120,22 @@ const DynamicTableComponent: React.FC<Props> = ({
           className="text-input"
           type="text"
           value={data.tableName}
-          pattern={data.tableData ? ".*" : ""}
+          pattern={!isError ? ".*" : ""}
           onChange={(event) => {
-            setData({ ...data, tableName: event.target.value });
-            fetchTableByName(event.target.value);
+            handleChange(event);
           }}
           placeholder="Enter Table Column..."
         />
-        {data.tableData && (
+        {!isError && !isLoading && (
           <>
             <FontAwesomeIcon icon={faTurnDown} className="ml-3" />
             <table>
-              <TableWidget
-                heads={data.tableData.columns}
-                rows={data.tableData.rows}
-              />
+              <TableWidget heads={table.columns} rows={table.rows} />
             </table>
           </>
         )}
-        {!data.tableData && (
-          <p className="text-red-500">table does not exist</p>
-        )}
+        {isError && <p className="text-red-500">table does not exist</p>}
+        {isLoading && <p className="text-blue-500">loading...</p>}
       </div>
     );
   }

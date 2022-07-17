@@ -239,107 +239,6 @@ export default class LocalDataService {
 
   /*------------------------------------------------- Backend functions ---*/
 
-  async request<T>(url: string, data: object): Promise<T> {
-    const headersList = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-
-    const bodyContent = JSON.stringify(data);
-
-    const reqOptions = {
-      url: `${this.config.settings.backendUrl}/request/${url}`,
-      method: "POST",
-      headers: headersList,
-      data: bodyContent,
-    };
-
-    const request = await axios.request(reqOptions);
-    // TODO: parsing
-    return request.data;
-  }
-
-  async fetchTables(): Promise<Table[]> {
-    const bodyContent = {
-      sessionID: "Session",
-      id: 1,
-    };
-    const tables = await this.request<Table[]>(
-      "project-management/getTablesFromProject",
-      bodyContent
-    );
-    return tables;
-  }
-
-  async fetchTableById(id: number): Promise<{
-    table: Table;
-    columns: Column[];
-    rows: Record<string, string>;
-  }> {
-    const bodyContent = {
-      sessionID: "Session",
-      id: id,
-    };
-    const table = await this.request<{
-      table: Table;
-      columns: Column[];
-      rows: Record<string, string>;
-    }>("project-management/getTableData", bodyContent);
-    return table;
-  }
-
-  async fetchTableByName(name: string): Promise<{
-    table: Table;
-    columns: Column[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rows: Record<string, any>;
-  }> {
-    const tables = await this.fetchTables();
-    const tableID = tables.findIndex((table) => table.name === name);
-    if (tableID === -1) {
-      throw new Error("Table not found");
-    }
-    //console.log("Table ID: " + tableID);
-    const table = await this.fetchTableById(tableID + 1);
-    const cachedTables = this.getLocalState().cachedTables;
-    cachedTables[name] = table;
-    console.log("cached table");
-    this.setLocalState({ ...this.getLocalState(), cachedTables: cachedTables });
-    return table;
-  }
-
-  async fetchTableTableItemByName(
-    name: string,
-    column: string,
-    key: string
-  ): Promise<string> {
-    // "rows": [
-    //   {
-    //     "_id": 1,
-    //     "number": 1,
-    //     "string": "foo",
-    //     "boolean": true
-    //   },
-    //   {
-    //     "_id": 2,
-    //     "number": 42,
-    //     "string": "bar",
-    //     "boolean": false
-    //   }
-    // ]
-    const table = await this.fetchTableByName(name);
-    //console.log(table);
-    //console.log(`key is ${key}`);
-    const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
-    //console.log(row);
-    if (!row) {
-      return "row not found";
-    }
-    const item = row[column];
-    //console.log(item);
-    return item;
-  }
-
   pushTableItemByName(
     name: string,
     column: string,
@@ -381,8 +280,6 @@ export default class LocalDataService {
 
   // TODO: make more efficient
   async isConnected(): Promise<boolean> {
-    const tables = await this.fetchTables();
-    const parsed = TableSchema.safeParse(tables[0]);
-    return parsed.success;
+    return true;
   }
 }

@@ -55,9 +55,11 @@ const DataList: React.FC<PageListProperties> = ({
         </summary>
 
         <nav className="ml-5 flex flex-col">
-          {tables.map((table, id) => (
-            <TableItem key={id} tableService={tableService} table={table} />
-          ))}
+          {tables
+            .filter((table) => !table.name.startsWith("internal#"))
+            .map((table, id) => (
+              <TableItem key={id} tableService={tableService} table={table} />
+            ))}
           <a
             onClick={addTable}
             className="cursor-pointer flex items-center px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700"

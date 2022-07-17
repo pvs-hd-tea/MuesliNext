@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   faCheck,
-  faFile,
-  faFilePen,
   faPen,
+  faTable,
   faTrash,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
@@ -19,11 +18,11 @@ interface tableItemProperties {
 
 const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
   const tableIsActive = tableService.getActivePageUuid() === table.key;
-  const defaulttableIcon = tableIsActive ? faFilePen : faFile;
+  const defaultTableIcon = faTable;
   const animation = tableIsActive ? "animate-bounce" : "";
   const shadow = tableIsActive ? " shadow-lg" : "";
 
-  const [fileIcon, setFileIcon] = useState(defaulttableIcon);
+  const [fileIcon, setFileIcon] = useState(faTable);
   const [stopEditButton, setStopEditButton] = useState(faXmark);
   const [tableName, setTableName] = useState(table.name);
   const [edit, setEdit] = useState(false);
@@ -46,13 +45,13 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
       setTableName(table.name);
     }
     setEdit(false);
-    setFileIcon(defaulttableIcon);
+    setFileIcon(defaultTableIcon);
   };
 
   const onNameCancel = () => {
     setTableName(table.name);
     setEdit(false);
-    setFileIcon(defaulttableIcon);
+    setFileIcon(defaultTableIcon);
   };
 
   const onDelete = () => {
@@ -102,7 +101,8 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
       className={"grid grid-cols-7 hover:scale-105 hover:shadow-lg" + shadow}
     >
       <a
-        href={`/#/tables/${table.key}`}
+        // the replace will remove the project id: p1_example -> example
+        href={`/#/tables/${table.key.replace(/^p.*_/, "")}`}
         onClick={handleOnClick}
         className="col-span-6 items-center px-4 py-2 text-gray-500  hover:text-gray-900"
       >
@@ -112,7 +112,7 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
               <FontAwesomeIcon
                 className={animation}
                 onMouseEnter={() => setFileIcon(faPen)}
-                onMouseLeave={() => setFileIcon(defaulttableIcon)}
+                onMouseLeave={() => setFileIcon(defaultTableIcon)}
                 icon={fileIcon}
                 onClick={() => {
                   setEdit(true), setStopEditButton(faXmark);

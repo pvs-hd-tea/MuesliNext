@@ -100,6 +100,7 @@ const DynamicTableComponent: React.FC<Props> = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, tableName: event.target.value });
+    useGetTableByName(data.tableName);
   };
 
   if (readOnly) {

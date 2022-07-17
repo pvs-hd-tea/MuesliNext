@@ -8,7 +8,7 @@ import List from "@editorjs/list";
 import Alert from "editorjs-alert";
 import Table from "@editorjs/table";
 import Paragraph from "../Widgets/CustomParagraph";
-import Button from "../Widgets/Button";
+import Button from "../Widgets/DynamicButtonWidget/Button";
 import AlignmentTuneTool from "editorjs-text-alignment-blocktune";
 import DynamicValueWidget from "../Widgets/DynamicValueWidget";
 import DynamicTableWidget from "../Widgets/DynamicTableWidget";

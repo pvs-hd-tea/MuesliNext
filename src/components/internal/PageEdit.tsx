@@ -174,7 +174,10 @@ const PageEdit: React.FC<PageProperties> = ({
 
       <div>
         <ReactEditorJS
-          key={pageService.getGlobalPageMode()}
+          key={
+            pageService.getGlobalPageMode() +
+            dataService.getLocalState().updateCounter // TODO: don't force rerender everything
+          }
           data={page.content}
           tools={EDITOR_JS_TOOLS}
           readOnly={pageService.getGlobalPageMode() !== PageMode.Edit}

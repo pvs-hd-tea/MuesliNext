@@ -1,5 +1,6 @@
 import "./DynamicValueWidget.css";
 import React from "react";
+import LocalDataService from "../../data/services/localDataService";
 import { createRoot } from "react-dom/client";
 
 export default class DynamicValueWidget {
@@ -76,6 +77,7 @@ interface DynamicValueWidgetData {
   tableName: string;
   columnName: string;
   entryKey: string;
+  value?: string;
 }
 
 interface Props {
@@ -88,16 +90,45 @@ class DynamicValueComponent extends React.Component<
   Props,
   DynamicValueWidgetData
 > {
-  state = this.props.initData;
+  state = { ...this.props.initData };
 
-  fetchDynamicValue() {
-    return `${this.state.tableName} ${this.state.columnName} ${this.state.entryKey}`;
+  dataService = LocalDataService.getFromLocalOrNew();
+
+  async fetchDynamicValue() {
+    this.dataService
+      .fetchTableTableItemByName(
+        this.state.tableName,
+        this.state.columnName,
+        this.state.entryKey
+      )
+      .then((newVal) => {
+        if (newVal === undefined) {
+          newVal = "not found";
+        }
+        this.setState({ ...this.state, value: newVal });
+      })
+      .catch(() => {
+        this.setState({ ...this.state, value: "error fetching data" });
+        console.log("error fetching data");
+      });
+    // this.state.value = await this.dataService.fetchTableTableItemByName(
+    //   "example",
+    //   "string",
+    //   "2"
+    // );
+  }
+
+  componentDidMount() {
+    this.fetchDynamicValue();
   }
 
   render() {
     if (this.props.readOnly) {
-      const text = this.fetchDynamicValue();
-      return <div className="dynamic-value-component-display">{text}</div>;
+      return (
+        <div className="dynamic-value-component-display">
+          {this.state.value}
+        </div>
+      );
     } else {
       return (
         <div className="dynamic-value-component-configure">

@@ -42,7 +42,7 @@ npm install
 start the app
 
 ```bash
-npm start
+npm run dev
 ```
 
 ## Contributing

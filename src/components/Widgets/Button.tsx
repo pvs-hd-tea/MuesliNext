@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import localDataService from "../../data/services/localDataService";
 
 enum buttonType {
   LINK = "link",
@@ -238,7 +239,7 @@ function pushDynamicValue(
   regex: string,
   value: string
 ): string {
-  if (target.match(/[a-zA-Z]+\.[a-zA-Z]+\.[a-zA-Z]+/)) {
+  if (target.match(/[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+/)) {
     const args = target.split(".");
     const targetObj = {
       table: args[0],
@@ -256,9 +257,16 @@ function pushDynamicValue(
     }
 
     // TODO: push
-    alert(
-      `SUBMIT:\nvalue: ${value} into\n ${JSON.stringify(targetObj, null, 2)}`
+    const dataService = localDataService.getFromLocalOrNew();
+    dataService.pushTableItemByName(
+      targetObj.table,
+      targetObj.column,
+      targetObj.key,
+      value
     );
+    // alert(
+    //   `SUBMIT:\nvalue: ${value} into\n ${JSON.stringify(targetObj, null, 2)}`
+    // );
     return "";
   } else {
     return "malformed target: " + target;
@@ -361,7 +369,7 @@ const ButtonComponent: React.FC<Props> = ({
         <input
           id="submitTargetInput"
           className="text-input"
-          pattern="[a-zA-Z]+\.[a-zA-Z]+\.[a-zA-Z]+"
+          pattern="[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+"
           type="text"
           value={data.submit_target ?? ""}
           onChange={(event) => {
@@ -411,7 +419,7 @@ const ButtonComponent: React.FC<Props> = ({
             onChange={(event) => {
               setSubmitValue(event.target.value);
             }}
-            placeholder={data.submit_target.split(".")[2]}
+            placeholder={data.submit_target.split(".")[1]}
           />
         )}
         <button

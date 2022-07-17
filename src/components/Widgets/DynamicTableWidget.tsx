@@ -1,7 +1,23 @@
-import "./DynamicValueWidget.css";
-import React from "react";
+import "./DynamicTableWidget.css";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { Table } from "./DynamicTable";
+import { TableWidget } from "./DynamicTable";
+import LocalDataService from "../../data/services/localDataService";
+
+import { Table } from "../../data/definitions/Tables";
+
+import { Column } from "../../../node_modules/@intutable/database/dist/column";
+import { faTurnDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+interface DynamicTableWidgetData {
+  tableName: string;
+  tableData?: {
+    table: Table;
+    columns: Column[];
+    rows: Record<string, string | number | boolean>;
+  };
+}
 
 export default class DynamicTableWidget {
   data: DynamicTableWidgetData;
@@ -72,118 +88,82 @@ interface Props {
   readOnly: boolean;
 }
 
-interface DynamicTableWidgetData {
-  tableName: string;
-}
+const DynamicTableComponent: React.FC<Props> = ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onDataChange,
+  initData,
+  readOnly,
+}) => {
+  const [data, setData] = useState(initData);
+  const dataService = LocalDataService.getFromLocalOrNew();
+  const [fetched, setFetched] = useState(false);
 
-const entry_data = [
-  {
-    table_name: "Table-Classes",
-    heads: [
-      {
-        id: "id1" as const,
-        label: "Class",
-      },
-      {
-        id: "id2" as const,
-        label: "Professor",
-      },
-      {
-        id: "id3" as const,
-        label: "Room",
-      },
-    ],
-    rows: [
-      {
-        id1: "IPI",
-        id2: "Prof. X",
-        id3: "SR A",
-      },
-      {
-        id1: "LA",
-        id2: "Prof. Y",
-        id3: "SR B",
-      },
-    ],
-  },
-  {
-    table_name: "Table-Students",
-    heads: [
-      {
-        id: "id1" as const,
-        label: "Student name",
-      },
-      {
-        id: "id2" as const,
-        label: "Subject",
-      },
-      {
-        id: "id3" as const,
-        label: "",
-      },
-    ],
-    rows: [
-      {
-        id1: "John",
-        id2: "Informatik",
-        id3: "",
-      },
-      {
-        id1: "Paul",
-        id2: "Mathematik",
-        id3: "",
-      },
-    ],
-  },
-];
-
-class DynamicTableComponent extends React.Component<
-  Props,
-  DynamicTableWidgetData
-> {
-  state = this.props.initData;
-
-  fetchDynamicValue() {
-    return `${this.state.tableName}`;
-  }
-
-  renderElement() {
-    const message = this.state.tableName;
-    const table = entry_data.find((table_obj) => {
-      return table_obj.table_name === message;
-    });
-    if (table) return <Table heads={table.heads} rows={table.rows} />;
-    return null;
-  }
-
-  render() {
-    if (this.props.readOnly) {
-      const text = this.fetchDynamicValue();
-      return (
-        <div className="dynamic-table-value-component-display">
-          {text}
-          <table>{this.renderElement()}</table>
-        </div>
-      );
-    } else {
-      return (
-        <div className="dynamic-table-value-component-configure">
-          <input
-            id="tableNameInput"
-            className="text-input"
-            type="text"
-            value={this.state.tableName}
-            onChange={(event) => {
-              this.setState(
-                Object.assign(this.state, { tableName: event.target.value })
-              );
-              this.props.onDataChange(this.state);
-            }}
-            placeholder="Enter Table Column..."
-          />
-          <table>{this.renderElement()}</table>
-        </div>
-      );
+  useEffect(() => {
+    if (!fetched) {
+      // TODO: can we do better?
+      fetchTableByName(initData.tableName);
+      setFetched(true);
     }
+  });
+
+  async function fetchTableByName(tableName: string) {
+    let tableData = undefined;
+    try {
+      tableData = await dataService.fetchTableByName(tableName);
+    } catch (error) {
+      tableData = undefined;
+    }
+    setData({
+      ...data,
+      tableName,
+      tableData,
+    });
+    //return `${this.state.tableName}`;
   }
-}
+
+  if (readOnly) {
+    return (
+      <div className="dynamic-table-component-display">
+        {data.tableData && (
+          <table>
+            <TableWidget
+              heads={data.tableData.columns}
+              rows={data.tableData.rows}
+            />
+          </table>
+        )}
+      </div>
+    );
+  } else {
+    return (
+      <div className="dynamic-table-component-configure">
+        <input
+          id="tableNameInput"
+          className="text-input"
+          type="text"
+          value={data.tableName}
+          pattern={data.tableData ? ".*" : ""}
+          onChange={(event) => {
+            setData({ ...data, tableName: event.target.value });
+            fetchTableByName(event.target.value);
+          }}
+          placeholder="Enter Table Column..."
+        />
+        {data.tableData && (
+          <>
+            <FontAwesomeIcon icon={faTurnDown} className="ml-3" />
+            <table>
+              <TableWidget
+                heads={data.tableData.columns}
+                rows={data.tableData.rows}
+              />
+            </table>
+          </>
+        )}
+        {!data.tableData && (
+          <p className="text-red-500">table does not exist</p>
+        )}
+      </div>
+    );
+  }
+};

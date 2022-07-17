@@ -8,6 +8,7 @@ import General from "./components/internal/General";
 import PageService from "./data/services/pageService";
 import SettingsService from "./data/services/settingsService";
 import NavBar from "./components/Widgets/NavBar";
+import TableService from "./data/services/tableService";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -18,7 +19,16 @@ const App: React.FC<Props> = ({}) => {
 
   const dataService = localDataService.getFromLocalOrNew();
   const pageService = new PageService();
+  const tableService = new TableService();
   const settingsService = new SettingsService();
+
+  // const fff = async () => {
+  //   return await dataService.fetchTableTableItemByName("example", "string", "1");
+  // };
+
+  // useEffect(() => {
+  //   fff();
+  // });
 
   const [, setSettingsHash] = useState("");
   dataService.setHashCallback(setSettingsHash);
@@ -38,6 +48,7 @@ const App: React.FC<Props> = ({}) => {
                 dataService={dataService}
                 settingsService={settingsService}
                 pageService={pageService}
+                tableService={tableService}
               />
             </div>
           </>

@@ -1,36 +1,55 @@
 import React from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type HeadCell<DataType> = {
-  id: Extract<keyof DataType, string>;
-  label: string;
+  name: string;
 };
 
 type TableProps<DataType> = {
   heads: HeadCell<DataType>[];
-  rows: Array<DataType>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  rows: Record<string, any>;
 };
 
-export function Table<T>({ heads, rows }: TableProps<T>) {
-  const ColumnsKeys = heads.map((item: HeadCell<T>) => item.id);
+export function TableWidget<T>({ heads, rows }: TableProps<T>) {
+  const ColumnsKeys = heads.map((item: HeadCell<T>) => item.name);
+
   return (
-    <table>
+    <table className="border-collapse border-t-2 border-l-2 border-gray-200 p-1">
       <tr>
         {heads.map((head, headKey) => {
-          return <th key={headKey}>{head.label}</th>;
+          return (
+            <th
+              key={headKey}
+              className="border-r-2 border-b-2 border-gray-200 p-1"
+            >
+              {head.name}
+            </th>
+          );
         })}
       </tr>
-      {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        rows.map((row: any, rowKey) => {
+      {rows.map(
+        (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          row: any,
+          rowKey: string
+        ) => {
           return (
             <tr key={rowKey}>
-              {ColumnsKeys.map((column: keyof T, columnKey) => {
-                return <td key={columnKey}>{row[column]}</td>;
+              {ColumnsKeys.map((column: string, columnKey) => {
+                return (
+                  <td
+                    key={columnKey}
+                    className="border-r-2 border-b-2 border-gray-200 p-1 bg-white"
+                  >
+                    {row[column] + ""}
+                  </td>
+                );
               })}
             </tr>
           );
-        })
-      }
+        }
+      )}
     </table>
   );
 }

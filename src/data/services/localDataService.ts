@@ -19,6 +19,7 @@ export interface LocalState {
     [name: string]: {
       table: Table;
       columns: Column[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       rows: Record<string, any>;
     };
   };
@@ -238,7 +239,7 @@ export default class LocalDataService {
 
   /*------------------------------------------------- Backend functions ---*/
 
-  async request<T>(url: string, data: any): Promise<T> {
+  async request<T>(url: string, data: object): Promise<T> {
     const headersList = {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -282,7 +283,7 @@ export default class LocalDataService {
     const table = await this.request<{
       table: Table;
       columns: Column[];
-      rows: Record<string, any>;
+      rows: Record<string, string>;
     }>("project-management/getTableData", bodyContent);
     return table;
   }
@@ -290,6 +291,7 @@ export default class LocalDataService {
   async fetchTableByName(name: string): Promise<{
     table: Table;
     columns: Column[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rows: Record<string, any>;
   }> {
     const tables = await this.fetchTables();
@@ -351,7 +353,7 @@ export default class LocalDataService {
         [column]: value,
       },
     };
-    this.request<Table[]>("database/update", bodyContent).then((response) => {
+    this.request<Table[]>("database/update", bodyContent).then(() => {
       this.forceUpdate();
     });
   }

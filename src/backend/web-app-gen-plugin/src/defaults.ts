@@ -29,7 +29,8 @@ export function defaultRowOptions(
    * a table or a view. */
   columns: ParentColumnDescriptor[]
 ): RowOptions {
-  const idColumn = columns.find((c) => c.name === UID_KEY)!;
+  const idColumn = columns.find((c) => c.name === UID_KEY);
+  if (!idColumn) throw new Error("No ID column found");
   return {
     conditions: [],
     groupColumns: [],

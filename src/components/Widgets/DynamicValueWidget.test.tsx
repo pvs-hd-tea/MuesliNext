@@ -46,7 +46,7 @@ it("fetches data", async () => {
 it("saves data", async () => {
   jest
     .spyOn(LocalDataService.prototype, "fetchTableTableItemByName")
-    .mockImplementation((name, column, key) => Promise.resolve("fetchedValue"));
+    .mockImplementation(() => Promise.resolve("fetchedValue"));
   let data = { tableName: "a", columnName: "b", entryKey: "c" };
   const onDataChange = (newData: DynamicValueWidgetData) => {
     data = {

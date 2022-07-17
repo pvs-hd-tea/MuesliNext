@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Specifications of example data.
  */
@@ -17,11 +18,17 @@ export type JoinSpec = {
   table: string;
   fkColumn: Column;
   pkColumn: string;
-  linkColumns: { name: string; attributes: Record<string, any> }[];
+  linkColumns: {
+    name: string;
+    attributes: Record<string, string | number | boolean>;
+  }[];
 };
 export type TableSpec = {
   name: string;
-  columns: { baseColumn: Column; attributes: Record<string, any> }[];
+  columns: {
+    baseColumn: Column;
+    attributes: Record<string, string | number | boolean>;
+  }[];
   joins: JoinSpec[];
 };
 export type Table = {

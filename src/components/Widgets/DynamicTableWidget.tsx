@@ -7,7 +7,7 @@ import LocalDataService from "../../data/services/localDataService";
 import { Table } from "../../data/definitions/Tables";
 
 import { Column } from "../../../node_modules/@intutable/database/dist/column";
-import { faArrowDown, faTurnDown } from "@fortawesome/free-solid-svg-icons";
+import { faTurnDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface DynamicTableWidgetData {
@@ -15,7 +15,7 @@ interface DynamicTableWidgetData {
   tableData?: {
     table: Table;
     columns: Column[];
-    rows: Record<string, any>;
+    rows: Record<string, string | number | boolean>;
   };
 }
 

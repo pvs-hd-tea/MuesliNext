@@ -1,4 +1,4 @@
-import { defaultPage, EditorData, Page, PageMetaData } from "../definitions";
+import { defaultPage } from "../definitions";
 import { Table } from "../definitions/Tables";
 import localDataService, { PageMode } from "./localDataService";
 

@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import {
   faCheck,
-  faEye,
-  faEyeSlash,
   faFile,
   faFilePen,
   faPen,
   faTrash,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import tableService from "../../data/services/tableService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Table } from "../../data/definitions/Tables";
 import TableService from "../../data/services/tableService";

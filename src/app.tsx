@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import PageEdit from "./components/internal/PageEdit";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";

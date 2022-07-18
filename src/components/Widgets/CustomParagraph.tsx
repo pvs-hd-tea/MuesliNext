@@ -1,7 +1,7 @@
 // TODO: port to react.
 // Until then it will be difficult to use state from react.
 import { API, HTMLPasteEvent } from "@editorjs/editorjs";
-import localDataService from "../../data/services/localDataService";
+import DynamicValueUtil from "./customizedEditorjsWidgets/dynamicValueUtil";
 import "./CustomParagraph.css";
 
 /**
@@ -137,38 +137,6 @@ export default class Paragraph {
     return div;
   }
 
-  fetchDynamicValueWithDataText(dataText: string) {
-    let text = "";
-    try {
-      const dataJson = JSON.parse(dataText);
-      text = this.fetchDynamicValue(
-        dataJson.tableName,
-        dataJson.columnName,
-        dataJson.entryKey
-      );
-    } catch (e) {
-      text = "//Error//";
-    }
-    return text;
-  }
-
-  fetchDynamicValue(
-    tableName: string,
-    columnName: string,
-    entryKey: string
-  ): string {
-    const dataService = localDataService.getFromLocalOrNew();
-    let newVal: string = dataService.fetchTableItemByNameCached(
-      tableName,
-      columnName,
-      entryKey
-    );
-    if (newVal === undefined) {
-      newVal = "not found";
-    }
-    return newVal;
-  }
-
   /**
    * Return Tool's view
    *
@@ -177,22 +145,10 @@ export default class Paragraph {
   render() {
     const finalElement = this._element;
     if (this.readOnly) {
-      const startStringOfCommand = "//dynamicValue:";
-      const endStringOfCommand = ":dynamicValue//";
-      while (finalElement.innerHTML.search(startStringOfCommand) >= 0) {
-        const text = finalElement.innerHTML;
-        const commandStart = text.search(startStringOfCommand);
-        const textWithoutStart = text.substring(
-          commandStart + startStringOfCommand.length
-        );
-        const commandEnd = textWithoutStart.search(endStringOfCommand);
-        const dataText = textWithoutStart.substring(0, commandEnd);
-        const dynamicValue = this.fetchDynamicValueWithDataText(dataText);
-        finalElement.innerHTML = text.replace(
-          startStringOfCommand + dataText + endStringOfCommand,
-          dynamicValue
-        );
-      }
+      DynamicValueUtil.fetchInlineValues(finalElement.innerHTML);
+      finalElement.innerHTML = DynamicValueUtil.fetchInlineValues(
+        finalElement.innerHTML
+      );
       return finalElement;
     }
     return this._element;

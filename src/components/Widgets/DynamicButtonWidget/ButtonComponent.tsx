@@ -1,5 +1,5 @@
 import "./Button.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
@@ -63,6 +63,28 @@ export const ButtonComponent: React.FC<Props> = ({
   const [syntaxErrorMessage, setSyntaxErrorMessage] = useState("");
 
   const [submitValues, setSubmitValues] = useState([""]); // for submit button
+
+  useEffect(() => {
+    if (data.submit_targets[data.submit_targets.length - 1] !== "") {
+      setSubmitValues([...submitValues, ""]);
+      const newSubmitTargets = [...data.submit_targets, ""];
+      const newSubmitRegex = [...data.submit_regex, ""];
+      setData({
+        ...data,
+        submit_targets: newSubmitTargets,
+        submit_regex: newSubmitRegex,
+      });
+    } else if (data.submit_targets[data.submit_targets.length - 2] === "") {
+      setSubmitValues(submitValues.slice(0, -1));
+      const newSubmitTargets = data.submit_targets.slice(0, -1);
+      const newSubmitRegex = data.submit_regex.slice(0, -1);
+      setData({
+        ...data,
+        submit_targets: newSubmitTargets,
+        submit_regex: newSubmitRegex,
+      });
+    }
+  });
 
   let btnColor = "";
   let specificFields;
@@ -135,15 +157,16 @@ export const ButtonComponent: React.FC<Props> = ({
       return (
         <SubmitButtonField
           key={index}
+          index={index + 1}
           readOnly={readOnly}
           data={{
             submit_target: data.submit_targets[index],
             submit_regex: data.submit_regex[index],
             submitValue: submitValues[index],
           }}
-          onDataChange={(newData) => {
-            const newSubmitTargets = data.submit_targets;
-            const newSubmitRegex = data.submit_regex;
+          onDataItemChange={(newData) => {
+            const newSubmitTargets = [...data.submit_targets];
+            const newSubmitRegex = [...data.submit_regex];
             newSubmitTargets[index] = newData.submit_target;
             newSubmitRegex[index] = newData.submit_regex;
             setData({
@@ -176,18 +199,32 @@ export const ButtonComponent: React.FC<Props> = ({
   if (readOnly) {
     return (
       <div className="button-component-configure">
-        {data.type === buttonType.SUBMIT && (
-          <input
-            className="text-input"
-            type="text"
-            value={submitValue}
-            pattern={data.submit_regex[0] == "" ? ".*" : data.submit_regex[0]}
-            onChange={(event) => {
-              setSubmitValue(event.target.value);
-            }}
-            placeholder={data.submit_targets[0].split(".")[1]}
-          />
-        )}
+        {data.type === buttonType.SUBMIT &&
+          data.submit_targets.map((submitTarget, index) => {
+            return (
+              <SubmitButtonField
+                key={index}
+                index={index + 1}
+                readOnly={readOnly}
+                data={{
+                  submit_target: data.submit_targets[index],
+                  submit_regex: data.submit_regex[index],
+                  submitValue: submitValues[index],
+                }}
+                onDataItemChange={(newData) => {
+                  const newSubmitTargets = [...data.submit_targets];
+                  const newSubmitRegex = [...data.submit_regex];
+                  newSubmitTargets[index] = newData.submit_target;
+                  newSubmitRegex[index] = newData.submit_regex;
+                  setData({
+                    ...data,
+                    submit_targets: newSubmitTargets,
+                    submit_regex: newSubmitRegex,
+                  });
+                }}
+              />
+            );
+          })}
         <button
           className={`text-white ${btnColor} shadow-sm hover:shadow-md m-1 p-2 pl-3 pr-3 rounded-lg`}
           onClick={onClickListener}

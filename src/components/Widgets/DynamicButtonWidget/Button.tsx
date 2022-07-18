@@ -32,8 +32,9 @@ export default class Button {
       message: data.message !== undefined ? data.message : "",
       script: data.script !== undefined ? data.script : "",
       submit_targets:
-        data.submit_targets !== undefined ? data.submit_targets : [""],
-      submit_regex: data.submit_regex !== undefined ? data.submit_regex : [""],
+        data.submit_targets !== undefined ? data.submit_targets : ["", ""],
+      submit_regex:
+        data.submit_regex !== undefined ? data.submit_regex : ["", ""],
     };
 
     this.api = api;
@@ -201,17 +202,28 @@ export default class Button {
           script,
         };
       } else if (this.data.type === "submit") {
-        const submitTargetInput =
-          blockContent.querySelector("#submitTargetInput");
-        const submitTarget = submitTargetInput ? submitTargetInput.value : "";
-        const submitRegexInput =
-          blockContent.querySelector("#submitRegexInput");
-        const submitRegex = submitRegexInput ? submitRegexInput.value : "";
+        const submitTargetInputs =
+          blockContent.querySelectorAll("#submitTargetInput");
+        const submitTargets: string[] = [submitTargetInputs.length];
+
+        submitTargetInputs.forEach((input: any, index: number) => {
+          submitTargets[index] = input ? input.value : "";
+        });
+        submitTargets.pop();
+
+        const submitRegexInputs =
+          blockContent.querySelectorAll("#submitRegexInput");
+        const submitRegexes: string[] = [submitRegexInputs.length];
+
+        submitRegexInputs.forEach((input: any, index: number) => {
+          submitRegexes[index] = input ? input.value : "";
+        });
+        submitRegexes.pop();
         return {
           text,
           type: this.data.type,
-          submit_target: submitTarget,
-          submit_regex: submitRegex,
+          submit_targets: submitTargets,
+          submit_regex: submitRegexes,
         };
       }
     }

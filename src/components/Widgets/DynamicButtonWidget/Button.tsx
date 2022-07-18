@@ -31,8 +31,9 @@ export default class Button {
       link: data.link !== undefined ? data.link : "",
       message: data.message !== undefined ? data.message : "",
       script: data.script !== undefined ? data.script : "",
-      submit_target: data.submit_target !== undefined ? data.submit_target : "",
-      submit_regex: data.submit_regex !== undefined ? data.submit_regex : "",
+      submit_targets:
+        data.submit_targets !== undefined ? data.submit_targets : [""],
+      submit_regex: data.submit_regex !== undefined ? data.submit_regex : [""],
     };
 
     this.api = api;

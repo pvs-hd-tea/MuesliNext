@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import localDataService from "../../../data/services/localDataService";
 import { ButtonData, buttonType } from "./ButtonTypes";
+import { SubmitButtonField } from "./ButtonTypes/SubmitButtonField";
 
 function pushDynamicValue(
   target: string,
@@ -61,7 +62,7 @@ export const ButtonComponent: React.FC<Props> = ({
   const [syntaxError, setSyntaxError] = useState(false);
   const [syntaxErrorMessage, setSyntaxErrorMessage] = useState("");
 
-  const [submitValue, setSubmitValue] = useState(""); // for submit button
+  const [submitValues, setSubmitValues] = useState([""]); // for submit button
 
   let btnColor = "";
   let specificFields;
@@ -130,47 +131,40 @@ export const ButtonComponent: React.FC<Props> = ({
     };
   } else if (data.type === buttonType.SUBMIT) {
     btnColor = "bg-green-500 hover:bg-green-400";
-    let isValid = true;
-    try {
-      new RegExp(data.submit_regex);
-    } catch (e) {
-      isValid = false;
-    }
-    specificFields = (
-      <>
-        <input
-          id="submitTargetInput"
-          className="text-input"
-          pattern="[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+"
-          type="text"
-          value={data.submit_target ?? ""}
-          onChange={(event) => {
-            setData({ ...data, submit_target: event.target.value });
+    specificFields = data.submit_targets.map((submitTarget, index) => {
+      return (
+        <SubmitButtonField
+          key={index}
+          readOnly={readOnly}
+          data={{
+            submit_target: data.submit_targets[index],
+            submit_regex: data.submit_regex[index],
+            submitValue: submitValues[index],
           }}
-          placeholder="Enter target cell"
-        />
-        <input
-          id="submitRegexInput"
-          className="text-input"
-          pattern={isValid ? ".*" : ""}
-          type="text"
-          value={data.submit_regex ?? ""}
-          onChange={(event) => {
-            setData({ ...data, submit_regex: event.target.value });
+          onDataChange={(newData) => {
+            const newSubmitTargets = data.submit_targets;
+            const newSubmitRegex = data.submit_regex;
+            newSubmitTargets[index] = newData.submit_target;
+            newSubmitRegex[index] = newData.submit_regex;
+            setData({
+              ...data,
+              submit_targets: newSubmitTargets,
+              submit_regex: newSubmitRegex,
+            });
           }}
-          placeholder="Optional regex"
         />
-      </>
-    );
+      );
+    });
+
     onClickListener = () => {
       // TODO: This is a placeholder
       const error = pushDynamicValue(
-        data.submit_target,
-        data.submit_regex,
-        submitValue
+        data.submit_targets[0],
+        data.submit_regex[0],
+        submitValues[0]
       );
       if (error === "") {
-        setSubmitValue("");
+        //setSubmitValue("");
         setSyntaxError(false);
       } else {
         setSyntaxError(true);
@@ -187,11 +181,11 @@ export const ButtonComponent: React.FC<Props> = ({
             className="text-input"
             type="text"
             value={submitValue}
-            pattern={data.submit_regex == "" ? ".*" : data.submit_regex}
+            pattern={data.submit_regex[0] == "" ? ".*" : data.submit_regex[0]}
             onChange={(event) => {
               setSubmitValue(event.target.value);
             }}
-            placeholder={data.submit_target.split(".")[1]}
+            placeholder={data.submit_targets[0].split(".")[1]}
           />
         )}
         <button

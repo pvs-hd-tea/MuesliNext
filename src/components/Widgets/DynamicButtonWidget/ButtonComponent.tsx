@@ -7,6 +7,21 @@ import localDataService from "../../../data/services/localDataService";
 import { ButtonData, buttonType } from "./ButtonTypes";
 import { SubmitButtonField } from "./ButtonTypes/SubmitButtonField";
 
+function pushDynamicValues(
+  targets: string[],
+  regex: string[],
+  values: string[]
+): string[] {
+  const errors: string[] = [];
+  for (let i = 0; i < targets.length; i++) {
+    const error = pushDynamicValue(targets[i], regex[i], values[i]);
+    if (error) {
+      errors.push(error);
+    }
+  }
+  return errors;
+}
+
 function pushDynamicValue(
   target: string,
   regex: string,
@@ -181,17 +196,17 @@ export const ButtonComponent: React.FC<Props> = ({
 
     onClickListener = () => {
       // TODO: This is a placeholder
-      const error = pushDynamicValue(
-        data.submit_targets[0],
-        data.submit_regex[0],
-        submitValues[0]
+      const errors = pushDynamicValues(
+        data.submit_targets,
+        data.submit_regex,
+        submitValues
       );
-      if (error === "") {
+      if (errors.length === 0) {
         //setSubmitValue("");
         setSyntaxError(false);
       } else {
         setSyntaxError(true);
-        setSyntaxErrorMessage(error);
+        setSyntaxErrorMessage(errors[0]);
       }
     };
   }

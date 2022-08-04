@@ -1,4 +1,4 @@
-import { fetcher, FetcherOptions } from "./fetcher";
+import { fetcher, FetcherOptions } from "../fetcher";
 import useSWR from "swr";
 import { useListTables } from "./useListTables";
 
@@ -20,6 +20,12 @@ export function useGetTableByID(id: number) {
 }
 
 export function useGetTableByName(name: string) {
+  const { tables } = useListTables();
+  let tableID = -1;
+  if (tables) {
+    tableID = tables.findIndex((table: any) => table.name === name);
+  }
+  const { table, isLoading, isError } = useGetTableByID(tableID + 1);
   if (!name) {
     return {
       table: null,
@@ -27,7 +33,6 @@ export function useGetTableByName(name: string) {
       isError: true,
     };
   }
-  const { tables, isLoading, isError } = useListTables();
   if (isLoading || isError) {
     return {
       table: null,
@@ -35,7 +40,7 @@ export function useGetTableByName(name: string) {
       isError,
     };
   }
-  const tableID = tables.findIndex((table: any) => table.name === name);
+
   if (tableID === -1) {
     return {
       table: null,
@@ -43,10 +48,19 @@ export function useGetTableByName(name: string) {
       isError: true,
     };
   }
-  return useGetTableByID(tableID + 1);
+  return {
+    table,
+    isLoading: false,
+    isError: false,
+  };
 }
 
-export function getTableItemByName(name: string, column: string, key: string) {
+export function useGetTableItemByName(
+  name: string,
+  column: string,
+  key: string
+) {
+  const { table, isLoading, isError } = useGetTableByName(name);
   if (!name || !column || !key) {
     return {
       item: null,
@@ -55,7 +69,6 @@ export function getTableItemByName(name: string, column: string, key: string) {
     };
   }
 
-  const { table, isLoading, isError } = useGetTableByName(name);
   if (isLoading || isError) {
     return {
       item: null,

@@ -77,15 +77,15 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
     }
     tableService.setActivePageUuid(table.key);
     // TODO: placeholder only
-    dataService.fetchTableByName(table.name).then((data) => {
-      alert(
-        `PLACEHOLDER UNTIL WE CAN DISPLAY TABLES\n\n ${JSON.stringify(
-          data,
-          null,
-          2
-        )}`
-      );
-    });
+    // dataService.fetchTableByName(table.name).then((data) => {
+    //   alert(
+    //     `PLACEHOLDER UNTIL WE CAN DISPLAY TABLES\n\n ${JSON.stringify(
+    //       data,
+    //       null,
+    //       2
+    //     )}`
+    //   );
+    // });
   };
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import localDataService from "../../data/services/localDataService";
 import SettingsService from "../../data/services/settingsService";
-import Button from "../Widgets/ButtonWidget";
+import Button from "./ButtonComp";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface GeneralProperties {

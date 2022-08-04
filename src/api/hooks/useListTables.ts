@@ -1,4 +1,4 @@
-import { fetcher, FetcherOptions } from "./fetcher";
+import { fetcher, FetcherOptions } from "../fetcher";
 import useSWR from "swr";
 
 export function useListTables() {

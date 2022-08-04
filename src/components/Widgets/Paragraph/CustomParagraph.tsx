@@ -1,7 +1,7 @@
 // TODO: port to react.
 // Until then it will be difficult to use state from react.
 import { API, HTMLPasteEvent } from "@editorjs/editorjs";
-import localDataService from "../../data/services/localDataService";
+import localDataService from "../../../data/services/localDataService";
 import "./CustomParagraph.css";
 
 /**
@@ -158,11 +158,13 @@ export default class Paragraph {
     entryKey: string
   ): string {
     const dataService = localDataService.getFromLocalOrNew();
-    let newVal: string = dataService.fetchTableItemByNameCached(
-      tableName,
-      columnName,
-      entryKey
-    );
+    // TODO: Placeholder
+    let newVal = undefined;
+    // let newVal: string = dataService.fetchTableItemByNameCached(
+    //   tableName,
+    //   columnName,
+    //   entryKey
+    // );
     if (newVal === undefined) {
       newVal = "not found";
     }

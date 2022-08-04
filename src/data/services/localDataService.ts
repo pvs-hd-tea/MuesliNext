@@ -237,49 +237,49 @@ export default class LocalDataService {
     return this.local;
   };
 
-  /*------------------------------------------------- Backend functions ---*/
+  // /*------------------------------------------------- Backend functions ---*/
 
-  pushTableItemByName(
-    name: string,
-    column: string,
-    key: string,
-    value: string
-  ) {
-    const bodyContent = {
-      table: "p1_" + name,
-      condition: ["_id", key],
-      update: {
-        [column]: value,
-      },
-    };
-    this.request<Table[]>("database/update", bodyContent).then(() => {
-      this.forceUpdate();
-    });
-  }
+  // pushTableItemByName(
+  //   name: string,
+  //   column: string,
+  //   key: string,
+  //   value: string
+  // ) {
+  //   const bodyContent = {
+  //     table: "p1_" + name,
+  //     condition: ["_id", key],
+  //     update: {
+  //       [column]: value,
+  //     },
+  //   };
+  //   this.request<Table[]>("database/update", bodyContent).then(() => {
+  //     this.forceUpdate();
+  //   });
+  // }
 
-  // TODO: replace by SWR
-  fetchTableItemByNameCached(name: string, column: string, key: string) {
-    // timout is to repreduce not updated on loaded bug
-    //setTimeout(() => {
-    this.fetchTableTableItemByName(name, column, key); // stage next fetch
-    //}, 1000);
-    const cachedTables = this.getLocalState().cachedTables;
-    if (cachedTables[name]) {
-      const table = cachedTables[name];
-      const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
-      if (!row) {
-        return "row not found";
-      }
-      const item = row[column];
-      return item;
-    } else {
-      console.log("fetching table");
-      return "fetching table";
-    }
-  }
+  // // TODO: replace by SWR
+  // fetchTableItemByNameCached(name: string, column: string, key: string) {
+  //   // timout is to repreduce not updated on loaded bug
+  //   //setTimeout(() => {
+  //   this.fetchTableTableItemByName(name, column, key); // stage next fetch
+  //   //}, 1000);
+  //   const cachedTables = this.getLocalState().cachedTables;
+  //   if (cachedTables[name]) {
+  //     const table = cachedTables[name];
+  //     const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
+  //     if (!row) {
+  //       return "row not found";
+  //     }
+  //     const item = row[column];
+  //     return item;
+  //   } else {
+  //     console.log("fetching table");
+  //     return "fetching table";
+  //   }
+  // }
 
-  // TODO: make more efficient
-  async isConnected(): Promise<boolean> {
-    return true;
-  }
+  // // TODO: make more efficient
+  // async isConnected(): Promise<boolean> {
+  //   return true;
+  // }
 }

@@ -1,8 +1,8 @@
 import "./DynamicValueWidget.css";
 import React, { useState } from "react";
-import LocalDataService from "../../data/services/localDataService";
+import LocalDataService from "../../../data/services/localDataService";
 import { createRoot } from "react-dom/client";
-import { getTableItemByName } from "../../api/useGetTable";
+import { useGetTableItemByName } from "../../../api/hooks/useGetTable";
 
 export default class DynamicValueWidget {
   data: DynamicValueWidgetData;
@@ -93,7 +93,7 @@ const DynamicValueComponent: React.FC<Props> = ({
   readOnly,
 }: Props) => {
   const [data, setData] = useState(initData);
-  const { item, isLoading, isError } = getTableItemByName(
+  const { item, isLoading, isError } = useGetTableItemByName(
     data.tableName,
     data.columnName,
     data.entryKey

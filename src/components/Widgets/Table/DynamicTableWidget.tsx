@@ -2,14 +2,14 @@ import "./DynamicTableWidget.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { TableWidget } from "./DynamicTable";
-import LocalDataService from "../../data/services/localDataService";
+import LocalDataService from "../../../data/services/localDataService";
 
-import { Table } from "../../data/definitions/Tables";
+import { Table } from "../../../data/definitions/Tables";
 
-import { Column } from "../../../node_modules/@intutable/database/dist/column";
+import { Column } from "../../../../node_modules/@intutable/database/dist/column";
 import { faTurnDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useGetTableByName } from "../../api/useGetTable";
+import { useGetTableByName } from "../../../api/hooks/useGetTable";
 
 interface DynamicTableWidgetData {
   tableName: string;
@@ -96,21 +96,18 @@ const DynamicTableComponent: React.FC<Props> = ({
   readOnly,
 }) => {
   const [data, setData] = useState(initData);
-  const { table, isLoading, isError } = useGetTableByName(data.tableName);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setData({ ...data, tableName: event.target.value });
-    useGetTableByName(data.tableName);
+    //useGetTableByName(data.tableName);
   };
 
   if (readOnly) {
     return (
       <div className="dynamic-table-component-display">
-        {!isError && !isLoading && (
-          <table>
-            <TableWidget heads={table.columns} rows={table.rows} />
-          </table>
-        )}
+        <table>
+          <TableWidget tableName={data.tableName} />
+        </table>
       </div>
     );
   } else {
@@ -121,22 +118,14 @@ const DynamicTableComponent: React.FC<Props> = ({
           className="text-input"
           type="text"
           value={data.tableName}
-          pattern={!isError ? ".*" : ""}
           onChange={(event) => {
             handleChange(event);
           }}
           placeholder="Enter Table Column..."
         />
-        {!isError && !isLoading && (
-          <>
-            <FontAwesomeIcon icon={faTurnDown} className="ml-3" />
-            <table>
-              <TableWidget heads={table.columns} rows={table.rows} />
-            </table>
-          </>
-        )}
-        {isError && <p className="text-red-500">table does not exist</p>}
-        {isLoading && <p className="text-blue-500">loading...</p>}
+        <table>
+          <TableWidget tableName={data.tableName} />
+        </table>
       </div>
     );
   }

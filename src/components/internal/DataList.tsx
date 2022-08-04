@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { useListTables } from "../../api/useListTables";
+import { useListTables } from "../../api/hooks/useListTables";
 import { Table } from "../../data/definitions/Tables";
 import localDataService from "../../data/services/localDataService";
 import TableService from "../../data/services/tableService";

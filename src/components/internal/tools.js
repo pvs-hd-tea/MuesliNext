@@ -7,12 +7,12 @@ import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import Alert from "editorjs-alert";
 import Table from "@editorjs/table";
-import Paragraph from "../Widgets/CustomParagraph";
-import Button from "../Widgets/Button";
+import Paragraph from "../Widgets/Paragraph/CustomParagraph";
+import Button from "../Widgets/Button/Button";
 import AlignmentTuneTool from "editorjs-text-alignment-blocktune";
-import DynamicValueWidget from "../Widgets/DynamicValueWidget";
-import DynamicTableWidget from "../Widgets/DynamicTableWidget";
-import InlineDynamicValueWidget from "../Widgets/InlineDynamicValueWiget";
+import DynamicValueWidget from "../Widgets/DynamicValue/DynamicValueWidget";
+import DynamicTableWidget from "../Widgets/Table/DynamicTableWidget";
+import InlineDynamicValueWidget from "../Widgets/DynamicValue/InlineDynamicValueWiget";
 
 export const EDITOR_JS_TOOLS = {
   // NOTE: Paragraph is default tool. Declare only when you want to change paragraph option.

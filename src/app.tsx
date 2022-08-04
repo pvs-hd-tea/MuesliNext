@@ -10,7 +10,7 @@ import SettingsService from "./data/services/settingsService";
 import NavBar from "./components/Widgets/NavBar";
 import TableService from "./data/services/tableService";
 import { Table } from "./data/definitions/Tables";
-import { TableWidget } from "./components/Widgets/DynamicTable";
+import { TableWidget } from "./components/Widgets/Table/DynamicTable";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}

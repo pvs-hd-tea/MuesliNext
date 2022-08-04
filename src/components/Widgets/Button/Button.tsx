@@ -7,6 +7,8 @@ import localDataService from "../../../data/services/localDataService";
 import { pushTableItemByName } from "../../../api/uptdate";
 import { useSWRConfig } from "swr";
 import { FetcherOptions } from "../../../api/fetcher";
+import { hashStable } from "../../../util/hash";
+import { useListTables } from "../../../api/hooks";
 
 enum buttonType {
   LINK = "link",
@@ -288,6 +290,8 @@ const ButtonComponent: React.FC<Props> = ({
   readOnly,
 }) => {
   const [data, setData] = useState(initData);
+  // we need this to know the current table in order refresh it (mutate request)
+  const { tables, isLoading, isError } = useListTables();
   const { mutate, cache } = useSWRConfig();
   const [syntaxError, setSyntaxError] = useState(false);
   const [syntaxErrorMessage, setSyntaxErrorMessage] = useState("");
@@ -394,11 +398,18 @@ const ButtonComponent: React.FC<Props> = ({
       </>
     );
     onClickListener = async () => {
+      let tableId = -1;
+      if (tables) {
+        tableId = tables.findIndex(
+          (table: any) => table.name === data.submit_target.split(".")[0]
+        );
+        tableId += 1;
+      }
       const options: FetcherOptions = {
         url: `request/project-management/getTableData`,
         body: {
           sessionID: "Session",
-          id: data.submit_target.split(".")[2],
+          id: tableId,
         },
       };
       // alert(JSON.stringify(cache.keys(), null, 2));
@@ -416,10 +427,8 @@ const ButtonComponent: React.FC<Props> = ({
         setSyntaxError(true);
         setSyntaxErrorMessage(error);
       }
-      mutate(/* match all keys */ () => true, undefined, false);
-      mutate(options);
-      mutate("request/project-management/getTableData");
-      mutate("request/project-management/getTablesFromProject");
+      // mutate previous get table requests
+      mutate(hashStable(options));
     };
   }
 

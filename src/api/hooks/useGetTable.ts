@@ -1,5 +1,5 @@
 import { fetcher, FetcherOptions } from "../fetcher";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import { useListTables } from "./useListTables";
 
 export function useGetTableByID(id: number) {
@@ -10,7 +10,9 @@ export function useGetTableByID(id: number) {
       id,
     },
   };
-  const { data, error } = useSWR(options, fetcher);
+  const { data, error } = useSWR(options, fetcher, { refreshInterval: 60000 });
+
+  const { mutate, cache } = useSWRConfig();
 
   return {
     table: data,

@@ -3,8 +3,10 @@
 import { API, HTMLPasteEvent } from "@editorjs/editorjs";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
+import regexifyString from "regexify-string";
 import localDataService from "../../../data/services/localDataService";
 import "./CustomParagraph.css";
+import { InlineValue } from "./InlineValue";
 
 /**
  * Base Paragraph Block for the Editor.js.
@@ -217,25 +219,40 @@ const ParagraphComponent: React.FC<Props> = ({
 }) => {
   const [data, setData] = useState(initData);
 
-  function injectDynamicValues(html: string): string {
-    let injected = html;
-    // replace all Dynamic values
-    injected = injected.replaceAll(
-      /\$([a-zA-Z]+)\.([a-zA-Z]+)\.([1-9][0-9]*)/gi,
-      '<span className="text-red-500">$1 - $2 - $3</span>'
-    );
+  function stringToJSX(input: string | JSX.Element): (string | JSX.Element)[] {
+    if (typeof input !== "string") return [input];
 
-    return injected;
+    const jsx = regexifyString({
+      pattern: /\$([a-zA-Z]+)\.([a-zA-Z]+)\.([1-9][0-9]*)/gi,
+      decorator: (match, index, result) => (
+        <InlineValue
+          table={String(result?.[1])}
+          column={String(result?.[2])}
+          entryKey={String(result?.[3])}
+        />
+      ),
+      input: input,
+    });
+    return jsx;
   }
 
   if (readOnly) {
     return (
-      <div
-        className="ce-paragraph"
-        dangerouslySetInnerHTML={{
-          __html: injectDynamicValues(data.text ?? ""),
-        }}
-      ></div>
+      <div className="ce-paragraph">
+        {stringToJSX(data.text ?? "").map((element) => {
+          if (typeof element === "string") {
+            return (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: element,
+                }}
+              ></span>
+            );
+          } else {
+            return element;
+          }
+        })}
+      </div>
     );
   } else {
     return (

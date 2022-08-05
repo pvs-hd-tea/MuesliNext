@@ -221,8 +221,8 @@ const ParagraphComponent: React.FC<Props> = ({
     let injected = html;
     // replace all Dynamic values
     injected = injected.replaceAll(
-      /([a-zA-Z]+)\.([a-zA-Z]+)\.([1-9][0-9]*)/gi,
-      '<p className="text-red-500">$1 - $2 - $3</p>'
+      /\$([a-zA-Z]+)\.([a-zA-Z]+)\.([1-9][0-9]*)/gi,
+      '<span className="text-red-500">$1 - $2 - $3</span>'
     );
 
     return injected;

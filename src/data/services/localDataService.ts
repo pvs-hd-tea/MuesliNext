@@ -7,6 +7,7 @@ import axios from "axios";
 import { Table, TableSchema } from "../definitions/Tables";
 
 import { Column } from "../../../node_modules/@intutable/database/dist/column";
+import { array } from "zod";
 
 export enum PageMode {
   Edit,
@@ -338,6 +339,29 @@ export default class LocalDataService {
     const item = row[column];
     //console.log(item);
     return item;
+  }
+
+  async deriveTableItemByName(
+    name: string,
+    column: string,
+    action: string
+  ): Promise<string> {
+    const table = await this.fetchTableByName(name);
+
+    let k: keyof typeof table.rows;
+    let sum = 0;
+    const type_int = table.columns.find((e) => e.type === "integer");
+
+    for (k in table.rows) {
+      const v = table.rows[k];
+      if (action == "sum" && type_int?.name == column) {
+        sum += v[column];
+      } else {
+        return "The input column should be from an integer type or the action does not exist";
+      }
+    }
+
+    return sum.toString();
   }
 
   pushTableItemByName(

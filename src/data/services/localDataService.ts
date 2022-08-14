@@ -7,7 +7,6 @@ import axios from "axios";
 import { Table, TableSchema } from "../definitions/Tables";
 
 import { Column } from "../../../node_modules/@intutable/database/dist/column";
-import { array } from "zod";
 
 export enum PageMode {
   Edit,

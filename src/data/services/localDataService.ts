@@ -3,8 +3,7 @@ import { Md5 } from "ts-md5";
 import { WebAppConfig, defaultConfig, Page, Settings } from "../definitions";
 import { Optional } from "../types";
 import ParseService from "./parseService";
-import axios from "axios";
-import { Table, TableSchema } from "../definitions/Tables";
+import { Table } from "../definitions/Tables";
 
 import { Column } from "../../../node_modules/@intutable/database/dist/column";
 
@@ -41,11 +40,6 @@ export default class LocalDataService {
   private constructor(config: WebAppConfig) {
     this.config = config;
     this.local.activePageUuid = this.getSettings().homePath;
-  }
-
-  private forceUpdate() {
-    this.local.updateCounter++;
-    this.useHashCallback();
   }
 
   static getFromLocalOrNew(
@@ -87,7 +81,6 @@ export default class LocalDataService {
   setSettings(settings: Settings) {
     this.config.settings = settings;
     this.saveToLocalStorage();
-    this.useHashCallback();
   }
 
   getPages(): Page[] {
@@ -101,13 +94,11 @@ export default class LocalDataService {
   setPageById(id: number, page: Page) {
     this.config.pages[id] = page;
     this.saveToLocalStorage();
-    this.useHashCallback();
   }
 
   deletePageById(id: number) {
     this.config.pages.splice(id, 1);
     this.saveToLocalStorage();
-    this.useHashCallback();
   }
 
   getPageByKey(key: string): Optional<Page> {
@@ -236,50 +227,4 @@ export default class LocalDataService {
   getLocalState = () => {
     return this.local;
   };
-
-  // /*------------------------------------------------- Backend functions ---*/
-
-  // pushTableItemByName(
-  //   name: string,
-  //   column: string,
-  //   key: string,
-  //   value: string
-  // ) {
-  //   const bodyContent = {
-  //     table: "p1_" + name,
-  //     condition: ["_id", key],
-  //     update: {
-  //       [column]: value,
-  //     },
-  //   };
-  //   this.request<Table[]>("database/update", bodyContent).then(() => {
-  //     this.forceUpdate();
-  //   });
-  // }
-
-  // // TODO: replace by SWR
-  // fetchTableItemByNameCached(name: string, column: string, key: string) {
-  //   // timout is to repreduce not updated on loaded bug
-  //   //setTimeout(() => {
-  //   this.fetchTableTableItemByName(name, column, key); // stage next fetch
-  //   //}, 1000);
-  //   const cachedTables = this.getLocalState().cachedTables;
-  //   if (cachedTables[name]) {
-  //     const table = cachedTables[name];
-  //     const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
-  //     if (!row) {
-  //       return "row not found";
-  //     }
-  //     const item = row[column];
-  //     return item;
-  //   } else {
-  //     console.log("fetching table");
-  //     return "fetching table";
-  //   }
-  // }
-
-  // // TODO: make more efficient
-  // async isConnected(): Promise<boolean> {
-  //   return true;
-  // }
 }

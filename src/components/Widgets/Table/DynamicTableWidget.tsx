@@ -1,7 +1,7 @@
 import "./DynamicTableWidget.css";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { TableWidget } from "./DynamicTable";
+import { TableWidget } from "./TableWidget";
 import LocalDataService from "../../../data/services/localDataService";
 
 import { Table } from "../../../data/definitions/Tables";

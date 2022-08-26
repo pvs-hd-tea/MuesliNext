@@ -10,8 +10,10 @@ import SettingsService from "./data/services/settingsService";
 import NavBar from "./components/Widgets/NavBar";
 import TableService from "./data/services/tableService";
 import { Table } from "./data/definitions/Tables";
-import { TableWidget } from "./components/Widgets/Table/DynamicTable";
+import { TableWidget } from "./components/Widgets/Table/TableWidget";
 import { SWRConfig } from "swr";
+import { useListTables } from "./api/hooks";
+import { nameToUrl } from "./util/nameToUrl";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {}
@@ -26,7 +28,8 @@ const App: React.FC<Props> = ({}) => {
   const settingsService = new SettingsService();
 
   const defaultTables: Table[] = [];
-  const [tables, setTables] = useState(defaultTables);
+  useState(defaultTables);
+  const { tables, isLoading, isError } = useListTables();
 
   // const getTables = async () => {
   //   const tables = await dataService.fetchTables();
@@ -103,31 +106,32 @@ const App: React.FC<Props> = ({}) => {
                     }
                   />
                 ))}
-                {/* {tables
-                .filter((table) => !table.name.startsWith("internal#"))
-                .map((table) => (
-                  <Route
-                    key={table.name}
-                    path={`/tables/${table.name.replace(/^p.*_/, "")}`}
-                    element={
-                      <div className="mt-20 place-content-center">
-                        <p className="text-9xl text-center text-blue-600">
-                          {" "}
-                          Table{" "}
-                        </p>
-                        <p className="text-2xl text-center text-blue-600">
-                          {table.name.replace(/^p.*_/, "")}
-                        </p>
-                        <table>
-                          <TableWidget
-                            heads={tableData.tableData.columns}
-                            rows={tableData.tableData.rows}
-                          />
-                        </table>
-                      </div>
-                    }
-                  />
-                ))} */}
+                {!isLoading &&
+                  !isError &&
+                  tables
+                    .filter(
+                      (table: any) =>
+                        table.name && !table.name.startsWith("internal#")
+                    )
+                    .map((table: any) => (
+                      <Route
+                        key={table.name}
+                        path={`/tables/${nameToUrl(
+                          table.name.replace(/^p.*_/, "")
+                        )}`}
+                        element={
+                          <div className="mt-5 place-content-center">
+                            <p className="text-2xl text-center text-blue-600">
+                              {"table: " + table.name.replace(/^p.*_/, "")}
+                            </p>
+                            <br />
+                            <TableWidget
+                              tableName={table.name.replace(/^p.*_/, "")}
+                            />
+                          </div>
+                        }
+                      />
+                    ))}
                 <Route
                   path="/general"
                   element={

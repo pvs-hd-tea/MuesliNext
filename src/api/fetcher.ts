@@ -11,6 +11,7 @@ export type FetcherOptions = {
    */
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   headers?: HeadersInit;
+  schema?: Zod.Schema;
 };
 
 export const fetcher = (args: FetcherOptions) =>
@@ -28,4 +29,12 @@ export const fetcher = (args: FetcherOptions) =>
         ? args.body
         : JSON.stringify(args.body)
       : undefined,
-  }).then((res) => res.json());
+  }).then((res) => {
+    if (!args.schema) {
+      return res.json();
+    }
+    alert("yay");
+    const parsed = args.schema.parse(res.json());
+
+    return parsed;
+  });

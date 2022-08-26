@@ -28,22 +28,7 @@ export function useGetTableByName(name: string) {
     tableID = tables.findIndex((table: any) => table.name === name);
   }
   const { table, isLoading, isError } = useGetTableByID(tableID + 1);
-  if (!name) {
-    return {
-      table: null,
-      isLoading: false,
-      isError: true,
-    };
-  }
-  if (isLoading || isError) {
-    return {
-      table: null,
-      isLoading,
-      isError,
-    };
-  }
-
-  if (tableID === -1) {
+  if (tableID === -1 || !name || isError) {
     return {
       table: null,
       isLoading: false,
@@ -52,7 +37,7 @@ export function useGetTableByName(name: string) {
   }
   return {
     table,
-    isLoading: false,
+    isLoading: isLoading,
     isError: false,
   };
 }

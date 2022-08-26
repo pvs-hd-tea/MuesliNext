@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Table } from "../../data/definitions/Tables";
 import TableService from "../../data/services/tableService";
 import LocalDataService from "../../data/services/localDataService";
+import { nameToUrl } from "../../util/nameToUrl";
 
 interface tableItemProperties {
   tableService: TableService;
@@ -102,7 +103,7 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
     >
       <a
         // the replace will remove the project id: p1_example -> example
-        href={`/#/tables/${table.key.replace(/^p.*_/, "")}`}
+        href={`/#/tables/${nameToUrl(table.key.replace(/^p.*_/, ""))}`}
         onClick={handleOnClick}
         className="col-span-6 items-center px-4 py-2 text-gray-500  hover:text-gray-900"
       >

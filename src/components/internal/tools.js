@@ -11,7 +11,7 @@ import Paragraph from "../Widgets/Paragraph/CustomParagraph";
 import Button from "../Widgets/Button/Button";
 import AlignmentTuneTool from "editorjs-text-alignment-blocktune";
 import DynamicValueWidget from "../Widgets/DynamicValue/DynamicValueWidget";
-import DerivedValueWidget from "../Widgets/DerivedValuesWidget";
+import DerivedValueWidget from "../Widgets/DerivedValues/DerivedValuesWidget";
 import DynamicTableWidget from "../Widgets/Table/DynamicTableWidget";
 // import InlineDynamicValueWidget from "../Widgets/DynamicValue/InlineDynamicValueWiget";
 

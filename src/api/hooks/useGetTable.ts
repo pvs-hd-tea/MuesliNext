@@ -78,3 +78,49 @@ export function useGetTableItemByName(
     isError: false,
   };
 }
+
+export function useDeriveTableItemByName(
+  name: string,
+  column: string,
+  action: string
+) {
+  const { table, isLoading, isError } = useGetTableByName(name);
+  if (!name || !column || !action) {
+    return {
+      item: "null",
+      isLoading: false,
+      isError: true,
+    };
+  }
+
+  if (isLoading || isError) {
+    return {
+      item: "null",
+      isLoading: isLoading,
+      isError: isError,
+    };
+  }
+
+  //let k: keyof typeof table.rows;
+  let sum = 0;
+  const type_int = table.columns.find((e: any) => e.type === "integer");
+
+  for (let k = 0; k < table.rows.length(); k++) {
+    const v = table.rows[k];
+    if (action == "sum" && type_int?.name == column) {
+      sum += v[column];
+    } else {
+      return {
+        item: "The input column should be from an integer type or the action does not exist",
+        isLoading: false,
+        isError: true,
+      };
+    }
+
+    return {
+      item: sum.toString(),
+      isLoading: false,
+      isError: false,
+    };
+  }
+}

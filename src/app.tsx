@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import PageEdit from "./components/internal/PageEdit";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
@@ -110,10 +110,10 @@ const App: React.FC<Props> = ({}) => {
                   !isError &&
                   tables
                     .filter(
-                      (table: any) =>
+                      (table: Table) =>
                         table.name && !table.name.startsWith("internal#")
                     )
-                    .map((table: any) => (
+                    .map((table: Table) => (
                       <Route
                         key={table.name}
                         path={`/tables/${nameToUrl(

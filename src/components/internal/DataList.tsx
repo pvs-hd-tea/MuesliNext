@@ -4,7 +4,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useSWRConfig } from "swr";
 import { FetcherOptions } from "../../api/fetcher";
 import { useListTables } from "../../api/hooks/useListTables";
@@ -20,26 +20,9 @@ interface PageListProperties {
   tableService: TableService;
 }
 
-const DataList: React.FC<PageListProperties> = ({
-  dataService,
-  tableService,
-}) => {
-  const defaultTables: Table[] = [];
-  // const [tables, setTables] = useState(defaultTables);
-
-  // const getTables = async () => {
-  //   const tables = await dataService.fetchTables();
-  //   setTables(tables);
-  // };
-
-  // useEffect(() => {
-  //   if (tables.length === 0) {
-  //     getTables();
-  //   }
-  // });
-
+const DataList: React.FC<PageListProperties> = ({ tableService }) => {
   const { tables, isLoading, isError } = useListTables();
-  const { mutate, cache } = useSWRConfig();
+  const { mutate } = useSWRConfig();
 
   const addTable = () => {
     const tableName = prompt("Please enter your table name:", "my table");
@@ -79,9 +62,10 @@ const DataList: React.FC<PageListProperties> = ({
         <nav className="ml-5 flex flex-col">
           {tables
             .filter(
-              (table: any) => table.name && !table.name.startsWith("internal#")
+              (table: Table) =>
+                table.name && !table.name.startsWith("internal#")
             )
-            .map((table: any, id: any) => (
+            .map((table: Table, id: number) => (
               <TableItem key={id} tableService={tableService} table={table} />
             ))}
           <a

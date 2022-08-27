@@ -1,11 +1,7 @@
 import "./DynamicValueWidget.css";
 import React from "react";
-import LocalDataService from "../../../data/services/localDataService";
 import { createRoot } from "react-dom/client";
-import {
-  useDeriveTableItemByName,
-  useGetTableByName,
-} from "../../../api/hooks";
+import { useDeriveTableItemByName } from "../../../api/hooks";
 
 export default class DerivedValueWidget {
   data: DerivedValueWidgetData;
@@ -90,11 +86,7 @@ interface Props {
   readOnly: boolean;
 }
 
-const DerivedValueComponent: React.FC<Props> = ({
-  onDataChange,
-  initData,
-  readOnly,
-}) => {
+const DerivedValueComponent: React.FC<Props> = ({ initData, readOnly }) => {
   const [data, setData] = React.useState(initData);
   const { item, isLoading, isError } = useDeriveTableItemByName(
     data.tableName,

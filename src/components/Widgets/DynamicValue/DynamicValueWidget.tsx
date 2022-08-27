@@ -1,6 +1,5 @@
 import "./DynamicValueWidget.css";
 import React, { useState } from "react";
-import LocalDataService from "../../../data/services/localDataService";
 import { createRoot } from "react-dom/client";
 import { useGetTableItemByName } from "../../../api/hooks/useGetTable";
 

@@ -1,15 +1,10 @@
 import "./DynamicTableWidget.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { TableWidget } from "./TableWidget";
-import LocalDataService from "../../../data/services/localDataService";
-
 import { Table } from "../../../data/definitions/Tables";
 
 import { Column } from "../../../../node_modules/@intutable/database/dist/column";
-import { faTurnDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useGetTableByName } from "../../../api/hooks/useGetTable";
 
 interface DynamicTableWidgetData {
   tableName: string;

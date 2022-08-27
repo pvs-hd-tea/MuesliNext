@@ -1,6 +1,7 @@
 import { fetcher, FetcherOptions } from "../fetcher";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { useListTables } from "./useListTables";
+import { Table } from "../../data/definitions/Tables";
 
 export function useGetTableByID(id: number) {
   const options: FetcherOptions = {
@@ -11,8 +12,6 @@ export function useGetTableByID(id: number) {
     },
   };
   const { data, error } = useSWR(options, fetcher, { refreshInterval: 60000 });
-
-  const { mutate, cache } = useSWRConfig();
 
   return {
     table: data,
@@ -25,7 +24,7 @@ export function useGetTableByName(name: string) {
   const { tables } = useListTables();
   let tableID = -1;
   if (tables) {
-    tableID = tables.findIndex((table: any) => table.name === name);
+    tableID = tables.findIndex((table: Table) => table.name === name);
   }
   const { table, isLoading, isError } = useGetTableByID(tableID + 1);
   if (tableID === -1 || !name || isError) {
@@ -63,6 +62,7 @@ export function useGetTableItemByName(
       isError: isError,
     };
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const row = table.rows.find((r: any) => r._id + "" === key);
   if (!row) {
     return {
@@ -103,9 +103,10 @@ export function useDeriveTableItemByName(
 
   //let k: keyof typeof table.rows;
   let sum = 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const type_int = table.columns.find((e: any) => e.type === "integer");
 
-  for (let k = 0; k < table.rows.length(); k++) {
+  for (let k = 0; k < table.rows.length; k++) {
     const v = table.rows[k];
     if (action == "sum" && type_int?.name == column) {
       sum += v[column];
@@ -116,11 +117,10 @@ export function useDeriveTableItemByName(
         isError: true,
       };
     }
-
-    return {
-      item: sum.toString(),
-      isLoading: false,
-      isError: false,
-    };
   }
+  return {
+    item: sum.toString(),
+    isLoading: false,
+    isError: false,
+  };
 }

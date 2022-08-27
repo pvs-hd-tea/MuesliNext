@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import localDataService from "../../../data/services/localDataService";
 import { pushTableItemByName } from "../../../api/uptdate";
 import { useSWRConfig } from "swr";
 import { FetcherOptions } from "../../../api/fetcher";
 import { hashStable } from "../../../util/hash";
 import { useListTables } from "../../../api/hooks";
+import { Table } from "../../../data/definitions/Tables";
 
 enum buttonType {
   LINK = "link",
@@ -262,15 +262,12 @@ async function pushDynamicValue(
     }
 
     // TODO: push
-    const response = await pushTableItemByName(
+    await pushTableItemByName(
       targetObj.table,
       targetObj.column,
       targetObj.key,
       value
     );
-    // alert(
-    //   `SUBMIT:\nvalue: ${value} into\n ${JSON.stringify(targetObj, null, 2)}`
-    // );
     return "";
   } else {
     return "malformed target: " + target;
@@ -291,8 +288,8 @@ const ButtonComponent: React.FC<Props> = ({
 }) => {
   const [data, setData] = useState(initData);
   // we need this to know the current table in order refresh it (mutate request)
-  const { tables, isLoading, isError } = useListTables();
-  const { mutate, cache } = useSWRConfig();
+  const { tables } = useListTables();
+  const { mutate } = useSWRConfig();
   const [syntaxError, setSyntaxError] = useState(false);
   const [syntaxErrorMessage, setSyntaxErrorMessage] = useState("");
 
@@ -401,7 +398,7 @@ const ButtonComponent: React.FC<Props> = ({
       let tableId = -1;
       if (tables) {
         tableId = tables.findIndex(
-          (table: any) => table.name === data.submit_target.split(".")[0]
+          (table: Table) => table.name === data.submit_target.split(".")[0]
         );
         tableId += 1;
       }

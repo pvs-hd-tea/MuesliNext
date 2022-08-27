@@ -1,10 +1,9 @@
 // TODO: port to react.
 // Until then it will be difficult to use state from react.
 import { API, HTMLPasteEvent } from "@editorjs/editorjs";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import regexifyString from "regexify-string";
-import localDataService from "../../../data/services/localDataService";
 import "./CustomParagraph.css";
 import { InlineValue } from "./InlineValue";
 
@@ -217,7 +216,7 @@ const ParagraphComponent: React.FC<Props> = ({
   initData,
   readOnly,
 }) => {
-  const [data, setData] = useState(initData);
+  const [data] = useState(initData);
 
   function stringToJSX(input: string | JSX.Element): (string | JSX.Element)[] {
     if (typeof input !== "string") return [input];

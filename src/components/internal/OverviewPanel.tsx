@@ -1,6 +1,6 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import pjson from "../../../package.json";
 import localDataService, {
   PageMode,

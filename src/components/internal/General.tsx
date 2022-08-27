@@ -15,7 +15,7 @@ const General: React.FC<GeneralProperties> = ({
 }) => {
   useEffect(() => {
     document.title = `${dataService.getSettings().name} - General`;
-  }, []);
+  }, [dataService]);
 
   const [config, setConfig] = useState(dataService.toJsonString());
   const [appName, setAppName] = useState(dataService.getSettings().name);

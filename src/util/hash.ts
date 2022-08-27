@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function hashStable(obj: any): string {
   // Example:
   // Input:

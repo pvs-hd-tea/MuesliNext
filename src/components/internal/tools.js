@@ -14,6 +14,7 @@ import DynamicValueWidget from "../Widgets/DynamicValue/DynamicValueWidget";
 import DerivedValueWidget from "../Widgets/DerivedValues/DerivedValuesWidget";
 import DynamicTableWidget from "../Widgets/Table/DynamicTableWidget";
 // import InlineDynamicValueWidget from "../Widgets/DynamicValue/InlineDynamicValueWiget";
+import FormFieldWidget from "../Widgets/FormField/FormFieldWidget";
 
 export const EDITOR_JS_TOOLS = {
   // NOTE: Paragraph is default tool. Declare only when you want to change paragraph option.
@@ -40,6 +41,11 @@ export const EDITOR_JS_TOOLS = {
   // dynamicValueInline: InlineDynamicValueWidget,
   dynamicTable: DynamicTableWidget,
   button: { class: Button, tunes: ["alignmentTune"], shortcut: "CMD+SHIFT+B" },
+  formField: {
+    class: FormFieldWidget,
+    tunes: ["alignmentTune"],
+    shortcut: "CMD+SHIFT+F",
+  },
 
   alignmentTune: {
     class: AlignmentTuneTool,

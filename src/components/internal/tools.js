@@ -11,8 +11,10 @@ import Paragraph from "../Widgets/CustomParagraph";
 import Button from "../Widgets/Button";
 import AlignmentTuneTool from "editorjs-text-alignment-blocktune";
 import DynamicValueWidget from "../Widgets/DynamicValueWidget";
-import DerivedValueWidget from "../Widgets/DerivedValuesWidget";
 import DynamicTableWidget from "../Widgets/DynamicTableWidget";
+import DerivedValueWidget from "../Widgets/DerivedValuesWidget";
+import DynamicTableWidgetDropdown from "../Widgets/DynamicTableWidgetForDropdown";
+
 import InlineDynamicValueWidget from "../Widgets/InlineDynamicValueWiget";
 
 export const EDITOR_JS_TOOLS = {
@@ -39,6 +41,7 @@ export const EDITOR_JS_TOOLS = {
   derivedValue: DerivedValueWidget,
   dynamicValueInline: InlineDynamicValueWidget,
   dynamicTable: DynamicTableWidget,
+  dynamicTableDropdown: DynamicTableWidgetDropdown,
   button: { class: Button, tunes: ["alignmentTune"], shortcut: "CMD+SHIFT+B" },
 
   alignmentTune: {

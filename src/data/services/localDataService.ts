@@ -3,8 +3,7 @@ import { Md5 } from "ts-md5";
 import { WebAppConfig, defaultConfig, Page, Settings } from "../definitions";
 import { Optional } from "../types";
 import ParseService from "./parseService";
-import axios from "axios";
-import { Table, TableSchema } from "../definitions/Tables";
+import { Table } from "../definitions/Tables";
 
 import { Column } from "../../../node_modules/@intutable/database/dist/column";
 
@@ -41,11 +40,6 @@ export default class LocalDataService {
   private constructor(config: WebAppConfig) {
     this.config = config;
     this.local.activePageUuid = this.getSettings().homePath;
-  }
-
-  private forceUpdate() {
-    this.local.updateCounter++;
-    this.useHashCallback();
   }
 
   static getFromLocalOrNew(
@@ -87,7 +81,6 @@ export default class LocalDataService {
   setSettings(settings: Settings) {
     this.config.settings = settings;
     this.saveToLocalStorage();
-    this.useHashCallback();
   }
 
   getPages(): Page[] {
@@ -101,13 +94,11 @@ export default class LocalDataService {
   setPageById(id: number, page: Page) {
     this.config.pages[id] = page;
     this.saveToLocalStorage();
-    this.useHashCallback();
   }
 
   deletePageById(id: number) {
     this.config.pages.splice(id, 1);
     this.saveToLocalStorage();
-    this.useHashCallback();
   }
 
   getPageByKey(key: string): Optional<Page> {
@@ -236,176 +227,4 @@ export default class LocalDataService {
   getLocalState = () => {
     return this.local;
   };
-
-  /*------------------------------------------------- Backend functions ---*/
-
-  async request<T>(url: string, data: object): Promise<T> {
-    const headersList = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    };
-
-    const bodyContent = JSON.stringify(data);
-
-    const reqOptions = {
-      url: `${this.config.settings.backendUrl}/request/${url}`,
-      method: "POST",
-      headers: headersList,
-      data: bodyContent,
-    };
-
-    const request = await axios.request(reqOptions);
-    // TODO: parsing
-    return request.data;
-  }
-
-  async fetchTables(): Promise<Table[]> {
-    const bodyContent = {
-      sessionID: "Session",
-      id: 1,
-    };
-    const tables = await this.request<Table[]>(
-      "project-management/getTablesFromProject",
-      bodyContent
-    );
-    return tables;
-  }
-
-  async fetchTableById(id: number): Promise<{
-    table: Table;
-    columns: Column[];
-    rows: Record<string, string>;
-  }> {
-    const bodyContent = {
-      sessionID: "Session",
-      id: id,
-    };
-    const table = await this.request<{
-      table: Table;
-      columns: Column[];
-      rows: Record<string, string>;
-    }>("project-management/getTableData", bodyContent);
-    return table;
-  }
-
-  async fetchTableByName(name: string): Promise<{
-    table: Table;
-    columns: Column[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    rows: Record<string, any>;
-  }> {
-    const tables = await this.fetchTables();
-    const tableID = tables.findIndex((table) => table.name === name);
-    if (tableID === -1) {
-      throw new Error("Table not found");
-    }
-    //console.log("Table ID: " + tableID);
-    const table = await this.fetchTableById(tableID + 1);
-    const cachedTables = this.getLocalState().cachedTables;
-    cachedTables[name] = table;
-    console.log("cached table");
-    this.setLocalState({ ...this.getLocalState(), cachedTables: cachedTables });
-    return table;
-  }
-
-  async fetchTableTableItemByName(
-    name: string,
-    column: string,
-    key: string
-  ): Promise<string> {
-    // "rows": [
-    //   {
-    //     "_id": 1,
-    //     "number": 1,
-    //     "string": "foo",
-    //     "boolean": true
-    //   },
-    //   {
-    //     "_id": 2,
-    //     "number": 42,
-    //     "string": "bar",
-    //     "boolean": false
-    //   }
-    // ]
-    const table = await this.fetchTableByName(name);
-    //console.log(table);
-    //console.log(`key is ${key}`);
-    const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
-    //console.log(row);
-    if (!row) {
-      return "row not found";
-    }
-    const item = row[column];
-    //console.log(item);
-    return item;
-  }
-
-  async deriveTableItemByName(
-    name: string,
-    column: string,
-    action: string
-  ): Promise<string> {
-    const table = await this.fetchTableByName(name);
-
-    let k: keyof typeof table.rows;
-    let sum = 0;
-    const type_int = table.columns.find((e) => e.type === "integer");
-
-    for (k in table.rows) {
-      const v = table.rows[k];
-      if (action == "sum" && type_int?.name == column) {
-        sum += v[column];
-      } else {
-        return "The input column should be from an integer type or the action does not exist";
-      }
-    }
-
-    return sum.toString();
-  }
-
-  pushTableItemByName(
-    name: string,
-    column: string,
-    key: string,
-    value: string
-  ) {
-    const bodyContent = {
-      table: "p1_" + name,
-      condition: ["_id", key],
-      update: {
-        [column]: value,
-      },
-    };
-    this.request<Table[]>("database/update", bodyContent).then(() => {
-      this.forceUpdate();
-    });
-  }
-
-  // TODO: replace by SWR
-  fetchTableItemByNameCached(name: string, column: string, key: string) {
-    // timout is to repreduce not updated on loaded bug
-    //setTimeout(() => {
-    this.fetchTableTableItemByName(name, column, key); // stage next fetch
-    //}, 1000);
-    const cachedTables = this.getLocalState().cachedTables;
-    if (cachedTables[name]) {
-      const table = cachedTables[name];
-      const row = table.rows.find((r: { _id: string }) => r._id + "" === key);
-      if (!row) {
-        return "row not found";
-      }
-      const item = row[column];
-      return item;
-    } else {
-      console.log("fetching table");
-      return "fetching table";
-    }
-  }
-
-  // TODO: make more efficient
-  async isConnected(): Promise<boolean> {
-    const tables = await this.fetchTables();
-    const parsed = TableSchema.safeParse(tables[0]);
-    return parsed.success;
-  }
 }

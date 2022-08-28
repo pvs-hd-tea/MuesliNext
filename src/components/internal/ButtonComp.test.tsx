@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot, Root } from "react-dom/client";
 import { act, fireEvent, getByText } from "@testing-library/react";
 
-import Button from "./ButtonWidget";
+import Button from "./ButtonComp";
 
 let container: HTMLDivElement;
 let root: Root;

@@ -4,10 +4,15 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useSWRConfig } from "swr";
+import { FetcherOptions } from "../../api/fetcher";
+import { useListTables } from "../../api/hooks/useListTables";
+import { createDefaultTable } from "../../api/uptdate";
 import { Table } from "../../data/definitions/Tables";
 import localDataService from "../../data/services/localDataService";
 import TableService from "../../data/services/tableService";
+import { hashStable } from "../../util/hash";
 import TableItem from "./TableItem";
 
 interface PageListProperties {
@@ -15,29 +20,29 @@ interface PageListProperties {
   tableService: TableService;
 }
 
-const DataList: React.FC<PageListProperties> = ({
-  dataService,
-  tableService,
-}) => {
-  const defaultTables: Table[] = [];
-  const [tables, setTables] = useState(defaultTables);
-
-  const getTables = async () => {
-    const tables = await dataService.fetchTables();
-    setTables(tables);
-  };
-
-  useEffect(() => {
-    if (tables.length === 0) {
-      getTables();
-    }
-  });
+const DataList: React.FC<PageListProperties> = ({ tableService }) => {
+  const { tables, isLoading, isError } = useListTables();
+  const { mutate } = useSWRConfig();
 
   const addTable = () => {
     const tableName = prompt("Please enter your table name:", "my table");
-    tableService.createAndAddTableFromName(tableName);
+    if (!tableName || tableName === "") return;
+    // mutate previous list tables requests
+    const options: FetcherOptions = {
+      url: `request/project-management/getTablesFromProject`,
+      body: {
+        sessionID: "Session",
+        id: "1",
+      },
+    };
+    createDefaultTable(tableName ?? "unknown").then(() => {
+      mutate(hashStable(options));
+      window.location.replace(`#/tables/${tableName}`);
+    });
   };
-
+  if (isLoading) return <></>;
+  if (isError) return <></>;
+  //return <div>{JSON.stringify(tables)}</div>;
   return (
     <>
       <details className="group">
@@ -56,8 +61,11 @@ const DataList: React.FC<PageListProperties> = ({
 
         <nav className="ml-5 flex flex-col">
           {tables
-            .filter((table) => !table.name.startsWith("internal#"))
-            .map((table, id) => (
+            .filter(
+              (table: Table) =>
+                table.name && !table.name.startsWith("internal#")
+            )
+            .map((table: Table, id: number) => (
               <TableItem key={id} tableService={tableService} table={table} />
             ))}
           <a

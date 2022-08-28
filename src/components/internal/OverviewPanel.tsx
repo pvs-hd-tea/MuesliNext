@@ -1,6 +1,6 @@
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import pjson from "../../../package.json";
 import localDataService, {
   PageMode,
@@ -11,6 +11,7 @@ import PageList from "./PageList";
 import { faCog, faRocket } from "@fortawesome/free-solid-svg-icons";
 import DataList from "./DataList";
 import TableService from "../../data/services/tableService";
+import { useGetStatus } from "../../api/hooks/useGetStatus";
 
 interface OverviewPanelProperties {
   dataHash: string;
@@ -25,13 +26,15 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
   pageService,
   tableService,
 }) => {
-  const [connected, setConnected] = useState(false);
+  const { status, isLoading, isError } = useGetStatus();
 
-  useEffect(() => {
-    dataService.isConnected().then((isConnected) => {
-      setConnected(isConnected);
-    });
-  });
+  // const [connected, setConnected] = useState(false);
+
+  // useEffect(() => {
+  //   dataService.isConnected().then((isConnected) => {
+  //     setConnected(isConnected);
+  //   });
+  // });
 
   return (
     <div className="flex flex-row min-h-screen fixed">
@@ -77,7 +80,7 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
                 className="float-right mx-1"
                 href={dataService.getSettings().backendUrl}
               >
-                {connected ? (
+                {!isLoading && !isError && status.statusCode === 200 ? (
                   <span className="text-green-400">connected</span>
                 ) : (
                   <span className="float-right">offline</span>

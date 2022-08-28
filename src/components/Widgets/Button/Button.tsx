@@ -3,7 +3,12 @@ import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import localDataService from "../../data/services/localDataService";
+import { pushTableItemByName } from "../../../api/uptdate";
+import { useSWRConfig } from "swr";
+import { FetcherOptions } from "../../../api/fetcher";
+import { hashStable } from "../../../util/hash";
+import { useListTables } from "../../../api/hooks";
+import { Table } from "../../../data/definitions/Tables";
 
 enum buttonType {
   LINK = "link",
@@ -234,11 +239,11 @@ export default class Button {
   }
 }
 
-function pushDynamicValue(
+async function pushDynamicValue(
   target: string,
   regex: string,
   value: string
-): string {
+): Promise<string> {
   if (target.match(/[a-zA-Z0-9]+\.[a-zA-Z0-9]+\.[a-zA-Z0-9]+/)) {
     const args = target.split(".");
     const targetObj = {
@@ -257,16 +262,12 @@ function pushDynamicValue(
     }
 
     // TODO: push
-    const dataService = localDataService.getFromLocalOrNew();
-    dataService.pushTableItemByName(
+    await pushTableItemByName(
       targetObj.table,
       targetObj.column,
       targetObj.key,
       value
     );
-    // alert(
-    //   `SUBMIT:\nvalue: ${value} into\n ${JSON.stringify(targetObj, null, 2)}`
-    // );
     return "";
   } else {
     return "malformed target: " + target;
@@ -286,6 +287,9 @@ const ButtonComponent: React.FC<Props> = ({
   readOnly,
 }) => {
   const [data, setData] = useState(initData);
+  // we need this to know the current table in order refresh it (mutate request)
+  const { tables } = useListTables();
+  const { mutate } = useSWRConfig();
   const [syntaxError, setSyntaxError] = useState(false);
   const [syntaxErrorMessage, setSyntaxErrorMessage] = useState("");
 
@@ -390,9 +394,25 @@ const ButtonComponent: React.FC<Props> = ({
         />
       </>
     );
-    onClickListener = () => {
+    onClickListener = async () => {
+      let tableId = -1;
+      if (tables) {
+        tableId = tables.findIndex(
+          (table: Table) => table.name === data.submit_target.split(".")[0]
+        );
+        tableId += 1;
+      }
+      const options: FetcherOptions = {
+        url: `request/project-management/getTableData`,
+        body: {
+          sessionID: "Session",
+          id: tableId,
+        },
+      };
+      // alert(JSON.stringify(cache.keys(), null, 2));
+      // alert(JSON.stringify(cache.get(options), null, 2));
       // TODO: This is a placeholder
-      const error = pushDynamicValue(
+      const error = await pushDynamicValue(
         data.submit_target,
         data.submit_regex,
         submitValue
@@ -404,6 +424,8 @@ const ButtonComponent: React.FC<Props> = ({
         setSyntaxError(true);
         setSyntaxErrorMessage(error);
       }
+      // mutate previous get table requests
+      mutate(hashStable(options));
     };
   }
 

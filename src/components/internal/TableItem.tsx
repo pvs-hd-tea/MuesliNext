@@ -9,7 +9,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Table } from "../../data/definitions/Tables";
 import TableService from "../../data/services/tableService";
-import LocalDataService from "../../data/services/localDataService";
+import { nameToUrl } from "../../util/nameToUrl";
 
 interface tableItemProperties {
   tableService: TableService;
@@ -26,8 +26,6 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
   const [stopEditButton, setStopEditButton] = useState(faXmark);
   const [tableName, setTableName] = useState(table.name);
   const [edit, setEdit] = useState(false);
-
-  const dataService = LocalDataService.getFromLocalOrNew();
 
   const onInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTableName(event.target.value);
@@ -48,11 +46,11 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
     setFileIcon(defaultTableIcon);
   };
 
-  const onNameCancel = () => {
+  const onNameCancel = useCallback(() => {
     setTableName(table.name);
     setEdit(false);
     setFileIcon(defaultTableIcon);
-  };
+  }, [defaultTableIcon, table.name]);
 
   const onDelete = () => {
     // ask for confirmation
@@ -62,13 +60,16 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const escFunction = useCallback((event: any) => {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      onNameCancel();
-    }
-  }, []);
+  const escFunction = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (event: any) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onNameCancel();
+      }
+    },
+    [onNameCancel]
+  );
 
   const handleOnClick = () => {
     if (!edit && tableIsActive) {
@@ -76,16 +77,6 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
       setFileIcon(faXmark);
     }
     tableService.setActivePageUuid(table.key);
-    // TODO: placeholder only
-    dataService.fetchTableByName(table.name).then((data) => {
-      alert(
-        `PLACEHOLDER UNTIL WE CAN DISPLAY TABLES\n\n ${JSON.stringify(
-          data,
-          null,
-          2
-        )}`
-      );
-    });
   };
 
   useEffect(() => {
@@ -94,7 +85,7 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
     return () => {
       document.removeEventListener("keydown", escFunction, false);
     };
-  }, []);
+  }, [escFunction]);
 
   return (
     <div
@@ -102,7 +93,7 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
     >
       <a
         // the replace will remove the project id: p1_example -> example
-        href={`/#/tables/${table.key.replace(/^p.*_/, "")}`}
+        href={`/#/tables/${nameToUrl(table.key.replace(/^p.*_/, ""))}`}
         onClick={handleOnClick}
         className="col-span-6 items-center px-4 py-2 text-gray-500  hover:text-gray-900"
       >

@@ -43,6 +43,18 @@ export async function init(plugins: PluginLoader) {
   } else console.log("skipped creating example schema");
   //}
   console.log("web-app-gen-plugin init done");
+
+  core.listenForRequests("web-app-gen").on("get-status", getStatus);
+}
+
+type Status = {
+  statusCode: number;
+};
+
+async function getStatus(): Promise<Status> {
+  return {
+    statusCode: 200,
+  }; // Placeholder
 }
 
 async function getAdminId(): Promise<number | null> {

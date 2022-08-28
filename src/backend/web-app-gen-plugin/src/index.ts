@@ -44,7 +44,10 @@ export async function init(plugins: PluginLoader) {
   //}
   console.log("web-app-gen-plugin init done");
 
-  core.listenForRequests("web-app-gen").on("get-status", getStatus);
+  core
+    .listenForRequests("web-app-gen")
+    .on("get-status", getStatus)
+    .on("insert-into-table", insertIntoTable);
 }
 
 type Status = {
@@ -55,6 +58,23 @@ async function getStatus(): Promise<Status> {
   return {
     statusCode: 200,
   }; // Placeholder
+}
+
+// async function insertIntoTable(table: string, values: Record<string, unknown>) {
+//   return await core.events.request(
+//     insert("p1_example", {
+//       number: 69,
+//       string: "new",
+//       boolean: true,
+//     })
+//   );
+// }
+type tableInsertProps = {
+  table: string;
+  values: Record<string, unknown>;
+};
+async function insertIntoTable(props: tableInsertProps) {
+  return await core.events.request(insert(props.table, props.values));
 }
 
 async function getAdminId(): Promise<number | null> {

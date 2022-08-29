@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import { FetcherOptions } from "../../../api/fetcher";
 import { useGetTableByName, useListTables } from "../../../api/hooks";
-import { insertIntoTable } from "../../../api/uptdate";
+import { insertIntoTable } from "../../../api/update";
 import { Table } from "../../../data/definitions/Tables";
 import { hashStable } from "../../../util/hash";
 

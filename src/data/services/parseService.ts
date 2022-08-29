@@ -1,6 +1,8 @@
 import { WebAppConfig, WebAppConfigSchema } from "../definitions";
 import { Optional } from "../types";
 
+/* A singleton that can parse a string into a WebAppConfig object or 
+parse a WebAppConfig object into a string */
 export default class ParseService {
   private static instance: ParseService;
 

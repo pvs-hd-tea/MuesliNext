@@ -1,3 +1,4 @@
+/* Defining the schema for the page. */
 import { z } from "zod";
 import { defaultBlocks } from "./Block";
 import { EditorDataSchema } from "./EditorData";

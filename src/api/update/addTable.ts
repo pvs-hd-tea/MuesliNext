@@ -3,6 +3,7 @@ import { ColumnOption, ColumnType } from "@intutable/database/dist/column";
 import { TableSpec } from "../../backend/web-app-gen-plugin/src/example/schema";
 import { z } from "zod";
 
+/* A schema for the table. */
 export const TableSchema = z.object({
   table: z.object({
     id: z.number(),
@@ -20,6 +21,11 @@ export const TableSchema = z.object({
   rows: z.array(z.any()),
 });
 
+/**
+ * It creates a table in the database
+ * @param {TableSpec} tableSpec - TableSpec
+ * @returns The id, name and key of the table that was created.
+ */
 export async function createTable(tableSpec: TableSpec) {
   const bodyContent = {
     sessionID: "Session",
@@ -39,6 +45,7 @@ export async function createTable(tableSpec: TableSpec) {
   return res;
 }
 
+/* Definition for a default table. */
 const defaultTableSpec: TableSpec = {
   name: "defaultTable",
   columns: [
@@ -88,6 +95,11 @@ const defaultTableSpec: TableSpec = {
   joins: [],
 };
 
+/**
+ * Create a table with the given name and the default table spec.
+ * @param {string} name - The name of the table.
+ * @returns The id, name and key of the table that was created.
+ */
 export async function createDefaultTable(name: string) {
   const tableSpec: TableSpec = {
     ...defaultTableSpec,

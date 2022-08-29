@@ -2,10 +2,11 @@
  * This plugin is intended be used as a configurable backend for a web app generator
  * It can be used to:
  * Done:
+ * - create tables
+ * - store pages
  * Todo:
  * - create new project
- * - create pages
- * - create tables
+ * - create new page
  */
 import { PluginLoader } from "@intutable/core";
 
@@ -21,10 +22,8 @@ export async function init(plugins: PluginLoader) {
   core = plugins;
 
   // in init.sql until db supports default values
-  // await configureColumnAttributes()
 
   // for dev mode, create some custom data
-  //if (process.env["npm_lifecycle_event"] === "dev") {
   console.log("dev mode enabled");
   const maybeAdminId = await getAdminId();
   if (maybeAdminId === null) {
@@ -41,7 +40,6 @@ export async function init(plugins: PluginLoader) {
     await createExampleSchema(core, adminId);
     await insertExampleData(core);
   } else console.log("skipped creating example schema");
-  //}
   console.log("web-app-gen-plugin init done");
 
   core
@@ -57,18 +55,9 @@ type Status = {
 async function getStatus(): Promise<Status> {
   return {
     statusCode: 200,
-  }; // Placeholder
+  };
 }
 
-// async function insertIntoTable(table: string, values: Record<string, unknown>) {
-//   return await core.events.request(
-//     insert("p1_example", {
-//       number: 69,
-//       string: "new",
-//       boolean: true,
-//     })
-//   );
-// }
 type tableInsertProps = {
   table: string;
   values: Record<string, unknown>;

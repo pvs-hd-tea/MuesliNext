@@ -14,6 +14,10 @@ export type FetcherOptions = {
   schema?: Zod.Schema;
 };
 
+/**
+ * fetch wrapper for use in SWR App
+ * @param {FetcherOptions} args - FetcherOptions
+ */
 export const fetcher = (args: FetcherOptions) =>
   fetch("http://localhost:8080/" + args.url, {
     method: args.method || "POST",
@@ -22,7 +26,7 @@ export const fetcher = (args: FetcherOptions) =>
       Accept: "application/json",
       ...args.headers,
     },
-    // credentials: "include",
+    // credentials: "include", <- uncomment if authentication done
     redirect: "manual",
     body: args.body
       ? typeof args.body === "string"
@@ -33,7 +37,6 @@ export const fetcher = (args: FetcherOptions) =>
     if (!args.schema) {
       return res.json();
     }
-    alert("yay");
     const parsed = args.schema.parse(res.json());
 
     return parsed;

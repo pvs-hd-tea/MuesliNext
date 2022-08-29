@@ -38,7 +38,7 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
 
   const onNameSave = () => {
     if (tableName !== table.name && tableName !== "") {
-      tableService.setTableName(table.key, tableName);
+      alert("tbd");
     } else {
       setTableName(table.name);
     }
@@ -56,7 +56,7 @@ const TableItem: React.FC<tableItemProperties> = ({ tableService, table }) => {
     // ask for confirmation
     onNameCancel();
     if (confirm("Are you sure you want to delete this table?")) {
-      tableService.deleteTable(table.key);
+      alert("tbd");
     }
   };
 

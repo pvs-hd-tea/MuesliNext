@@ -1,3 +1,4 @@
+/* Defining a schema for the settings object. */
 import { z } from "zod";
 
 export const SettingsSchema = z.object({

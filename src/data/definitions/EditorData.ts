@@ -1,3 +1,4 @@
+/* Defining the schema for the editor data. */
 import { z } from "zod";
 import { BlockSchema, defaultBlocks } from "./Block";
 

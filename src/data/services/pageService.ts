@@ -1,6 +1,7 @@
 import { defaultPage, EditorData, Page, PageMetaData } from "../definitions";
 import localDataService, { PageMode } from "./localDataService";
 
+/* A service that wraps page operations on dataService */
 export default class PageService {
   private dataService: localDataService;
 
@@ -10,6 +11,13 @@ export default class PageService {
     this.dataService = dataService;
   }
 
+  /**
+   * If the page name is not null or empty, check if a page with the same name
+   * already exists. If it does, alert the user. If it doesn't, create a new page
+   * with the given name and add it to the list of pages
+   * @param {string | null} pageName - string | null
+   * @returns the page with the title that matches the pageName.
+   */
   createAndAddPageFromName(pageName: string | null): void {
     if (pageName == null || pageName == "") {
       return;
@@ -22,7 +30,6 @@ export default class PageService {
               page.title.toLocaleLowerCase() === pageName.toLocaleLowerCase()
           )
       ) {
-        // TODO: move
         alert("Page with this name already exists.");
         return;
       }
@@ -38,7 +45,6 @@ export default class PageService {
 
   addPage = (page: Page) => {
     this.dataService.setPageByKey(page.path, page);
-    // TODO: move this
     location.replace(`/#/pages/${page.path}`);
     this.setActivePageUuid(page.path);
   };
@@ -69,7 +75,7 @@ export default class PageService {
     }
   };
 
-  // TODO: near copy of above
+  // TODO: make dry
   setMetadataForPage = (uuid: string, metadata: PageMetaData): void => {
     const page = this.dataService.getPageByKey(uuid);
     if (!page.isUndefined()) {
@@ -87,7 +93,6 @@ export default class PageService {
       const newPage = { ...page.unwrap() };
       newPage.path = path;
       this.dataService.setPageByKey(oldUUID, newPage);
-      // TODO: move this
       location.replace(`/#/pages/${newPage.path}`);
     }
   };

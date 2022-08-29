@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { pushTableItemByName } from "../../../api/uptdate";
+import { pushTableItemByName } from "../../../api/update";
 import { useSWRConfig } from "swr";
 import { FetcherOptions } from "../../../api/fetcher";
 import { hashStable } from "../../../util/hash";
@@ -261,7 +261,6 @@ async function pushDynamicValue(
       return "syntax error in regex " + regex;
     }
 
-    // TODO: push
     await pushTableItemByName(
       targetObj.table,
       targetObj.column,
@@ -347,9 +346,6 @@ const ButtonComponent: React.FC<Props> = ({
       />
     );
     onClickListener = () => {
-      // TODO: investigate security of using eval here
-      // eval is okay here because it is only the frontend (we allow the user to inject scripts into his browser only)
-      // or is it not??
       try {
         setSyntaxError(false);
         eval(data.script);
@@ -409,9 +405,6 @@ const ButtonComponent: React.FC<Props> = ({
           id: tableId,
         },
       };
-      // alert(JSON.stringify(cache.keys(), null, 2));
-      // alert(JSON.stringify(cache.get(options), null, 2));
-      // TODO: This is a placeholder
       const error = await pushDynamicValue(
         data.submit_target,
         data.submit_regex,

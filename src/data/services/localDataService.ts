@@ -25,9 +25,11 @@ export interface LocalState {
   updateCounter: number;
 }
 
-// singleton
+/* A singleton that holds the configuration of the app and provides methods to
+access and modify it */
 export default class LocalDataService {
   private config: WebAppConfig = defaultConfig;
+  /* A callback that is used to update the hash of the application. */
   private hashCallback?: React.Dispatch<React.SetStateAction<string>>;
   static instance: LocalDataService;
 
@@ -42,6 +44,12 @@ export default class LocalDataService {
     this.local.activePageUuid = this.getSettings().homePath;
   }
 
+  /**
+   * If there is no instance of LocalDataService, create one and return it. If
+   * there is an instance, load the data from local storage and return it
+   * @param {WebAppConfig} config - WebAppConfig = defaultConfig
+   * @returns A new instance of LocalDataService
+   */
   static getFromLocalOrNew(
     config: WebAppConfig = defaultConfig
   ): LocalDataService {
@@ -52,6 +60,10 @@ export default class LocalDataService {
     return LocalDataService.instance;
   }
 
+  /**
+   * It returns a hash of the current state of the application
+   * @returns A hash of the config and local objects.
+   */
   toHash(): string {
     return Md5.hashStr(JSON.stringify([this.config, this.local]));
   }
@@ -83,6 +95,7 @@ export default class LocalDataService {
     this.saveToLocalStorage();
   }
 
+  // TODO: move to backend
   getPages(): Page[] {
     return this.config.pages;
   }
@@ -121,46 +134,10 @@ export default class LocalDataService {
     }
   }
 
-  getTables() {
-    return this.config.tables;
-  }
-
-  getTableById(id: number): Optional<Table> {
-    return new Optional(this.config.tables[id]);
-  }
-
-  setTableById(id: number, table: Table) {
-    this.config.tables[id] = table;
-    this.saveToLocalStorage();
-    this.useHashCallback();
-  }
-
-  deleteTableById(id: number) {
-    this.config.tables.splice(id, 1);
-    this.saveToLocalStorage();
-    this.useHashCallback();
-  }
-
-  getTableByKey(key: string): Optional<Table> {
-    return new Optional(this.config.tables.find((table) => table.key === key));
-  }
-
-  setTableByKey(key: string, newOrUpdatedTable: Table) {
-    const index = this.config.tables.findIndex((table) => table.key === key);
-    if (index === -1) {
-      // page is new
-      this.config.tables.push(newOrUpdatedTable);
-    }
-    this.setTableById(index, newOrUpdatedTable);
-  }
-
-  deleteTableByKey(key: string) {
-    const index = this.config.tables.findIndex((table) => table.key === key);
-    if (index !== -1) {
-      this.deleteTableById(index);
-    }
-  }
-
+  /**
+   * It converts the config object to a JSON string.
+   * @returns A string
+   */
   toJsonString(): string {
     return ParseService.getInstance().parseConfigToString(this.config);
   }
@@ -175,6 +152,10 @@ export default class LocalDataService {
     link.click();
   }
 
+  /**
+   * It opens a file dialog, reads the file, and then calls the
+   * `importFromJsonString` function
+   */
   importFromJsonFile() {
     fileDialog({ multiple: false, accept: "application/json" }).then(
       (files) => {
@@ -193,12 +174,17 @@ export default class LocalDataService {
       this.saveToLocalStorage();
       return true;
     } else {
-      // TODO: move somewhere else
       alert("Invalid Configuration");
       return false;
     }
   }
 
+  /**
+   * It takes a string, parses it into a Config object, and if it succeeds, it sets
+   * the config property to the parsed Config object
+   * @param {string} json - The JSON string to parse.
+   * @returns A boolean
+   */
   parse(json: string): boolean {
     const configOpt = ParseService.getInstance().parseConfigFromString(json);
     if (configOpt.isUndefined()) {

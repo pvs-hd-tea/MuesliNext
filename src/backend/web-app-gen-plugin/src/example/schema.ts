@@ -283,3 +283,96 @@ export const EXAMPLE_DATA = [
     boolean: false,
   },
 ];
+
+export const LECTURES: TableSpec = {
+  name: "lectures",
+  columns: [
+    {
+      baseColumn: {
+        name: "_id",
+        type: ColumnType.increments,
+        options: [ColumnOption.primary],
+      },
+      attributes: {
+        displayName: "ID",
+        _cellContentType: "number",
+      },
+    },
+    {
+      baseColumn: {
+        name: "Semester",
+        type: ColumnType.string,
+      },
+      attributes: {
+        displayName: "Semester",
+        userPrimary: 1,
+        _cellContentType: "string",
+      },
+    },
+    {
+      baseColumn: {
+        name: "Name",
+        type: ColumnType.string,
+      },
+      attributes: {
+        displayName: "name",
+        _cellContentType: "string",
+      },
+    },
+    {
+      baseColumn: {
+        name: "Dozent",
+        type: ColumnType.string,
+      },
+      attributes: {
+        displayName: "Dozent",
+        _cellContentType: "string",
+      },
+    },
+    {
+      baseColumn: {
+        name: "Assistent",
+        type: ColumnType.string,
+      },
+      attributes: {
+        displayName: "Assistent",
+        _cellContentType: "string",
+      },
+    },
+    {
+      baseColumn: {
+        name: "LP",
+        type: ColumnType.integer,
+      },
+      attributes: {
+        displayName: "LP",
+        _cellContentType: "integer",
+      },
+    },
+  ],
+  joins: [],
+};
+
+export const LECTURES_DATA = [
+  {
+    Semester: "2022 SS",
+    Name: "Lineare Algebra",
+    Dozent: "Herr Prof. Dr.",
+    Assistent: "Dr.",
+    LP: "8",
+  },
+  {
+    Semester: "2022 SS",
+    Name: "Analysis",
+    Dozent: "Frau Prof. Dr.",
+    Assistent: "Dr.",
+    LP: "8",
+  },
+  {
+    Semester: "2022 WS",
+    Name: "Irgendwas anderes",
+    Dozent: "Prof. Dr.",
+    Assistent: "Dr.",
+    LP: "8",
+  },
+];

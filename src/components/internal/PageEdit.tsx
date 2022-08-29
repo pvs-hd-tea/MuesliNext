@@ -176,7 +176,7 @@ const PageEdit: React.FC<PageProperties> = ({
         <ReactEditorJS
           key={
             pageService.getGlobalPageMode() +
-            dataService.getLocalState().updateCounter // TODO: don't force rerender everything
+            dataService.getLocalState().updateCounter
           }
           data={page.content}
           tools={EDITOR_JS_TOOLS}

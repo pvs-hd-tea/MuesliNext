@@ -1,5 +1,3 @@
-// TODO: port to react.
-// Until then it will be difficult to use state from react.
 import { API, HTMLPasteEvent } from "@editorjs/editorjs";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";

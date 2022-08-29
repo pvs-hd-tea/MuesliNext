@@ -3,21 +3,13 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/pvs-hd-tea/MuesliNext/Build?style=flat)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/pvs-hd-tea/MuesliNext/Test?label=test&style=flat)
 
-WebApp Generator with intutable as backend and react framework for frontend that can be used to generate [MÜSLI](https://github.com/muesli-hd/muesli) like apps.
+WebApp Generator with [Intutable](https://gitlab.com/intutable) as backend and react framework for frontend that can be used to generate [MÜSLI](https://github.com/muesli-hd/muesli) like apps.
 
 ## Demo
 
+with webapp config used from static/MüsliNext.json
+
 ![App demo](./static/WebAppGenDemo.gif)
-
-## Roadmap (in unperfect order)
-
-- [x] static site generation (with gui, saved in local storage)
-- [ ] store site in server storage rather than local storage
-- [ ] include dynamic values from existing tables
-- [ ] create tables on demand
-- [ ] usage of predefined functions on dynamic values (e.g. sum columns)
-- [ ] create functions on demand
-- [ ] ...
 
 ## Installation
 
@@ -79,5 +71,6 @@ npm test -- --coverage --watchAll
 ## Acknowledgements
 
 - [React](https://github.com/facebook/react) as framework
+- [Intutable](https://gitlab.com/intutable) as backend
 - [Editor.js](https://github.com/codex-team/editor.js) as WYSIWYG editor
 - [Zod](https://github.com/colinhacks/zod) as object parser

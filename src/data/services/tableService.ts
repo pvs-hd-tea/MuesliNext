@@ -1,5 +1,3 @@
-import { defaultPage } from "../definitions";
-import { Table } from "../definitions/Tables";
 import localDataService, { PageMode } from "./localDataService";
 
 /*

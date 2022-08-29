@@ -1,3 +1,4 @@
+/* Defining a schema for a Block object. */
 import { z } from "zod";
 
 export const BlockSchema = z.object({

@@ -1,3 +1,8 @@
+/**
+ * Takes a name and makes it a valid URL.
+ * @param {string} name - The name of the page.
+ * @returns A string that is a valid URL.
+ */
 export function nameToUrl(name: string): string {
   let url = name;
   // space -> _

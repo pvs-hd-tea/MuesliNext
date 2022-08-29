@@ -1,7 +1,9 @@
-import { defaultPage } from "../definitions";
-import { Table } from "../definitions/Tables";
 import localDataService, { PageMode } from "./localDataService";
 
+/*
+@deprecated 
+A service that manages the state of the application 
+*/
 export default class TableService {
   private dataService: localDataService;
 
@@ -10,56 +12,6 @@ export default class TableService {
   ) {
     this.dataService = dataService;
   }
-
-  createAndAddTableFromName(name: string | null): void {
-    if (name == null || name == "") {
-      return;
-    } else {
-      if (
-        this.dataService
-          .getPages()
-          .find(
-            (page) =>
-              page.title.toLocaleLowerCase() === name.toLocaleLowerCase()
-          )
-      ) {
-        // TODO: move
-        alert("Table with this name already exists.");
-        return;
-      }
-      const newTable: Table = {
-        ...defaultPage,
-        name: name,
-        key: name.toLowerCase().replace(/ /g, "-"),
-      };
-
-      this.addTable(newTable);
-    }
-  }
-
-  addTable = (table: Table) => {
-    this.dataService.setTableByKey(table.key, table);
-    // TODO: move this
-    location.replace(`/#/tables/${table.key}`);
-    this.setActivePageUuid(table.key);
-  };
-
-  deleteTable = (uuid: string) => {
-    this.dataService.deleteTableByKey(uuid);
-  };
-
-  setTableName = (key: string, name?: string) => {
-    if (name == null || name == "") {
-      alert("Please provide a title.");
-      return;
-    }
-    const table = this.dataService.getTableByKey(key);
-    if (table) {
-      const newTable = table.unwrap();
-      newTable.name = name;
-      this.dataService.setTableByKey(key, newTable);
-    }
-  };
 
   getActivePageUuid = (): string => {
     const localState = this.dataService.getLocalState();

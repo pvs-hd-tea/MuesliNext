@@ -1,3 +1,4 @@
+/* Defining the schema for the web app config. */
 import { z } from "zod";
 import { defaultPage, PageSchema } from "./Page";
 import { defaultSettings, SettingsSchema } from "./Settings";

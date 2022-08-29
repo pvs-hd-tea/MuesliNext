@@ -30,12 +30,15 @@ import {
   SETTINGS_DATA,
   EXAMPLE,
   EXAMPLE_DATA,
+  LECTURES,
+  LECTURES_DATA,
 } from "./schema";
 
 let metadata: Table;
 let pages: Table;
 let settings: Table;
 let example: Table;
+let lectures: Table;
 let simpleTables: Table[];
 
 const SESSION_ID = "session";
@@ -52,6 +55,7 @@ export async function createExampleSchema(
   pages = await createTable(core, adminId, project.id, PAGES);
   settings = await createTable(core, adminId, project.id, SETTINGS);
   example = await createTable(core, adminId, project.id, EXAMPLE);
+  lectures = await createTable(core, adminId, project.id, LECTURES);
 }
 async function createTable(
   core: PluginLoader,
@@ -169,6 +173,11 @@ export async function insertExampleData(core: PluginLoader): Promise<void> {
   await Promise.all(
     EXAMPLE_DATA.map((r) =>
       core.events.request(insert(example.baseTable.key, r))
+    )
+  );
+  await Promise.all(
+    LECTURES_DATA.map((r) =>
+      core.events.request(insert(lectures.baseTable.key, r))
     )
   );
 }

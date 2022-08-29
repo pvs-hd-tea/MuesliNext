@@ -1,5 +1,6 @@
 import localDataService from "./localDataService";
 
+/* A class that wraps setting methods from localDataService */
 export default class SettingsService {
   private dataService: localDataService;
 

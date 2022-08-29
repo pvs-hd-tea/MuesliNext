@@ -1,3 +1,8 @@
+/**
+ * It takes an object and returns a string that is unique to that object
+ * @param {any} obj - The object to be hashed.
+ * @returns A hash of the object.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function hashStable(obj: any): string {
   // Example:

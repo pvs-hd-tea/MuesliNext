@@ -8,7 +8,7 @@ import React from "react";
 import { useSWRConfig } from "swr";
 import { FetcherOptions } from "../../api/fetcher";
 import { useListTables } from "../../api/hooks/useListTables";
-import { createDefaultTable } from "../../api/uptdate";
+import { createDefaultTable } from "../../api/update";
 import { Table } from "../../data/definitions/Tables";
 import localDataService from "../../data/services/localDataService";
 import TableService from "../../data/services/tableService";
@@ -42,7 +42,6 @@ const DataList: React.FC<PageListProperties> = ({ tableService }) => {
   };
   if (isLoading) return <></>;
   if (isError) return <></>;
-  //return <div>{JSON.stringify(tables)}</div>;
   return (
     <>
       <details className="group">

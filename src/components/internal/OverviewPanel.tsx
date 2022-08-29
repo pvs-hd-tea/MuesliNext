@@ -28,14 +28,6 @@ const OverviewPanel: React.FC<OverviewPanelProperties> = ({
 }) => {
   const { status, isLoading, isError } = useGetStatus();
 
-  // const [connected, setConnected] = useState(false);
-
-  // useEffect(() => {
-  //   dataService.isConnected().then((isConnected) => {
-  //     setConnected(isConnected);
-  //   });
-  // });
-
   return (
     <div className="flex flex-row min-h-screen fixed">
       <aside className="sidebar w-72 shadow-lg transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in">

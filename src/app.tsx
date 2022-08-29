@@ -31,17 +31,6 @@ const App: React.FC<Props> = ({}) => {
   useState(defaultTables);
   const { tables, isLoading, isError } = useListTables();
 
-  // const getTables = async () => {
-  //   const tables = await dataService.fetchTables();
-  //   setTables(tables);
-  // };
-
-  // useEffect(() => {
-  //   if (tables.length === 0) {
-  //     getTables();
-  //   }
-  // });
-
   const [, setSettingsHash] = useState("");
   dataService.setHashCallback(setSettingsHash);
 
@@ -88,7 +77,6 @@ const App: React.FC<Props> = ({}) => {
             }
           >
             <HashRouter>
-              {/* TODO: move to own file */}
               <Routes>
                 {dataService.getPages().map((page) => (
                   <Route

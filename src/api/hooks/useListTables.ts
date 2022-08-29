@@ -1,6 +1,12 @@
 import { fetcher, FetcherOptions } from "../fetcher";
 import useSWR from "swr";
 
+/**
+ * Hook to list all tables in the project
+ * @returns tables: data,
+ *   isLoading: !error && !data,
+ *   isError: error,
+ */
 export function useListTables() {
   const options: FetcherOptions = {
     url: `request/project-management/getTablesFromProject`,

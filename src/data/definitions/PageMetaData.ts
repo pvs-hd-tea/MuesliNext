@@ -1,3 +1,4 @@
+/* Defining a schema for the PageMetaData type. */
 import { z } from "zod";
 
 export const PageMetaDataSchema = z.object({

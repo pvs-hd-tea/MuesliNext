@@ -1,0 +1,193 @@
+{
+  "settings": {
+    "name": "MüsliNext",
+    "homePath": "startseite",
+    "backendUrl": "http://localhost:8080"
+  },
+  "pages": [
+    {
+      "title": "Startseite",
+      "path": "startseite",
+      "metadata": {
+        "visible": true
+      },
+      "content": {
+        "blocks": [
+          {
+            "type": "header",
+            "data": {
+              "text": "Startseite",
+              "level": 1
+            }
+          },
+          {
+            "type": "header",
+            "data": {
+              "text": "Übersicht Ihrer Veranstaltungen",
+              "level": 2
+            }
+          },
+          {
+            "type": "alert",
+            "data": {
+              "type": "warning",
+              "message": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+            }
+          },
+          {
+            "type": "alert",
+            "data": {
+              "type": "primary",
+              "message": "<a href=\"#/pages/veranstaltungen\">Zu meinen Veranstaltungen.</a><br>"
+            }
+          },
+          {
+            "type": "paragraph",
+            "data": {
+              "text": "Hilfe:"
+            }
+          },
+          {
+            "type": "list",
+            "data": {
+              "style": "unordered",
+              "items": [
+                "Lorem ipsum dolor sit amet, consetetur sadipscing",
+                "sed diam nonumy eirmod tempor invidunt u",
+                "aliquyam erat, sed diam voluptua"
+              ]
+            }
+          },
+          {
+            "type": "paragraph",
+            "data": {
+              "text": ""
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "Veranstaltungen",
+      "path": "veranstaltungen",
+      "metadata": {
+        "visible": true
+      },
+      "content": {
+        "blocks": [
+          {
+            "type": "paragraph",
+            "data": {
+              "text": ""
+            }
+          },
+          {
+            "type": "paragraph",
+            "data": {
+              "text": ""
+            }
+          },
+          {
+            "type": "header",
+            "data": {
+              "text": "Liste der mit MüsliNext verwalteten Veranstaltungen",
+              "level": 2
+            }
+          },
+          {
+            "type": "paragraph",
+            "data": {
+              "text": "Seit: $lectures.Semester.1"
+            }
+          },
+          {
+            "type": "dynamicValue",
+            "data": {
+              "tableName": "lectures",
+              "columnName": "Semester",
+              "entryKey": "1"
+            }
+          },
+          {
+            "type": "dynamicTable",
+            "data": {
+              "tableName": "lectures"
+            }
+          },
+          {
+            "type": "paragraph",
+            "data": {
+              "text": "LP insgesamt:<br>"
+            }
+          },
+          {
+            "type": "derivedValue",
+            "data": {
+              "tableName": "lectures",
+              "columnName": "LP",
+              "action": "sum"
+            }
+          },
+          {
+            "type": "button",
+            "data": {
+              "text": "Veranstaltung hinzufügen",
+              "type": "link",
+              "link": "#/pages/add-lecture"
+            }
+          },
+          {
+            "type": "paragraph",
+            "data": {
+              "text": ""
+            }
+          }
+        ]
+      }
+    },
+    {
+      "title": "add lecture",
+      "path": "add-lecture",
+      "metadata": {
+        "visible": true
+      },
+      "content": {
+        "blocks": [
+          {
+            "type": "header",
+            "data": {
+              "text": "Veranstaltung hinzufügen",
+              "level": 1
+            }
+          },
+          {
+            "type": "formField",
+            "data": {
+              "tableName": "lectures"
+            }
+          },
+          {
+            "type": "button",
+            "data": {
+              "text": "Zurück zu Veranstaltungen",
+              "type": "link",
+              "link": "#/pages/veranstaltungen"
+            }
+          },
+          {
+            "type": "paragraph",
+            "data": {
+              "text": ""
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "tables": [
+    {
+      "key": "example",
+      "name": "example"
+    }
+  ]
+}

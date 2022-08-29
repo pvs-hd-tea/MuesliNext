@@ -3,6 +3,10 @@ import useSWR from "swr";
 import { useListTables } from "./useListTables";
 import { Table } from "../../data/definitions/Tables";
 
+/**
+ * Hook to get a table by id from the server
+ * @param {number} id - number - The ID of the table you want to get
+ */
 export function useGetTableByID(id: number) {
   const options: FetcherOptions = {
     url: `request/project-management/getTableData`,
@@ -20,6 +24,12 @@ export function useGetTableByID(id: number) {
   };
 }
 
+/**
+ * It returns a table object, a boolean indicating whether the table is loading,
+ * and a boolean indicating whether there was an error
+ * @param {string} name - The name of the table you want to get.
+ * @returns A table object
+ */
 export function useGetTableByName(name: string) {
   const { tables } = useListTables();
   let tableID = -1;
@@ -41,6 +51,12 @@ export function useGetTableByName(name: string) {
   };
 }
 
+/**
+ * Hook to get a table item by name, column and key from the server
+ * @param {string} name - name - The name of the table you want to get
+ * @param {string} column - column - The name of the column you want to get
+ * @param {string} key - key - The key of the row you want to get
+ */
 export function useGetTableItemByName(
   name: string,
   column: string,
@@ -79,6 +95,13 @@ export function useGetTableItemByName(
   };
 }
 
+/**
+ * Derives a value from a table column
+ * @param {string} name - The name of the table you want to get the item from
+ * @param {string} column - the column name in the table
+ * @param {string} action - The action to perform on the column.
+ * @returns The item, isLoading, and isError
+ */
 export function useDeriveTableItemByName(
   name: string,
   column: string,
@@ -101,7 +124,6 @@ export function useDeriveTableItemByName(
     };
   }
 
-  //let k: keyof typeof table.rows;
   let sum = 0;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const type_int = table.columns.find((e: any) => e.type === "integer");

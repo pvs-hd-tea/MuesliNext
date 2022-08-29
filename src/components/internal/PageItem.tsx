@@ -48,11 +48,11 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
     setFileIcon(defaultPageIcon);
   };
 
-  const onNameCancel = () => {
+  const onNameCancel = useCallback(() => {
     setPageName(page.title);
     setEdit(false);
     setFileIcon(defaultPageIcon);
-  };
+  }, [defaultPageIcon, page.title]);
 
   const onDelete = () => {
     // ask for confirmation
@@ -62,13 +62,16 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const escFunction = useCallback((event: any) => {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      onNameCancel();
-    }
-  }, []);
+  const escFunction = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (event: any) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onNameCancel();
+      }
+    },
+    [onNameCancel]
+  );
 
   const handleOnClick = () => {
     if (!edit && pageIsActive) {
@@ -84,7 +87,7 @@ const PageItem: React.FC<PageItemProperties> = ({ pageService, page }) => {
     return () => {
       document.removeEventListener("keydown", escFunction, false);
     };
-  }, []);
+  }, [escFunction]);
 
   return (
     <div

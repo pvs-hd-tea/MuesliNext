@@ -1,14 +1,10 @@
 import "./DynamicTableWidget.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { TableWidget } from "./DynamicTable";
-import LocalDataService from "../../data/services/localDataService";
+import { Table } from "../../../data/definitions/Tables";
 
-import { Table } from "../../data/definitions/Tables";
-
-import { Column } from "../../../node_modules/@intutable/database/dist/column";
-import { faTurnDown } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Column } from "../../../../node_modules/@intutable/database/dist/column";
+import { FormField } from "./FormField";
 
 interface DynamicTableWidgetData {
   tableName: string;
@@ -39,8 +35,8 @@ export default class DynamicTableWidget {
 
   static get toolbox() {
     return {
-      title: "DynamicTable",
-      icon: '<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-table-import" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"> <path stroke="none" d="M0 0h24v24H0z" fill="none"/> <path d="M4 13.5v-7.5a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-6m-8 -10h16m-10 -6v11.5m-8 3.5h7m-3 -3l3 3l-3 3" /> </svg>',
+      title: "Form Field",
+      icon: "F",
     };
   }
 
@@ -95,43 +91,17 @@ const DynamicTableComponent: React.FC<Props> = ({
   readOnly,
 }) => {
   const [data, setData] = useState(initData);
-  const dataService = LocalDataService.getFromLocalOrNew();
-  const [fetched, setFetched] = useState(false);
 
-  useEffect(() => {
-    if (!fetched) {
-      // TODO: can we do better?
-      fetchTableByName(initData.tableName);
-      setFetched(true);
-    }
-  });
-
-  async function fetchTableByName(tableName: string) {
-    let tableData = undefined;
-    try {
-      tableData = await dataService.fetchTableByName(tableName);
-    } catch (error) {
-      tableData = undefined;
-    }
-    setData({
-      ...data,
-      tableName,
-      tableData,
-    });
-    //return `${this.state.tableName}`;
-  }
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setData({ ...data, tableName: event.target.value });
+    //useGetTableByName(data.tableName);
+  };
 
   if (readOnly) {
     return (
-      <div className="dynamic-table-component-display">
-        {data.tableData && (
-          <table>
-            <TableWidget
-              heads={data.tableData.columns}
-              rows={data.tableData.rows}
-            />
-          </table>
-        )}
+      <div className="dynamic-table-component-configure">
+        <h3>Add to table: {data.tableName}</h3>
+        <FormField tableName={data.tableName} />
       </div>
     );
   } else {
@@ -142,27 +112,12 @@ const DynamicTableComponent: React.FC<Props> = ({
           className="text-input"
           type="text"
           value={data.tableName}
-          pattern={data.tableData ? ".*" : ""}
           onChange={(event) => {
-            setData({ ...data, tableName: event.target.value });
-            fetchTableByName(event.target.value);
+            handleChange(event);
           }}
-          placeholder="Enter Table Column..."
+          placeholder="Enter table name..."
         />
-        {data.tableData && (
-          <>
-            <FontAwesomeIcon icon={faTurnDown} className="ml-3" />
-            <table>
-              <TableWidget
-                heads={data.tableData.columns}
-                rows={data.tableData.rows}
-              />
-            </table>
-          </>
-        )}
-        {!data.tableData && (
-          <p className="text-red-500">table does not exist</p>
-        )}
+        <FormField tableName={data.tableName} />
       </div>
     );
   }
